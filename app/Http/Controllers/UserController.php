@@ -11,7 +11,7 @@ class UserController extends Controller
     {
        
        
-        //$this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
         
      
             return view(
@@ -24,5 +24,25 @@ class UserController extends Controller
                 ]
             );
 
+    }
+    public function create()
+    {
+        //$this->authorize('create', User::class);
+        return view(
+            'users.form'
+        );
+    }
+
+
+    public function edit(User $user)
+    {
+        //$this->authorize('update', $user);
+
+        return view(
+            'users.form',
+            [
+                'user'=> $user,
+            ]
+        );
     }
 }

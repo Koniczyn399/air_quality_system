@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.0",
         "power-components/livewire-powergrid": "^6.2",
-        "spatie/laravel-permission": "^6.16"
+        "spatie/laravel-permission": "^6.16",
+        "wireui/wireui": "^2.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

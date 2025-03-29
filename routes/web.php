@@ -17,7 +17,8 @@ Route::middleware([
     })->name('dashboard');
 
 
-
+    Route::name('users.edit')->get('/user_edit/{user}', [UserController::class,'edit']);
+    Route::name('users.create')->get('/user_create', [UserController::class,'create']);
     Route::resource('users', UserController::class)->only([
         'index',
         //'create',

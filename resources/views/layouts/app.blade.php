@@ -24,8 +24,9 @@
 
 <body class="font-sans antialiased">
     <x-banner />
-
-
+    <x-wireui-notifications />
+    <x-wireui-dialog />
+   
 
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @livewire('navigation-menu')

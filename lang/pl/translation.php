@@ -21,5 +21,13 @@ return [
         'updated_at' => 'Zaktualizowano',
         'deleted_at' => 'Usunięto',
     ],
+    'placeholder' => [
+        'enter' => 'Wprowadź',
+        'select' => 'Wybierz',
+        'save' => 'Zatwierdź',
+        'cancel' => 'Anuluj',
+        'edit' =>'Edytuj',
+        'remove' => 'Usuń',
+    ],
 
 ];

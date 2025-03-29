@@ -4,12 +4,13 @@ namespace App\Livewire\Users;
 
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
 final class UserTable extends PowerGridComponent
@@ -31,7 +32,7 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query();
+        return User::query()->with('roles');
     }
 
     public function relationSearch(): array
@@ -45,18 +46,29 @@ final class UserTable extends PowerGridComponent
             ->add('id')
             ->add('name')
             ->add('email')
+            ->add('roles', function ($user){
+                return $user->roles->pluck('name')->join(', ');
+            }
+            
+            )
             ->add('created_at');
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
-            Column::make('Name', 'name')
+            Column::make(__('users.attributes.id'), 'id')
+            ->sortable()
+            ->searchable(),
+            Column::make(__('users.attributes.name'), 'name')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Email', 'email')
+            Column::make(__('users.attributes.email'), 'email')
+                ->sortable()
+                ->searchable(),
+
+            Column::make(__('users.attributes.roles'), 'roles')
                 ->sortable()
                 ->searchable(),
 
@@ -67,7 +79,9 @@ final class UserTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action')
+    
+    
+            Column::action(__('translation.attributes.actions')),
         ];
     }
 
@@ -83,14 +97,28 @@ final class UserTable extends PowerGridComponent
         $this->js('alert('.$rowId.')');
     }
 
-    public function actions(User $row): array
+    #[\Livewire\Attributes\On('remove_user')]
+    public function remove_user($id): void
+    {
+        //$this->authorize('delete', User::findOrFail($id));
+        User::findOrFail($id)->delete();
+    }
+
+    public function actions(User $user): array
     {
         return [
-            Button::add('edit')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+
+            Button::add('edit_user')
+                ->slot(Blade::render('<x-wireui-icon name="pencil" class="w-5 h-5" mini />'))
+                ->tooltip(__('users.actions.edit_user'))
+                ->class('text-yellow-500')
+                ->route('users.edit', [$user]),
+
+            Button::add('remove_user')
+                ->slot(Blade::render('<x-wireui-icon name="x-mark"  class="w-5 x h-5" mini />'))
+                ->tooltip(__('users.actions.remove_user'))
+                ->class('text-red-500')
+                ->dispatch('remove_user', ['id' => $user->id]),
         ];
     }
 

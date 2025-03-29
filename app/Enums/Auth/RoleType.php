@@ -9,6 +9,6 @@ enum RoleType: string
     use EnumToArray;
 
     case ADMIN = 'admin';
-    case WORKER = 'worker';
+    case MAINTEINER = 'mainteiner';
     case USER = 'user';
 }
