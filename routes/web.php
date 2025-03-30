@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\MeasurementDeviceController;
-use App\Livewire\MeasurementDeviceTable;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,9 +19,6 @@ Route::middleware([
 
     Route::name('users.edit')->get('/user_edit/{user}', [UserController::class,'edit']);
     Route::name('users.create')->get('/user_create', [UserController::class,'create']);
-    Route::get('/measurement-devices/table', MeasurementDeviceTable::class)->name('measurement-devices.table');
-    Route::resource('measurement-devices', MeasurementDeviceController::class);
-    Route::get('measurement-devices/{measurement_device}', [MeasurementDeviceController::class, 'show']) ->name('measurement-devices.show');
     Route::resource('users', UserController::class)->only([
         'index',
         //'create',
