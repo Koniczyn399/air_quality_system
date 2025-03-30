@@ -15,7 +15,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.0",
-        "power-components/livewire-powergrid": "^6.2",
+        "power-components/livewire-powergrid": "^6.3",
         "spatie/laravel-permission": "^6.16",
         "wireui/wireui": "^2.4"
     },
