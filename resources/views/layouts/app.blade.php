@@ -19,10 +19,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Styles -->
-    @wireUiStyles
-    @wireUiScripts
     @livewireStyles
-    @livewireScripts
 </head>
 
 <body class="font-sans antialiased">
@@ -51,7 +48,6 @@
 
     @stack('modals')
 
-    @wireUiScripts
     @livewireScripts
 </body>
 
