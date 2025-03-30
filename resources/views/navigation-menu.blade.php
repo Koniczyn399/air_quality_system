@@ -19,6 +19,10 @@
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                         Użytkownicy
                     </x-nav-link>
+
+                    <x-nav-link href="{{ route('measurement-devices.index') }}" :active="request()->routeIs('measurement-devices.index')">
+                        Urządzenia
+                    </x-nav-link>
                 </div>
             </div>
 
