@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('measurements', function (Blueprint $table) {
             $table->id();
+            $table->dateTime('measurements_date');
+            $table->foreignId('device_id')->constant('devices')->onDelete('cascade'); 
             $table->timestamps();
         });
     }

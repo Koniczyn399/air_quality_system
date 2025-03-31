@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('values', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('measurement_id')->constrained('measurements')->onDelete('cascade');
+            $table->foreignId('parameter_id')->constrained('parameters')->onDelete('cascade');
+            $table->float('value');
             $table->timestamps();
         });
     }
