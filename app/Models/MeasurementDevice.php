@@ -21,7 +21,7 @@ class MeasurementDevice extends Model
 
     public function statusHistory(): HasMany
     {
-        return $this->hasMany(MeasurementDeviceStatusHistory::class);
+        return $this->hasMany(MeasurementHistory::class);
     }
 
     public function getStatusNameAttribute(): string

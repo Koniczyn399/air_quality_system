@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MeasurementDeviceStatusHistory extends Model
+class MeasurementHistory extends Model
 {
+    protected $table = 'measurement_histories';
+
     protected $fillable = [
         'measurement_device_id',
         'status',  // Make sure status is included here

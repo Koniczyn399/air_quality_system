@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('measurement_device_status_histories', function (Blueprint $table) {
+    Schema::create('measurement_histories', function (Blueprint $table) {
         $table->id();
         $table->foreignId('measurement_device_id')->constrained();
         $table->string('status'); // 'active', 'inactive', 'in_repair'
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('measurement_device_status_histories');
+        Schema::dropIfExists('measurement_histories');
     }
 };
