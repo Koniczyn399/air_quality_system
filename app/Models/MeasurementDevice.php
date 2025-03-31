@@ -42,4 +42,5 @@ class MeasurementDevice extends Model
             'notes' => $notes
         ]);
     }
+    
 }
