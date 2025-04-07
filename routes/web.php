@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Livewire\MeasurementDeviceTable;
 use App\Http\Controllers\MeasurementDeviceController;
+use App\Http\Controllers\ValueController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +32,7 @@ Route::middleware([
         //'edit',
         //'show',
     ]);
+    Route::get('/values', [ValueController::class, 'index'])->name('values.index');
 
 
 

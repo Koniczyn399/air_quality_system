@@ -15,10 +15,13 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call(MeasurementDevicesSeeder::class);
+        $this->call(ParameterSeeder::class);
 
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(ValueSeeder::class);
+
 
     }
 }

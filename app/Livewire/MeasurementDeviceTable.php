@@ -113,6 +113,11 @@ final class MeasurementDeviceTable extends PowerGridComponent
     public function actions(MeasurementDevice $device): array
 {
     return [
+        Button::add('show_measurements')
+            ->slot(Blade::render('<x-wireui-icon name="chart-bar" class="w-5 h-5 text-green-500" />'))
+            ->tooltip('Pokaż pomiary')
+            ->class('hover:bg-green-50 p-1 rounded')
+            ->route('values.index', ['device_id' => $device->id]),
         Button::add('info')
             ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
             ->tooltip('Szczegóły urządzenia')
