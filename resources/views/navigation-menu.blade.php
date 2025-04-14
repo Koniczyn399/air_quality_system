@@ -21,7 +21,11 @@
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('measurement-devices.index') }}" :active="request()->routeIs('measurement-devices.index')">
-                        Urządzenia
+                    {{ __('translation.navigation.measurement_devices') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('data.index') }}" :active="request()->routeIs('data.index')">
+                    {{ __('translation.navigation.measurements') }}
                     </x-nav-link>
                 </div>
             </div>

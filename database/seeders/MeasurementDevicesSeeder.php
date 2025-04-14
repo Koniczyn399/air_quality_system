@@ -38,6 +38,39 @@ class MeasurementDevicesSeeder extends Seeder
                 'description' => 'Miernik pH gleby z zestawem elektrod',
                 'status' => 'in_repair',
             ]
+
+            ,
+            [
+                'name' => 'ALL in One v1',
+                'model' => 'Kronos 300',
+                'serial_number' => 'SN-JK-2025-233',
+                'calibration_date' => Carbon::today()->subMonths(3),
+                'next_calibration_date' => Carbon::today()->addMonths(9),
+                'description' => 'Miernik all in one',
+                'status' => 'active',
+            ]
+            ,
+            [
+                'name' => 'ALL in One v3',
+                'model' => 'Kronos 600',
+                'serial_number' => 'KK-SS-2025-342',
+                'calibration_date' => Carbon::today()->subMonths(3),
+                'next_calibration_date' => Carbon::today()->addMonths(9),
+                'description' => 'Miernik all in one',
+                'status' => 'active',
+            ]
+            ,
+            [
+                'name' => 'ALL in One v2',
+                'model' => 'Kronos 535',
+                'serial_number' => 'BB-88-2025-234',
+                'calibration_date' => Carbon::today()->subMonths(3),
+                'next_calibration_date' => Carbon::today()->addMonths(9),
+                'description' => 'Miernik all in one',
+                'status' => 'active',
+            ]
+
+
         ];
 
         foreach ($devices as $device) {

@@ -57,6 +57,7 @@ class MeasurementDeviceController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair'
+            
         ]);
 
         if ($measurementDevice->status != $request->status) {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Livewire\MeasurementDeviceTable;
@@ -18,6 +19,14 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+
+    Route::name('data.show')->get('/show/{measurement}', [DataController::class,'show']);
+    Route::name('data.index')->get('/index', [DataController::class,'index']);
+    Route::name('data.upload')->get('/upload', [DataController::class,'upload']);
+    Route::name('data.form')->get('/form', [DataController::class,'form']);
+    
+
 
 
     Route::name('users.edit')->get('/user_edit/{user}', [UserController::class,'edit']);

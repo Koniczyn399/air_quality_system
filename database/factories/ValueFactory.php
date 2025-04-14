@@ -10,18 +10,19 @@ class ValueFactory extends Factory
 {
     public function definition()
 {
-    $availableTags = ['PM2_5', 'PM10', 'TEMP', 'HUM', 'PRESS'];
+    $availableTags = ['PM1','PM2_5', 'PM10', 'HUM', 'PRESS','TEMP',];
     
     $tag = $this->faker->randomElement($availableTags);
     
     $parameter = Parameter::where('tag', $tag)->firstOrFail();
 
     $value = match($tag) {
+        'PM1' => $this->faker->randomFloat(2, 0, 100),
         'PM2_5' => $this->faker->randomFloat(2, 0, 100),
         'PM10' => $this->faker->randomFloat(2, 0, 150),
-        'TEMP' => $this->faker->randomFloat(2, -20, 40),
         'HUM' => $this->faker->randomFloat(2, 0, 100),
         'PRESS' => $this->faker->randomFloat(2, 950, 1050),
+        'TEMP' => $this->faker->randomFloat(2, -20, 40),
         default => $this->faker->randomFloat(2, 0, 100)
     };
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Measurement;
 use App\Models\Value;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +16,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 final class ValuesTable extends PowerGridComponent
 {
     public string $tableName = 'values-table-a0bsl6-table';
+    public string $device_id = '';
 
     public function setUp(): array
     {
@@ -31,7 +33,36 @@ final class ValuesTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Value::query();
+        
+
+
+        $measurements=Measurement::query()
+        ->select(
+            'measurements.id'
+        ) 
+        ->where('measurements.device_id', '=', $this->device_id)->get()->toArray();
+
+        //dd($measurements);
+;
+        $query=Value::query()
+
+        //Zapytanie by pomiary dotyczyły tylko tego urządzenia
+        ->join('measurements', function ($measurements) {
+            $measurements->on('measurements.id', '=', 'values.measurement_id');
+        })
+        ->select([
+            'values.id',
+            'values.parameter_id',
+            'values.measurement_id',
+            'values.value',
+            'values.created_at',
+
+        ])
+        ->whereIn('values.measurement_id', $measurements);
+
+
+
+        return $query;
     }
 
     public function relationSearch(): array

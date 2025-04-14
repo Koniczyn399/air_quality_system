@@ -27,13 +27,13 @@ class UserSeeder extends Seeder
 
 
         User::factory()->create([
-            'name' => 'Test User',
+            'name' => 'Mainteiner User',
             'email' => 'mainteiner@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole(RoleType::MAINTEINER->value);
 
         User::factory()->create([
-            'name' => 'Test User',
+            'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole(RoleType::ADMIN->value);

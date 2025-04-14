@@ -14,12 +14,12 @@ class ValueSeeder extends Seeder
      */
     public function run(): void
     {
-        MeasurementDevice::each(function ($device) {
-            Value::factory()
-                ->count(rand(20, 50)) 
-                ->create([
-                    'measurement_id' => $device->id
-                ]);
-        });
+        // MeasurementDevice::each(function ($device) {
+        //     Value::factory()
+        //         ->count(rand(20, 50)) 
+        //         ->create([
+        //             'measurement_id' => $device->id
+        //         ]);
+        // });
     }
 }

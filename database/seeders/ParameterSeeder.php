@@ -13,6 +13,11 @@ class ParameterSeeder extends Seeder
     {
         $parameters = [
             [
+                'name' => 'PM1',
+                'unit' => 'µg/m³',
+                'tag' => 'PM1'
+            ],
+            [
                 'name' => 'PM2.5',
                 'unit' => 'µg/m³',
                 'tag' => 'PM2_5'
@@ -23,11 +28,6 @@ class ParameterSeeder extends Seeder
                 'tag' => 'PM10'
             ],
             [
-                'name' => 'Temperatura',
-                'unit' => '°C',
-                'tag' => 'TEMP'
-            ],
-            [
                 'name' => 'Wilgotność',
                 'unit' => '%',
                 'tag' => 'HUM'
@@ -36,7 +36,14 @@ class ParameterSeeder extends Seeder
                 'name' => 'Ciśnienie',
                 'unit' => 'hPa',
                 'tag' => 'PRESS'
+            ],
+            [
+                'name' => 'Temperatura',
+                'unit' => '°C',
+                'tag' => 'TEMP'
             ]
+
+
         ];
 
         foreach ($parameters as $param) {
