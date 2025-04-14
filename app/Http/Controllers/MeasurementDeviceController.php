@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MeasurementDeviceController extends Controller
@@ -42,7 +43,9 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        return view('measurement-devices.edit', compact('measurementDevice'));
+        $mainteiner=User::role('mainteiner')->get();
+
+        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiner'));
     }
 
     
@@ -56,7 +59,9 @@ class MeasurementDeviceController extends Controller
             'next_calibration_date' => 'required|date|after:calibration_date',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
-            'status' => 'required|in:active,inactive,in_repair'
+            'status' => 'required|in:active,inactive,in_repair',
+            //'user_id' => $request->user_id,
+
         ]);
 
         if ($measurementDevice->status != $request->status) {
