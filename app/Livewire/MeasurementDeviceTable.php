@@ -157,4 +157,6 @@ public function delete_device($id): void
 {
     MeasurementDevice::findOrFail($id)->delete();
 }
+
+
 }

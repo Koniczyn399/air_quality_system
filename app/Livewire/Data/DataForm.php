@@ -5,11 +5,10 @@ namespace App\Livewire\Data;
 use App\Models\Measurement;
 use App\Models\Value;
 use Livewire\Component;
-use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use WireUi\Traits\WireUiActions;
-use App\Models\MeasurementDevice;
-use App\Models\MeasurementHistory;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DataForm extends Component
