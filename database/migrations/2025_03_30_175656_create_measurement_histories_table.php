@@ -13,7 +13,7 @@ return new class extends Migration
     {
     Schema::create('measurement_histories', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('measurement_device_id')->constrained();
+        $table->foreignId('measurement_device_id')->constrained()->onDelete('cascade');
         $table->string('status'); // 'active', 'inactive', 'in_repair'
         $table->foreignId('changed_by')->constrained('users');
         $table->text('notes')->nullable();
