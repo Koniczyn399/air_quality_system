@@ -206,15 +206,8 @@ class DataController extends Controller
         ->get();
 
  
-        $data = [
-            [
-                'quantity' => 1,
-                'description' => '1 Year Subscription',
-                'price' => '129.00'
-            ]
-        ];
      
-        $pdf = Pdf::loadView('pdfs.pdf', ['data' => $data, 'measurements' =>$measurements,'n' =>0]);
+        $pdf = Pdf::loadView('pdfs.pdf', [ 'measurements' =>$measurements,'n' =>0]);
         
         return $pdf->download();
     }

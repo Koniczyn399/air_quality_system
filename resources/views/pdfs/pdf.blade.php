@@ -1,13 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 
     <title>{{ __('pdf.labels.title') }}</title>
 <style>
+
+body { font-family: DejaVu Sans, sans-serif; }
 h4 {
     margin: 0;
 }
@@ -63,8 +66,8 @@ table tr.items td {
             <td class="w-half">
                 <img src="{{ asset('public/logo.png') }}" alt="Chmurexpol" width="200" />
             </td>
-            <td class="w-half">
-              
+            <td class="w-half">                                     
+
             </td>
         </tr>
     </table>
@@ -101,7 +104,7 @@ table tr.items td {
     </div>
  
     <div class="total">
-Łączna liczba pomiarów {{ $n }}
+{{ __('pdf.labels.all_measurements') }}: {{ $n }}
     </div>
  
     <div class="footer margin-top">

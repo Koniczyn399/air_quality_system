@@ -16,6 +16,7 @@ return[
 
     'labels' => [
         'title' => 'Raport',
+        'all_measurements' =>'Łączna liczba pomiarów',
 
     ],
     
