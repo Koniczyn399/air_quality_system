@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\MeasurementDevice;
 use App\Models\User;
 use Illuminate\Http\Request;
+
+use function Laravel\Prompts\select;
 use Illuminate\Support\Facades\Log;
 
 class MeasurementDeviceController extends Controller
@@ -26,11 +28,11 @@ class MeasurementDeviceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'serial_number' => 'required|string|max:255|unique:measurement_devices',
+            'serial_number' => 'required|string|max:255',
             'calibration_date' => 'required|date',
             'next_calibration_date' => 'required|date|after:calibration_date',
+            'status' => 'required|in:active,inactive,in_repair', // ważne!
             'description' => 'nullable|string',
-            'is_active' => 'boolean'
         ]);
 
         MeasurementDevice::create($validated);
@@ -65,6 +67,7 @@ class MeasurementDeviceController extends Controller
             'status' => 'required|in:active,inactive,in_repair',
             'user_id' => ['nullable', 'exists:users,id'],
 
+            
         ]);
 
         if ($measurementDevice->status != $request->status) {
@@ -82,5 +85,21 @@ class MeasurementDeviceController extends Controller
         $measurementDevice->delete();
 
         return redirect()->route('measurement-devices.index')->with('success', 'Urządzenie usunięte pomyślnie.');
+    }
+
+    public function get_devices(): array
+    {
+
+        $start =array("All");
+        $devices= MeasurementDevice::query()
+        ->select(
+            'measurement_devices.id',
+            'measurement_devices.name',
+        )
+        ->get()->toArray();
+        $result = array_merge($start,$devices);
+      
+
+        return $result;
     }
 }

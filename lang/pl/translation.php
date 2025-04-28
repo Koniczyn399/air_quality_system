@@ -5,6 +5,9 @@ use App\Enums\Auth\RoleType;
 return [
     'navigation' => [
         'users' => 'Użytkownicy',
+        'measurement_devices' =>'Urządzenia pomiarowe',
+        'measurements' =>'Pomiary',
+        'map' =>'Mapa',
 
     ],
     'login'=>[
@@ -30,4 +33,27 @@ return [
         'remove' => 'Usuń',
     ],
 
+    'actions' => [
+        'add_new_device' =>'Dodaj nowe urządzenie',
+        'upload_data' => 'Import/Export danych pomiarowych',
+        'actions'=>'Akcje',
+
+    ],
+    'labels' => [
+        'upload_file' =>'Importowanie nowych danych',
+        'export_file' =>'Exportowanie danych',
+        'data_management' => 'Zarządzanie danymi'
+
+
+    ],
+    'misc' => [
+        'file' =>'Plik',
+
+
+    ],
+    'errors' => [
+        'file' =>'Nie ma pliku',
+
+
+    ],
 ];

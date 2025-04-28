@@ -13,6 +13,8 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\Auth\RoleType;
 
 final class MeasurementDeviceTable extends PowerGridComponent
 {
@@ -119,20 +121,33 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
     public function actions(MeasurementDevice $device): array
     {
-        return [
-            Button::add('info')
-                ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
-                ->tooltip('Szczegóły urządzenia')
-                ->class('hover:bg-blue-50 p-1 rounded')
-                ->route('measurement-devices.show', ['measurement_device' => $device->id]),
+        $actions = [];
+        $user = Auth::user(); // Pobieramy zalogowanego użytkownika
 
-            Button::add('edit_device')
+        // Przycisk "Pokaż pomiary" - widoczny dla wszystkich
+        $actions[] = Button::add('show_measurements')
+            ->slot(Blade::render('<x-wireui-icon name="chart-bar" class="w-5 h-5 text-green-500" />'))
+            ->tooltip('Pokaż pomiary')
+            ->class('hover:bg-green-50 p-1 rounded')
+            ->route('values.index', ['device_id' => $device->id]);
+
+        // Przycisk "Szczegóły urządzenia" - widoczny dla wszystkich
+        $actions[] = Button::add('info')
+            ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
+            ->tooltip('Szczegóły urządzenia')
+            ->class('hover:bg-blue-50 p-1 rounded')
+            ->route('measurement-devices.show', ['measurement_device' => $device->id]);
+
+        // Sprawdzamy, czy użytkownik ma rolę 'ADMIN' lub 'MAINTEINER' (Serwisant)
+        // Używamy RoleType::ADMIN->value i RoleType::MAINTEINER->value
+        if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
+            $actions[] = Button::add('edit_device')
                 ->slot(Blade::render('<x-wireui-icon name="pencil" class="w-5 h-5" mini />'))
                 ->tooltip('Edytuj urządzenie')
                 ->class('text-yellow-500 hover:text-yellow-700')
-                ->route('measurement-devices.edit', ['measurement_device' => $device->id]),
+                ->route('measurement-devices.edit', ['measurement_device' => $device->id]);
 
-                Button::add('delete')
+                $actions[] = Button::add('delete')
                 ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
                 ->tooltip('Usuń')
                 ->class('text-red-500 hover:text-red-700')
@@ -150,13 +165,23 @@ final class MeasurementDeviceTable extends PowerGridComponent
                             'label' => 'Anuluj'
                         ]
                     ]
-                ])
-        ];
+                ]);
+        }
+
+        return $actions;
     }
 
-#[\Livewire\Attributes\On('delete_device')]
-public function delete_device($id): void
+#[\Livewire\Attributes\On('delete_confirmed')]
+public function deleteConfirmed($id): void
 {
-    MeasurementDevice::findOrFail($id)->delete();
+    $device = MeasurementDevice::find($id);
+    if ($device) {
+        $device->delete();
+        $this->dispatch('showToast', type: 'success', message: 'Urządzenie zostało usunięte');
+    } else {
+        $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
+    }
 }
+
+
 }
