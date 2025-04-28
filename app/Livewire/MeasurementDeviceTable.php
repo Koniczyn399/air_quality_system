@@ -16,6 +16,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class MeasurementDeviceTable extends PowerGridComponent
 {
+    public $proba;
     use WithExport;
     
     public string $tableName = 'measurement_devices_powergrid_table';
