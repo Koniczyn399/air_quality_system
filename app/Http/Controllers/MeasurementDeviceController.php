@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\MeasurementDevice;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MeasurementDeviceController extends Controller
 {
     public function index()
     {
-        return view('measurement-devices.index');
+        $measurementDevices = MeasurementDevice::with('user')->get();
+
+        return view('measurement-devices.index', compact('measurementDevices'));
     }
 
     public function create()
@@ -43,9 +46,9 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        $mainteiner=User::role('mainteiner')->get();
+        $mainteiners=User::role('mainteiner')->get();
 
-        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiner'));
+        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
     }
 
     
@@ -60,7 +63,7 @@ class MeasurementDeviceController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair',
-            //'user_id' => $request->user_id,
+            'user_id' => ['nullable', 'exists:users,id'],
 
         ]);
 

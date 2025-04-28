@@ -11,7 +11,7 @@ class MeasurementDevice extends Model
     protected $fillable = [
         'name', 'model', 'serial_number', 
         'calibration_date', 'next_calibration_date',
-        'description', 'status'
+        'description', 'status', 'user_id'
     ];
     
     protected $casts = [
@@ -43,4 +43,7 @@ class MeasurementDevice extends Model
         ]);
     }
     
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

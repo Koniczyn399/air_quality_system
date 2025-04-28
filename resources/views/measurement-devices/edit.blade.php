@@ -64,7 +64,7 @@
                     <select id="user_id" name="user_id"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">-- Wybierz serwisanta --</option>
-                        @foreach($mainteiner as $mainteiner)
+                        @foreach($mainteiners as $mainteiner)
                             <option value="{{ $mainteiner->id }}" {{ old('user_id', $measurementDevice->user_id) == $mainteiner->id ? 'selected' : '' }}>
                                 {{ $mainteiner->name }}
                             </option>
