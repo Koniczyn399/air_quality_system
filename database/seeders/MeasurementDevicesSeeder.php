@@ -75,6 +75,8 @@ class MeasurementDevicesSeeder extends Seeder
                 'next_calibration_date' => Carbon::today()->addMonths(11),
                 'description' => 'Przenośny analizator wilgotności z wyświetlaczem dotykowym',
                 'status' => 'inactive',
+                'latitude' => $faker->latitude(50, 55),
+                'longitude' => $faker->longitude(15, 25),
             ],
             [
                 'name' => 'Miernik powietrza i pyłu Airomex 2',
@@ -84,6 +86,8 @@ class MeasurementDevicesSeeder extends Seeder
                 'next_calibration_date' => Carbon::today()->addMonths(9),
                 'description' => 'Miernik powietrza zestawem elektrod',
                 'status' => 'in_repair',
+                'latitude' => $faker->latitude(50, 55),
+                'longitude' => $faker->longitude(15, 25),
             ],
             [
                 'name' => 'Miernik powietrza i pyłu Airomex 3',
@@ -93,6 +97,8 @@ class MeasurementDevicesSeeder extends Seeder
                 'next_calibration_date' => Carbon::today()->addMonths(9),
                 'description' => 'Miernik powietrza zestawem elektrod',
                 'status' => 'in_repair',
+                'latitude' => $faker->latitude(50, 55),
+                'longitude' => $faker->longitude(15, 25),
             ],
 
 
