@@ -8,7 +8,6 @@ use App\Http\Controllers\MeasurementDeviceController;
 use App\Http\Controllers\ValueController;
 
 use App\Livewire\Data\ExportForm;
-=======
 use App\Http\Controllers\MapController;
 
 
