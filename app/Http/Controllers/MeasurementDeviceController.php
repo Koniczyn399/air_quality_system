@@ -22,11 +22,11 @@ class MeasurementDeviceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'serial_number' => 'required|string|max:255|unique:measurement_devices',
+            'serial_number' => 'required|string|max:255',
             'calibration_date' => 'required|date',
             'next_calibration_date' => 'required|date|after:calibration_date',
+            'status' => 'required|in:active,inactive,in_repair', // ważne!
             'description' => 'nullable|string',
-            'is_active' => 'boolean'
         ]);
 
         MeasurementDevice::create($validated);
