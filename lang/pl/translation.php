@@ -5,6 +5,9 @@ use App\Enums\Auth\RoleType;
 return [
     'navigation' => [
         'users' => 'Użytkownicy',
+        'measurement_devices' =>'Urządzenia pomiarowe',
+        'measurements' =>'Pomiary',
+        'map' =>'Mapa',
 
     ],
     'login'=>[
