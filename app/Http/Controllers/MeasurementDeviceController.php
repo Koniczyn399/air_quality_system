@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\MeasurementDevice;
 use Illuminate\Http\Request;
 
+use function Laravel\Prompts\select;
+
 class MeasurementDeviceController extends Controller
 {
     public function index()
@@ -75,5 +77,21 @@ class MeasurementDeviceController extends Controller
         $measurementDevice->delete();
 
         return redirect()->route('measurement-devices.index')->with('success', 'Urządzenie usunięte pomyślnie.');
+    }
+
+    public function get_devices(): array
+    {
+
+        $start =array("All");
+        $devices= MeasurementDevice::query()
+        ->select(
+            'measurement_devices.id',
+            'measurement_devices.name',
+        )
+        ->get()->toArray();
+        $result = array_merge($start,$devices);
+      
+
+        return $result;
     }
 }

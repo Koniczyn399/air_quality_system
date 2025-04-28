@@ -175,4 +175,6 @@ public function deleteConfirmed($id): void
         $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
     }
 }
+
+
 }
