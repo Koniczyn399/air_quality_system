@@ -11,7 +11,7 @@ class MeasurementHistory extends Model
 
     protected $fillable = [
         'measurement_device_id',
-        'status',  // Make sure status is included here
+        'status',  
         'changed_by',
         'notes'
     ];

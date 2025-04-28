@@ -6,7 +6,11 @@ use App\Http\Controllers\UserController;
 use App\Livewire\MeasurementDeviceTable;
 use App\Http\Controllers\MeasurementDeviceController;
 use App\Http\Controllers\ValueController;
+
 use App\Livewire\Data\ExportForm;
+=======
+use App\Http\Controllers\MapController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -55,6 +59,7 @@ Route::middleware([
     Route::get('/values', [ValueController::class, 'index'])->name('values.index');
 
 
+    Route::get('/map', [MapController::class, 'index'])->name('map'); //do mapy
 
 
 });

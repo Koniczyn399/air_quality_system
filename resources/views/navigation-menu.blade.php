@@ -27,6 +27,11 @@
                     <x-nav-link href="{{ route('data.index') }}" :active="request()->routeIs('data.index')">
                     {{ __('translation.navigation.measurements') }}
                     </x-nav-link>
+
+                       <!-- Mapa -->
+                    <x-nav-link href="{{ route('map') }}" :active="request()->routeIs('map')">
+                        {{ __('translation.navigation.map') }}
+                    </x-nav-link>
                 </div>
             </div>
 
