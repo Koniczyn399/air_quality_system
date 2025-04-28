@@ -11,7 +11,8 @@ class MeasurementDevice extends Model
     protected $fillable = [
         'name', 'model', 'serial_number', 
         'calibration_date', 'next_calibration_date',
-        'description', 'status'
+        'description', 'status',
+        'latitude', 'longitude' 
     ];
     
     protected $casts = [

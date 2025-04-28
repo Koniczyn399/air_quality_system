@@ -7,6 +7,7 @@ return [
         'users' => 'Użytkownicy',
         'measurement_devices' =>'Urządzenia pomiarowe',
         'measurements' =>'Pomiary',
+        'map' =>'Mapa',
 
     ],
     'login'=>[
