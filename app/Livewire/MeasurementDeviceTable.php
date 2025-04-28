@@ -64,7 +64,9 @@ final class MeasurementDeviceTable extends PowerGridComponent
                     '<span>'.$this->getStatusText($device->status).'</span>'.
                     '</div>'
                 )
-            );
+            )
+            ->add('user_name', fn ($device) => $device->user ? $device->user->name : 'Brak');
+        
     }
 
     private function getStatusText(string $status): string
@@ -103,6 +105,10 @@ final class MeasurementDeviceTable extends PowerGridComponent
             ->sortable()
             ->searchable(),
 
+            Column::make('Serwisant', 'user_name') 
+            ->sortable()
+            ->searchable(),
+
             Column::action('Akcje'),
         ];
     }
@@ -130,40 +136,49 @@ final class MeasurementDeviceTable extends PowerGridComponent
             ->tooltip('Szczegóły urządzenia')
             ->class('hover:bg-blue-50 p-1 rounded')
             ->route('measurement-devices.show', ['measurement_device' => $device->id]);
-
+    {
+        return [
+            Button::add('info')
+                ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
+                ->tooltip('Szczegóły urządzenia')
+                ->class('hover:bg-blue-50 p-1 rounded')
+                ->route('measurement-devices.show', ['measurement_device' => $device->id]),
+        ]
         // Sprawdzamy, czy użytkownik ma rolę 'ADMIN' lub 'MAINTEINER' (Serwisant)
         // Używamy RoleType::ADMIN->value i RoleType::MAINTEINER->value
-        if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
+        if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) 
+        {
             $actions[] = Button::add('edit_device')
                 ->slot(Blade::render('<x-wireui-icon name="pencil" class="w-5 h-5" mini />'))
                 ->tooltip('Edytuj urządzenie')
                 ->class('text-yellow-500 hover:text-yellow-700')
                 ->route('measurement-devices.edit', ['measurement_device' => $device->id]);
 
-                $actions[] = Button::add('delete')
-                ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
-                ->tooltip('Usuń')
-                ->class('text-red-500 hover:text-red-700')
-                ->dispatch('delete_device', [
-                    'id' => $device->id,
-                    'confirm' => [
-                        'title' => 'Potwierdzenie usunięcia',
-                        'description' => 'Czy na pewno chcesz usunąć to urządzenie?',
-                        'accept' => [
-                            'label' => 'Tak, usuń',
-                            'method' => 'delete',
-                            'params' => ['measurement_device' => $device->id]
-                        ],
-                        'reject' => [
-                            'label' => 'Anuluj'
+                    $actions[] = Button::add('delete')
+                    ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
+                    ->tooltip('Usuń')
+                    ->class('text-red-500 hover:text-red-700')
+                    ->dispatch('delete_device', [
+                        'id' => $device->id,
+                        'confirm' => [
+                            'title' => 'Potwierdzenie usunięcia',
+                            'description' => 'Czy na pewno chcesz usunąć to urządzenie?',
+                            'accept' => [
+                                'label' => 'Tak, usuń',
+                                'method' => 'delete',
+                                'params' => ['measurement_device' => $device->id]
+                            ],
+                            'reject' => [
+                                'label' => 'Anuluj'
+                            ]
                         ]
-                    ]
-                ]);
+                    ]);
         }
+                }
 
         return $actions;
-    }
-
+        }
+        
 #[\Livewire\Attributes\On('delete_confirmed')]
 public function deleteConfirmed($id): void
 {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use function Laravel\Prompts\select;
@@ -11,7 +12,9 @@ class MeasurementDeviceController extends Controller
 {
     public function index()
     {
-        return view('measurement-devices.index');
+        $measurementDevices = MeasurementDevice::with('user')->get();
+
+        return view('measurement-devices.index', compact('measurementDevices'));
     }
 
     public function create()
@@ -44,7 +47,9 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        return view('measurement-devices.edit', compact('measurementDevice'));
+        $mainteiners=User::role('mainteiner')->get();
+
+        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
     }
 
     
@@ -59,7 +64,6 @@ class MeasurementDeviceController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair'
-            
         ]);
 
         if ($measurementDevice->status != $request->status) {
