@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use function Laravel\Prompts\select;
+use Illuminate\Support\Facades\Log;
 
 class MeasurementDeviceController extends Controller
 {
     public function index()
     {
-        return view('measurement-devices.index');
+        $measurementDevices = MeasurementDevice::with('user')->get();
+
+        return view('measurement-devices.index', compact('measurementDevices'));
     }
 
     public function create()
@@ -44,7 +48,9 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        return view('measurement-devices.edit', compact('measurementDevice'));
+        $mainteiners=User::role('mainteiner')->get();
+
+        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
     }
 
     
@@ -58,7 +64,9 @@ class MeasurementDeviceController extends Controller
             'next_calibration_date' => 'required|date|after:calibration_date',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
-            'status' => 'required|in:active,inactive,in_repair'
+            'status' => 'required|in:active,inactive,in_repair',
+            'user_id' => ['nullable', 'exists:users,id'],
+
             
         ]);
 

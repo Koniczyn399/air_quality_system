@@ -12,7 +12,7 @@ class MeasurementDevice extends Model
         'name', 'model', 'serial_number', 
         'calibration_date', 'next_calibration_date',
         'description', 'status',
-        'latitude', 'longitude' 
+        'latitude', 'longitude' , 'user_id'
     ];
     
     protected $casts = [
@@ -44,4 +44,7 @@ class MeasurementDevice extends Model
         ]);
     }
     
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
