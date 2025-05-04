@@ -213,4 +213,12 @@ class DataController extends Controller
     }
 
 
+    public function dashboard()
+    {
+
+        
+        return 'To powinno się wyświetlić';
+    }
+
+
 }

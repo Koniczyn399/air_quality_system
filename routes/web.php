@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\DataController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Livewire\MeasurementDeviceTable;
-use App\Http\Controllers\MeasurementDeviceController;
-use App\Http\Controllers\ValueController;
-
+use Carbon\Carbon;
 use App\Livewire\Data\ExportForm;
-
+use App\Models\MeasurementDevice;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\DataController;
+use App\Http\Controllers\UserController;
+
+use App\Livewire\MeasurementDeviceTable;
+
+use App\Http\Controllers\ValueController;
+use App\Http\Controllers\MeasurementDeviceController;
 
 
 Route::get('/', function () {
@@ -21,9 +23,24 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+
+
+
     Route::get('/dashboard', function () {
-        return view('dashboard');
+
+        $start_date = Carbon::now()->addDay()->format('Y-m-d');
+        $end_date = Carbon::now()->addMonths(1)->format('Y-m-d');
+
+        $data =MeasurementDevice::query()
+        ->whereBetween('next_calibration_date', [$start_date, $end_date])->get();
+
+
+
+        return view('dashboard', ['data'=> $data]);
     })->name('dashboard');
+
+
 
 
     Route::get('data.file/{start_date}/{end_date}/{device_ids}', [DataController::class, 'file'])->name('data.file');

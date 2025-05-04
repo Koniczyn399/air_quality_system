@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Użytkownicy
+        {{ __('translation.navigation.users') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,6 @@
                
                 <livewire:users.user-table />
             </div>
-
         </div>
     </div>
 </x-app-layout>
