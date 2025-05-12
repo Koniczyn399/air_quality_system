@@ -74,41 +74,26 @@ table tr.items td {
 
  
     <div class="margin-top">
-        <table class="products">
-            <tr>
-                <th>ID Pomiarów</th>
-                <th>Nazwa urządzenia</th>
-                <th>Data pomiaru</th>
-                <th>Utworzono</th>
-            </tr>
-           
-                @foreach($measurements as $measurement)
-                <tr class="items">
-                {{ $n +=1 }}
-                    <td>
-                        {{ $measurement['id'] }}
-                    </td>
-                    <td>
-                        {{ $measurement['device_name'] }}
-                    </td>
-                    <td>
-                        {{ $measurement['measurements_date'] }}
-                    </td>
-                    <td>
-                        {{ $measurement['created_at'] }}
-                    </td>
-                </tr>
-                @endforeach
-           
-        </table>
+        {{ __('pdf.labels.all_measurements') }}: {{ $m }} <br>
+        <hr class="my-2">
+        Ilość użytkowników: {{ $u }} <br>
+        <hr class="my-2">
+        Ilość urządzeń pomiarowych: {{ $md }}<br>
+        <hr class="my-2">
+        Jednostki parametrów podawane przez bazę danych: <br>
+        @foreach ($p as $pp)
+            {{ $pp->name }}: {{ $pp->unit }}<br>
+            
+        @endforeach
+
     </div>
  
     <div class="total">
-{{ __('pdf.labels.all_measurements') }}: {{ $n }}
+
     </div>
  
     <div class="footer margin-top">
-        <div>Thank you</div>
+     
     </div>
 </body>
 </html>

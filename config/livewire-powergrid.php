@@ -44,12 +44,19 @@ return [
          * https://flatpickr.js.org
          */
         'flatpickr' => [
-            'locales' => [
-                'pt_BR' => [
-                    'locale'     => 'pt',
+            // ..
+            'locales'   => [
+                'pl_PL' => [
+                    'locale'     => 'pl',
                     'dateFormat' => 'd/m/Y H:i',
                     'enableTime' => true,
                     'time_24hr'  => true,
+                ],
+                'us' => [
+                    'locale'     => 'us',
+                    'dateFormat' => 'm/d/Y',
+                    'enableTime' => true,
+                    'time_24hr'  => false,
                 ],
             ],
         ],

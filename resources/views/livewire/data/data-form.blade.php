@@ -1,7 +1,7 @@
 <div class="p-2">
     <form wire:submit.prevent="submit">
         <h3 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('translation.labels.data_management') }}
+        {{ __('translation.attributes.actions') }}
         </h3>
 
                 
@@ -17,16 +17,7 @@
             </div>
         </div>
 
-        <hr class="my-2">
-        <div class="grid grid-cols-2 gap-2">
-            <div class="">
-                <label for="file">{{ __('data.labels.generate_report') }}</label>
-            </div>
-            <div class="">
-                <x-wireui-button  a href="{{ route('data.invoice') }}" primary label="{{ __('data.actions.generate') }}"  />
-                
-            </div>
-        </div>
+
                 
         <hr class="my-2">
         <div class="grid grid-cols-2 gap-2">

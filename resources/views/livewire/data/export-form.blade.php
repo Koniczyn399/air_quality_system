@@ -65,6 +65,17 @@
             </div>
         </div>
 
+        <hr class="my-2">
+        <div class="grid grid-cols-2 gap-2">
+            <div class="">
+                <label for="file">{{ __('data.labels.generate_report') }}</label>
+            </div>
+            <div class="">
+            <x-wireui-button wire:click="download" primary label="{{ __('data.actions.generate') }}"  />                
+                
+            </div>
+        </div>
+
                 
         <hr class="my-2">
             <div class="flex justify-end pt-2">
