@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MeasurementDevice;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Services\GeolocationService;
 use function Laravel\Prompts\select;
 use Illuminate\Support\Facades\Log;
 
@@ -41,10 +41,18 @@ class MeasurementDeviceController extends Controller
     }
 
     public function show(MeasurementDevice $measurementDevice)
-    {
-        $measurementDevice->load('statusHistory.changedBy');
-        return view('measurement-devices.show', compact('measurementDevice'));
-    }
+{
+    $measurementDevice->load('statusHistory.changedBy');
+
+    // Pobieranie lokalizacji (np. miasta) na podstawie współrzędnych
+    $city = GeolocationService::getCityFromCoordinates(
+        $measurementDevice->latitude,
+        $measurementDevice->longitude
+    );
+
+    return view('measurement-devices.show', compact('measurementDevice', 'city'));
+}
+
 
     public function edit(MeasurementDevice $measurementDevice)
     {
