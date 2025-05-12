@@ -16,6 +16,7 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\Auth\RoleType;
 
+
 final class MeasurementDeviceTable extends PowerGridComponent
 {
     public $proba;
@@ -140,6 +141,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
         // Sprawdzamy, czy użytkownik ma rolę 'ADMIN' lub 'MAINTEINER' (Serwisant)
         // Używamy RoleType::ADMIN->value i RoleType::MAINTEINER->value
+        /** @var \App\Models\User $user */ 
         if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
             $actions[] = Button::add('edit_device')
                 ->slot(Blade::render('<x-wireui-icon name="pencil" class="w-5 h-5" mini />'))
