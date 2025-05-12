@@ -8,7 +8,7 @@ return [
         'measurement_devices' =>'Urządzenia pomiarowe',
         'measurements' =>'Pomiary',
         'map' =>'Mapa',
-
+        'data_management' => 'Zarządzanie danymi',
     ],
     'login'=>[
 
@@ -19,7 +19,7 @@ return [
 
     ],
     'attributes' => [
-        'actions' => '',
+        'actions' => 'Akcje na danych',
         'created_at' => 'Utworzono',
         'updated_at' => 'Zaktualizowano',
         'deleted_at' => 'Usunięto',
@@ -31,18 +31,20 @@ return [
         'cancel' => 'Anuluj',
         'edit' =>'Edytuj',
         'remove' => 'Usuń',
+        'show' => 'Zobacz',
     ],
 
     'actions' => [
         'add_new_device' =>'Dodaj nowe urządzenie',
         'upload_data' => 'Import/Export danych pomiarowych',
-        'actions'=>'Akcje',
+
 
     ],
     'labels' => [
         'upload_file' =>'Importowanie nowych danych',
         'export_file' =>'Exportowanie danych',
-        'data_management' => 'Zarządzanie danymi'
+
+        'actions'=>'Akcje na danych',
 
 
     ],
