@@ -19,7 +19,7 @@ return [
 
     ],
     'attributes' => [
-        'actions' => '',
+        'actions' => 'Akcje na danych',
         'created_at' => 'Utworzono',
         'updated_at' => 'Zaktualizowano',
         'deleted_at' => 'Usunięto',
@@ -31,6 +31,7 @@ return [
         'cancel' => 'Anuluj',
         'edit' =>'Edytuj',
         'remove' => 'Usuń',
+        'show' => 'Zobacz',
     ],
 
     'actions' => [
