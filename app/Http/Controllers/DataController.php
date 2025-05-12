@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Measurement;
 use App\Models\MeasurementDevice;
+use App\Models\Parameter;
 use App\Models\Value;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -193,21 +194,33 @@ class DataController extends Controller
     
     public function invoice($start_date,  $end_date)
     {
-        $measurements = Measurement::query()
-        ->join('measurement_devices', function ($m) {
-            $m->on('measurement_devices.id', '=', 'measurements.device_id');
-        })
-        ->select(
-            'measurements.id',
-            'measurement_devices.name as device_name', 
-            'measurements.measurements_date',
-            'measurements.created_at',
-        )
-        ->get();
+        // $measurements = Measurement::query()
+        // ->join('measurement_devices', function ($m) {
+        //     $m->on('measurement_devices.id', '=', 'measurements.device_id');
+        // })
+        // ->select(
+        //     'measurements.id',
+        //     'measurement_devices.name as device_name', 
+        //     'measurements.measurements_date',
+        //     'measurements.created_at',
+        // )
+        // ->get();
+
+        $m = Measurement::count();
+        $u = User::count();
+        $md = MeasurementDevice::count();
+        $p = Parameter::query()->get();
+        //dd($p);
 
  
      
-        $pdf = Pdf::loadView('pdfs.pdf', [ 'measurements' =>$measurements,'n' =>0]);
+        $pdf = Pdf::loadView('pdfs.pdf', [ 
+            'm' =>$m,
+            'u' =>$u,
+            'md' =>$md,
+            'p' =>$p,
+        
+        ]);
         
         return $pdf->download();
     }
