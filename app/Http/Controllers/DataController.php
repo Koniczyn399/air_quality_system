@@ -191,7 +191,7 @@ class DataController extends Controller
     }
 
     
-    public function invoice()
+    public function invoice($start_date,  $end_date)
     {
         $measurements = Measurement::query()
         ->join('measurement_devices', function ($m) {
@@ -213,12 +213,6 @@ class DataController extends Controller
     }
 
 
-    public function dashboard()
-    {
-
-        
-        return 'To powinno się wyświetlić';
-    }
 
 
 }

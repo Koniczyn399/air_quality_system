@@ -6,8 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('/var/www/html/public/logo.png') }}" alt="Chmurexpol" width="200" height="50" />
-                        <img src="{{ URL::to('/storage/app/private/logo.png') }}">
+                    <x-application-mark class="block h-9 w-auto" />
 
                     </a>
                 </div>

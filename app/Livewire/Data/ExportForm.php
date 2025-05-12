@@ -18,13 +18,15 @@ class ExportForm extends Component
     public $start_date;
     public $end_date;
     
+    public $from;
+    public $to;
+    
     public function mount()
     {
 
-        
-        // $devices = MeasurementDevice::query()->get();
 
-        // $this->devices=$devices;
+        $this->start_date='';
+        $this->end_date='';
 
 
     }
@@ -32,19 +34,9 @@ class ExportForm extends Component
     public function submit()
     {
 
-        
-        if($this->start_date==null){
-            $from ='1900-01-01';  
-           
-        }else{
-            $from = $this->start_date;
-        }
 
-        if($this->end_date==null){
-            $to = '3000-01-01';
-        }else{
-            $to = $this->end_date;
-        }
+        ExportForm::check_date();
+
 
 
         $device_ids= $this->device_ids;
@@ -73,17 +65,43 @@ class ExportForm extends Component
             'measurements.device_id', 
             'measurements.measurements_date'         
         )
-        ->whereBetween('measurements_date', [$from, $to])
+        ->whereBetween('measurements_date', [$this->from, $this->to])
         ->whereIn('measurements.device_id', $device_ids)
         ->get()
         ;
 
 
 
-        return $this->redirect(route('data.file', ['start_date'=>$from, 'end_date' =>$to, 'device_ids' => json_encode($device_ids)]));
+        return $this->redirect(route('data.file', ['start_date'=>$this->from, 'end_date' =>$this->to, 'device_ids' => json_encode($device_ids)]));
     }
 
-    
+    public function download()
+    {
+        ExportForm::check_date();
+
+        return $this->redirect(route('data.invoice', ['start_date'=> $this->from, 'end_date'=> $this->to]));
+    }
+
+
+
+
+
+
+    public function check_date(){
+        if($this->start_date==null){
+            $this->from ='1900-01-01';  
+           
+        }else{
+            $this->from = $this->start_date ;
+        }
+
+        if($this->end_date==null){
+            $this->to = '3000-01-01';
+        }else{
+            $this->to = $this->end_date ;
+        }
+
+    }
 
     public function render()
     {

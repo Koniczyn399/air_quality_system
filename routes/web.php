@@ -43,8 +43,9 @@ Route::middleware([
 
 
 
+
+    Route::get('data.invoice/{start_date}/{end_date}', [DataController::class, 'invoice'])->name('data.invoice');
     Route::get('data.file/{start_date}/{end_date}/{device_ids}', [DataController::class, 'file'])->name('data.file');
-    Route::get('data.invoice', [DataController::class, 'invoice'])->name('data.invoice');
 
     //Route::name('data.export_file')->get('/start_date/{start_date}/end_date/{end_date}', [DataController::class, 'export_file']);
     Route::name('data.export')->get('/export', [DataController::class,'export']);

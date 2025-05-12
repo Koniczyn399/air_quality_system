@@ -71,7 +71,7 @@
                 <label for="file">{{ __('data.labels.generate_report') }}</label>
             </div>
             <div class="">
-                <x-wireui-button  a href="{{ route('data.invoice') }}" primary label="{{ __('data.actions.generate') }}"  />
+            <x-wireui-button wire:click="download" primary label="{{ __('data.actions.generate') }}"  />                
                 
             </div>
         </div>
