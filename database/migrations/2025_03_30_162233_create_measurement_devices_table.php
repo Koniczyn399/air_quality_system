@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('next_calibration_date');
             $table->text('description')->nullable();
             $table->string('status')->default('active'); // Zmieniamy boolean na string
+            $table->decimal('latitude', 10, 8)->nullable(); // Szerokość geograficzna
+            $table->decimal('longitude', 11, 8)->nullable(); // Długość geograficzna
             $table->timestamps();
         });
     }

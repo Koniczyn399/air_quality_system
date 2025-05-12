@@ -18,6 +18,7 @@ use App\Enums\Auth\RoleType;
 
 final class MeasurementDeviceTable extends PowerGridComponent
 {
+    public $proba;
     use WithExport;
     
     public string $tableName = 'measurement_devices_powergrid_table';
@@ -64,7 +65,9 @@ final class MeasurementDeviceTable extends PowerGridComponent
                     '<span>'.$this->getStatusText($device->status).'</span>'.
                     '</div>'
                 )
-            );
+            )
+            ->add('user_name', fn ($device) => $device->user ? $device->user->name : 'Brak');
+
     }
 
     private function getStatusText(string $status): string
@@ -100,6 +103,10 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Status', 'status_formatted')
+            ->sortable()
+            ->searchable(),
+
+            Column::make('Serwisant', 'user_name') 
             ->sortable()
             ->searchable(),
 
@@ -175,4 +182,6 @@ public function deleteConfirmed($id): void
         $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
     }
 }
+
+
 }
