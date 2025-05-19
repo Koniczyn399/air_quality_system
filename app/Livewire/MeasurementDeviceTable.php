@@ -2,26 +2,24 @@
 
 namespace App\Livewire;
 
+use App\Enums\Auth\RoleType;
 use App\Models\MeasurementDevice;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
-use Illuminate\Support\Facades\Auth;
-use App\Enums\Auth\RoleType;
-
 
 final class MeasurementDeviceTable extends PowerGridComponent
 {
     public $proba;
+
     use WithExport;
-    
+
     public string $tableName = 'measurement_devices_powergrid_table';
 
     public function setUp(): array
@@ -54,18 +52,17 @@ final class MeasurementDeviceTable extends PowerGridComponent
             ->add('serial_number')
             ->add('calibration_date_formatted', fn ($device) => $device->calibration_date->format('d-m-Y'))
             ->add('next_calibration_date_formatted', fn ($device) => $device->next_calibration_date->format('d-m-Y'))
-            ->add('status_formatted', fn ($device) => 
-                Blade::render(
-                    '<div class="flex items-center gap-2">'.
-                    match($device->status) {
-                        'active' => '<x-wireui-icon name="check-circle" class="w-5 h-5 text-green-500" />',
-                        'inactive' => '<x-wireui-icon name="x-circle" class="w-5 h-5 text-red-500" />',
-                        'in_repair' => '<x-wireui-icon name="key" class="w-5 h-5 text-yellow-500" />',
-                        default => '<x-wireui-icon name="question-mark-circle" class="w-5 h-5 text-gray-500" />'
-                    }.
-                    '<span>'.$this->getStatusText($device->status).'</span>'.
-                    '</div>'
-                )
+            ->add('status_formatted', fn ($device) => Blade::render(
+                '<div class="flex items-center gap-2">'.
+                match ($device->status) {
+                    'active' => '<x-wireui-icon name="check-circle" class="w-5 h-5 text-green-500" />',
+                    'inactive' => '<x-wireui-icon name="x-circle" class="w-5 h-5 text-red-500" />',
+                    'in_repair' => '<x-wireui-icon name="key" class="w-5 h-5 text-yellow-500" />',
+                    default => '<x-wireui-icon name="question-mark-circle" class="w-5 h-5 text-gray-500" />'
+                }.
+                '<span>'.$this->getStatusText($device->status).'</span>'.
+                '</div>'
+            )
             )
             ->add('user_name', fn ($device) => $device->user ? $device->user->name : 'Brak');
 
@@ -73,7 +70,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
     private function getStatusText(string $status): string
     {
-        return match($status) {
+        return match ($status) {
             'active' => 'Aktywny',
             'inactive' => 'Nieaktywny',
             'in_repair' => 'W naprawie',
@@ -84,7 +81,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            
+
             Column::make('Nazwa', 'name')
                 ->sortable()
                 ->searchable(),
@@ -104,12 +101,12 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Status', 'status_formatted')
-            ->sortable()
-            ->searchable(),
+                ->sortable()
+                ->searchable(),
 
-            Column::make('Serwisant', 'user_name') 
-            ->sortable()
-            ->searchable(),
+            Column::make('Serwisant', 'user_name')
+                ->sortable()
+                ->searchable(),
 
             Column::action('Akcje'),
         ];
@@ -141,7 +138,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
         // Sprawdzamy, czy użytkownik ma rolę 'ADMIN' lub 'MAINTEINER' (Serwisant)
         // Używamy RoleType::ADMIN->value i RoleType::MAINTEINER->value
-        /** @var \App\Models\User $user */ 
+        /** @var \App\Models\User $user */
         if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
             $actions[] = Button::add('edit_device')
                 ->slot(Blade::render('<x-wireui-icon name="pencil" class="w-5 h-5" mini />'))
@@ -149,7 +146,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 ->class('text-yellow-500 hover:text-yellow-700')
                 ->route('measurement-devices.edit', ['measurement_device' => $device->id]);
 
-                $actions[] = Button::add('delete')
+            $actions[] = Button::add('delete')
                 ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
                 ->tooltip('Usuń')
                 ->class('text-red-500 hover:text-red-700')
@@ -161,29 +158,27 @@ final class MeasurementDeviceTable extends PowerGridComponent
                         'accept' => [
                             'label' => 'Tak, usuń',
                             'method' => 'delete',
-                            'params' => ['measurement_device' => $device->id]
+                            'params' => ['measurement_device' => $device->id],
                         ],
                         'reject' => [
-                            'label' => 'Anuluj'
-                        ]
-                    ]
+                            'label' => 'Anuluj',
+                        ],
+                    ],
                 ]);
         }
 
         return $actions;
     }
 
-#[\Livewire\Attributes\On('delete_confirmed')]
-public function deleteConfirmed($id): void
-{
-    $device = MeasurementDevice::find($id);
-    if ($device) {
-        $device->delete();
-        $this->dispatch('showToast', type: 'success', message: 'Urządzenie zostało usunięte');
-    } else {
-        $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
+    #[\Livewire\Attributes\On('delete_confirmed')]
+    public function deleteConfirmed($id): void
+    {
+        $device = MeasurementDevice::find($id);
+        if ($device) {
+            $device->delete();
+            $this->dispatch('showToast', type: 'success', message: 'Urządzenie zostało usunięte');
+        } else {
+            $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
+        }
     }
-}
-
-
 }

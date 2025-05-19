@@ -31,19 +31,15 @@ class RoleSeeder extends Seeder
         $adminRole->givePermissionTo(PermissionType::USER_ACCESS->value);
         $adminRole->givePermissionTo(PermissionType::USER_MANAGE->value);
 
-
-
         // Serwisant
         $workerRole = Role::findByName(RoleType::MAINTEINER->value);
         $workerRole->givePermissionTo(PermissionType::USER_ACCESS->value);
         $workerRole->givePermissionTo(PermissionType::USER_MANAGE->value);
 
-
         // UŻYTKOWNIK
         $userRole = Role::findByName(RoleType::USER->value);
         $userRole->givePermissionTo(PermissionType::USER_ACCESS->value);
         $userRole->givePermissionTo(PermissionType::USER_MANAGE->value);
-
 
     }
 }

@@ -15,27 +15,23 @@ class Value extends Model
     protected $fillable = [
         'measurement_id',
         'parameter_id',
-        'value'
+        'value',
     ];
-
 
     public function measurementDevice(): BelongsTo
     {
         return $this->belongsTo(MeasurementDevice::class, 'measurement_id');
     }
 
- 
     public function parameter(): BelongsTo
     {
         return $this->belongsTo(Parameter::class);
     }
 
-
     public function getFormattedValueAttribute(): string
     {
-        return number_format($this->value, 2) . ' ' . $this->parameter->unit;
+        return number_format($this->value, 2).' '.$this->parameter->unit;
     }
-
 
     public function scopeRecent($query, $hours = 24)
     {

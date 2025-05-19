@@ -1,11 +1,11 @@
 <?php
 
-return[
-    'attributes' =>[
+return [
+    'attributes' => [
 
-        'start_date'=> 'Od',
-        'end_date'=> 'Do',
-        'devices'=> 'Urządzenia',
+        'start_date' => 'Od',
+        'end_date' => 'Do',
+        'devices' => 'Urządzenia',
     ],
     'actions' => [
         'choose_device' => 'Wybierz urządzenie',
@@ -19,7 +19,7 @@ return[
         'edit_form_title' => 'Edycja pomiaru',
         'generate_report' => 'Wygeneruj raport',
     ],
-    
+
     'messages' => [
         'successes' => [
             'stored' => 'Dodano klienta :name',

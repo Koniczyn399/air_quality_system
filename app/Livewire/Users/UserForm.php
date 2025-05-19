@@ -3,8 +3,8 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Livewire\Component;
 use Illuminate\Support\Str;
+use Livewire\Component;
 use WireUi\Traits\WireUiActions;
 
 class UserForm extends Component
@@ -14,18 +14,19 @@ class UserForm extends Component
     public User $user;
 
     public $id = null;
-    public $name = "";
-    public $email = "";
-    public $password = "";
 
+    public $name = '';
 
-    public function mount(User $user = null)
+    public $email = '';
+
+    public $password = '';
+
+    public function mount(?User $user = null)
     {
 
-        //dd($manufacturer);
+        // dd($manufacturer);
 
         $this->user = $user;
-
 
         if (isset($user->id)) {
             $this->id = $user->id;
@@ -48,8 +49,6 @@ class UserForm extends Component
             $this->validate()
         );
 
-
-
         return $this->redirect(route('users.index'));
     }
 
@@ -62,8 +61,6 @@ class UserForm extends Component
                 'min:2',
 
             ],
-
-  
 
             'password' => [
                 'required',
@@ -79,7 +76,6 @@ class UserForm extends Component
 
             ],
 
- 
         ];
     }
 
@@ -90,6 +86,7 @@ class UserForm extends Component
             'last_name' => Str::lower(__('users.attributes.last_name')),
         ];
     }
+
     public function render()
     {
         return view('livewire.users.user-form');

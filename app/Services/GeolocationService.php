@@ -4,13 +4,12 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Client\Response;
 
 class GeolocationService
 {
     public static function getCityFromCoordinates(float $latitude, float $longitude): string
     {
-        $url = "https://nominatim.openstreetmap.org/reverse";
+        $url = 'https://nominatim.openstreetmap.org/reverse';
         $appName = config('app.name', 'LaravelApp');
         $appUrl = config('app.url', 'http://localhost');
         $userAgent = "{$appName}/1.0 ({$appUrl}; mailto:email@example.com)"; // Dodaj kontaktowy email
@@ -18,15 +17,15 @@ class GeolocationService
         Log::info("GeolocationService: Próba pobrania miasta dla współrzędnych: lat: {$latitude}, lon: {$longitude}");
 
         $response = Http::withHeaders([
-            'User-Agent' => $userAgent
+            'User-Agent' => $userAgent,
         ])->get($url, [
-            'format' => 'jsonv2',        
+            'format' => 'jsonv2',
             'lat' => $latitude,
             'lon' => $longitude,
             'accept-language' => 'pl',   // Preferowany język odpowiedzi (polski)
             'addressdetails' => '1',     // Wymuszenie szczegółów adresu (choć jsonv2 zwykle to implikuje)
             // 'zoom' => 10,             // Możesz eksperymentować z poziomem zoom (0-18), np. 10 dla miasta, 14 dla miasteczka/wsi
-                                        // Niższy zoom (np. 10) może być lepszy do znalezienia nazwy miasta, gdy współrzędne są bardzo precyzyjne.
+            // Niższy zoom (np. 10) może być lepszy do znalezienia nazwy miasta, gdy współrzędne są bardzo precyzyjne.
         ]);
 
         // Sprawdzenie, czy zapytanie HTTP zakończyło się sukcesem (status 2xx)
@@ -43,17 +42,19 @@ class GeolocationService
                     'latitude' => $latitude,
                     'longitude' => $longitude,
                 ]);
+
                 return 'Nieznane (pusta odpowiedź API)';
             }
 
             // Sprawdzenie, czy klucz 'address' istnieje w odpowiedzi
             // To najważniejszy obiekt zawierający komponenty adresu
-            if (!isset($data['address'])) {
+            if (! isset($data['address'])) {
                 Log::warning("GeolocationService: Odpowiedź Nominatim nie zawiera klucza 'address'.", [
                     'latitude' => $latitude,
                     'longitude' => $longitude,
-                    'api_response' => $data // Zaloguj całą odpowiedź, jeśli brakuje 'address'
+                    'api_response' => $data, // Zaloguj całą odpowiedź, jeśli brakuje 'address'
                 ]);
+
                 // Czasami, jeśli nie ma 'address', 'display_name' może zawierać użyteczną informację
                 return $data['display_name'] ?? 'Nieznane (brak bloku adresu w odpowiedzi API)';
             }
@@ -79,6 +80,7 @@ class GeolocationService
 
             if ($locationName !== null) {
                 Log::info("GeolocationService: Znaleziono nazwę lokalizacji: {$locationName} dla lat: {$latitude}, lon: {$longitude}");
+
                 return $locationName;
             }
 
@@ -87,7 +89,7 @@ class GeolocationService
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'address_block' => $address, // Zaloguj cały blok adresu, aby zobaczyć co zawiera
-                'display_name_from_root' => $data['display_name'] ?? 'brak display_name' // display_name z głównego poziomu odpowiedzi
+                'display_name_from_root' => $data['display_name'] ?? 'brak display_name', // display_name z głównego poziomu odpowiedzi
             ]);
 
             // Jako ostateczność, można spróbować użyć $data['display_name'], jeśli jest bardziej opisowe,
@@ -103,8 +105,8 @@ class GeolocationService
                 'latitude' => $latitude,
                 'longitude' => $longitude,
             ]);
+
             return 'Nieznane (błąd połączenia z API)';
         }
     }
 }
-
