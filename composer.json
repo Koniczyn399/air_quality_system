@@ -24,6 +24,7 @@
         "wireui/wireui": "^2.4"
     },
     "require-dev": {
+        "dominikb/composer-license-checker": "^2.7",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.2.2",
