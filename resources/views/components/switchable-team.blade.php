@@ -1,5 +1,3 @@
-@props(['team', 'component' => 'dropdown-link'])
-
 <form method="POST" action="{{ route('current-team.update') }}" x-data>
     @method('PUT')
     @csrf
@@ -15,7 +13,7 @@
                 </svg>
             @endif
 
-            <div class="truncate">{{ $team->name }}</div>
+            <div class="truncate theme-text">{{ $team->name }}</div>
         </div>
     </x-dynamic-component>
 </form>
