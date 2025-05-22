@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\Auth;
 class MeasurementDevice extends Model
 {
     protected $fillable = [
-        'name', 'model', 'serial_number', 
+        'name', 'model', 'serial_number',
         'calibration_date', 'next_calibration_date',
         'description', 'status',
-        'latitude', 'longitude' , 'user_id'
+        'latitude', 'longitude', 'user_id',
     ];
-    
+
     protected $casts = [
         'calibration_date' => 'date',
         'next_calibration_date' => 'date',
@@ -27,7 +27,7 @@ class MeasurementDevice extends Model
 
     public function getStatusNameAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'active' => 'Aktywny',
             'inactive' => 'Nieaktywny',
             'in_repair' => 'W naprawie',
@@ -35,16 +35,17 @@ class MeasurementDevice extends Model
         };
     }
 
-    public function addStatusHistory(string $status, string $notes = null): void
+    public function addStatusHistory(string $status, ?string $notes = null): void
     {
         $this->statusHistory()->create([
             'status' => $status,
             'changed_by' => Auth::id(),
-            'notes' => $notes
+            'notes' => $notes,
         ]);
     }
-    
-    public function user(){
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Services\GeolocationService;
-use function Laravel\Prompts\select;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class MeasurementDeviceController extends Controller
 {
@@ -41,27 +39,25 @@ class MeasurementDeviceController extends Controller
     }
 
     public function show(MeasurementDevice $measurementDevice)
-{
-    $measurementDevice->load('statusHistory.changedBy');
+    {
+        $measurementDevice->load('statusHistory.changedBy');
 
-    // Pobieranie lokalizacji (np. miasta) na podstawie współrzędnych
-    $city = GeolocationService::getCityFromCoordinates(
-        $measurementDevice->latitude,
-        $measurementDevice->longitude
-    );
+        // Pobieranie lokalizacji (np. miasta) na podstawie współrzędnych
+        $city = GeolocationService::getCityFromCoordinates(
+            $measurementDevice->latitude,
+            $measurementDevice->longitude
+        );
 
-    return view('measurement-devices.show', compact('measurementDevice', 'city'));
-}
-
+        return view('measurement-devices.show', compact('measurementDevice', 'city'));
+    }
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        $mainteiners=User::role('mainteiner')->get();
+        $mainteiners = User::role('mainteiner')->get();
 
         return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
     }
 
-    
     public function update(Request $request, MeasurementDevice $measurementDevice)
     {
         $validated = $request->validate([
@@ -75,15 +71,14 @@ class MeasurementDeviceController extends Controller
             'status' => 'required|in:active,inactive,in_repair',
             'user_id' => ['nullable', 'exists:users,id'],
 
-            
         ]);
 
         if ($measurementDevice->status != $request->status) {
             $measurementDevice->addStatusHistory($request->status, 'Zmiana statusu przez formularz edycji');
         }
-    
+
         $measurementDevice->update($validated);
-    
+
         return redirect()->route('measurement-devices.index')
             ->with('success', 'Urządzenie zaktualizowane pomyślnie');
     }
@@ -98,15 +93,14 @@ class MeasurementDeviceController extends Controller
     public function get_devices(): array
     {
 
-        $start =array("All");
-        $devices= MeasurementDevice::query()
-        ->select(
-            'measurement_devices.id',
-            'measurement_devices.name',
-        )
-        ->get()->toArray();
-        $result = array_merge($start,$devices);
-      
+        $start = ['All'];
+        $devices = MeasurementDevice::query()
+            ->select(
+                'measurement_devices.id',
+                'measurement_devices.name',
+            )
+            ->get()->toArray();
+        $result = array_merge($start, $devices);
 
         return $result;
     }

@@ -3,15 +3,13 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class UserTable extends PowerGridComponent
 {
@@ -46,10 +44,10 @@ final class UserTable extends PowerGridComponent
             ->add('id')
             ->add('name')
             ->add('email')
-            ->add('roles', function ($user){
+            ->add('roles', function ($user) {
                 return $user->roles->pluck('name')->join(', ');
             }
-            
+
             )
             ->add('created_at');
     }
@@ -58,8 +56,8 @@ final class UserTable extends PowerGridComponent
     {
         return [
             Column::make(__('users.attributes.id'), 'id')
-            ->sortable()
-            ->searchable(),
+                ->sortable()
+                ->searchable(),
             Column::make(__('users.attributes.name'), 'name')
                 ->sortable()
                 ->searchable(),
@@ -79,8 +77,6 @@ final class UserTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-    
-    
             Column::action(__('translation.attributes.actions')),
         ];
     }
@@ -100,7 +96,7 @@ final class UserTable extends PowerGridComponent
     #[\Livewire\Attributes\On('remove_user')]
     public function remove_user($id): void
     {
-        //$this->authorize('delete', User::findOrFail($id));
+        // $this->authorize('delete', User::findOrFail($id));
         User::findOrFail($id)->delete();
     }
 

@@ -3,19 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\MeasurementDevice;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class MeasurementDevicesSeeder extends Seeder
 {
-
-    //Urządzenia
+    // Urządzenia
     // 1,2,3 - pomiary_pelne - devid;created_at;Temperature;Pressure;Humidity;PM1;PM2_5;PM10
     // 4,5 - pomiary_podstawowe - devid;created_at;Temperature;Pressure
     // 6,7 - pomiary_posrednie - devid;created_at;Temperature;Pressure;PM2_5;PM10
-
-
 
     public function run()
     {
@@ -100,7 +97,6 @@ class MeasurementDevicesSeeder extends Seeder
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
             ],
-
 
         ];
 

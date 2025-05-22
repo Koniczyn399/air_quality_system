@@ -10,7 +10,7 @@ class Parameter extends Model
     protected $fillable = [
         'name',
         'unit',
-        'description'
+        'description',
     ];
 
     public function values(): HasMany

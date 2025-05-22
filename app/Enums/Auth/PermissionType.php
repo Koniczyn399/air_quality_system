@@ -11,6 +11,4 @@ enum PermissionType: string
     case USER_ACCESS = 'user_access';
     case USER_MANAGE = 'user_manage';
 
-  
-
 }

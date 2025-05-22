@@ -1,17 +1,17 @@
 <?php
 
-return[
-    'attributes' =>[
+return [
+    'attributes' => [
 
-        'id'=> 'ID',
-        'name'=>'Imię i Nazwisko',
-        'phone_number' =>'Nr telefonu',
-        'last_name'=>'Nazwisko',
+        'id' => 'ID',
+        'name' => 'Imię i Nazwisko',
+        'phone_number' => 'Nr telefonu',
+        'last_name' => 'Nazwisko',
 
-        'email'=>'Adres e-mail',
+        'email' => 'Adres e-mail',
 
-        'roles'=>'Role',
-        'password'=>'Hasło'
+        'roles' => 'Role',
+        'password' => 'Hasło',
     ],
     'actions' => [
         'create' => 'Dodaj nowego użytkownika',
@@ -24,7 +24,7 @@ return[
         'create_form_title' => 'Dodawanie nowego użytkownika',
         'edit_form_title' => 'Edycja użytkownika',
     ],
-    
+
     'messages' => [
         'successes' => [
             'stored' => 'Dodano klienta :name',

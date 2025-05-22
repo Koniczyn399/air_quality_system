@@ -3,16 +3,16 @@
 namespace App\Livewire\Measurements;
 
 use App\Models\Measurement;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Rule;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
+use PowerComponents\LivewirePowerGrid\Facades\Rule;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class MeasurementTable extends PowerGridComponent
 {
@@ -34,18 +34,16 @@ final class MeasurementTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Measurement::query()
-        ->join('measurement_devices', function ($measurement_devices) {
-            $measurement_devices->on('measurements.device_id', '=', 'measurement_devices.id');
-        })
-        ->select([
-            'measurements.id',
-            'measurements.measurements_date',
-            'measurements.created_at',
-            'measurement_devices.name as device_name',
+            ->join('measurement_devices', function ($measurement_devices) {
+                $measurement_devices->on('measurements.device_id', '=', 'measurement_devices.id');
+            })
+            ->select([
+                'measurements.id',
+                'measurements.measurements_date',
+                'measurements.created_at',
+                'measurement_devices.name as device_name',
 
-
-
-        ]);
+            ]);
     }
 
     public function fields(): PowerGridFields
@@ -70,8 +68,8 @@ final class MeasurementTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
             Column::make(__('measurements.attributes.device_name'), 'device_name')
-            ->searchable()
-            ->sortable(),
+                ->searchable()
+                ->sortable(),
 
             Column::make(__('measurements.attributes.created_at'), 'created_at')
                 ->hidden(),
@@ -79,7 +77,7 @@ final class MeasurementTable extends PowerGridComponent
             Column::make(__('measurements.attributes.created_at'), 'created_at_formatted', 'created_at')
                 ->searchable(),
 
-            Column::action(__('translation.actions.actions'))
+            Column::action(__('translation.actions.actions')),
         ];
     }
 
@@ -97,30 +95,27 @@ final class MeasurementTable extends PowerGridComponent
         $this->js('alert('.$rowId.')');
     }
 
-    
     #[\Livewire\Attributes\On('removeMeasurementAction')]
     public function removeMeasurementAction($id): void
     {
-        //$this->authorize('delete', Measurement::findOrFail($id));
+        // $this->authorize('delete', Measurement::findOrFail($id));
         Measurement::findOrFail($id)->delete();
     }
-
 
     public function actions(Measurement $measurement): array
     {
         return [
             Button::add('show_measurement')
-            ->slot(Blade::render('<x-wireui-icon name="eye" class="w-5 h-5" mini />'))
-            ->tooltip(__('measurements.actions.show_measurement'))
-            ->class('text-green-500')
-            ->route('data.show', ['measurement' =>$measurement]),
-        
+                ->slot(Blade::render('<x-wireui-icon name="eye" class="w-5 h-5" mini />'))
+                ->tooltip(__('measurements.actions.show_measurement'))
+                ->class('text-green-500')
+                ->route('data.show', ['measurement' => $measurement]),
 
-        Button::add('removeMeasurementAction')
-        ->slot(Blade::render('<x-wireui-icon name="x-mark" class="w-5 h-5" mini />'))
-        ->tooltip(__('measurements.actions.remove_measurement'))
-        ->class('text-red-500')
-        ->dispatch('removeMeasurementAction', ['id' => $measurement->id]),
+            Button::add('removeMeasurementAction')
+                ->slot(Blade::render('<x-wireui-icon name="x-mark" class="w-5 h-5" mini />'))
+                ->tooltip(__('measurements.actions.remove_measurement'))
+                ->class('text-red-500')
+                ->dispatch('removeMeasurementAction', ['id' => $measurement->id]),
         ];
     }
 

@@ -1,21 +1,18 @@
 <?php
 
-use App\Enums\Auth\RoleType;
-
 return [
     'navigation' => [
         'users' => 'Użytkownicy',
-        'measurement_devices' =>'Urządzenia pomiarowe',
-        'measurements' =>'Pomiary',
-        'map' =>'Mapa',
+        'measurement_devices' => 'Urządzenia pomiarowe',
+        'measurements' => 'Pomiary',
+        'map' => 'Mapa',
         'data_management' => 'Zarządzanie danymi',
     ],
-    'login'=>[
+    'login' => [
 
-        'forgot_password'=>'Zapomniałeś hasła?',
-        'password'=>'Hasło',
-        'remember'=>'Zapamiętaj mnie',
-
+        'forgot_password' => 'Zapomniałeś hasła?',
+        'password' => 'Hasło',
+        'remember' => 'Zapamiętaj mnie',
 
     ],
     'attributes' => [
@@ -29,33 +26,29 @@ return [
         'select' => 'Wybierz',
         'save' => 'Zatwierdź',
         'cancel' => 'Anuluj',
-        'edit' =>'Edytuj',
+        'edit' => 'Edytuj',
         'remove' => 'Usuń',
         'show' => 'Zobacz',
     ],
 
     'actions' => [
-        'add_new_device' =>'Dodaj nowe urządzenie',
+        'add_new_device' => 'Dodaj nowe urządzenie',
         'upload_data' => 'Import/Export danych pomiarowych',
-
 
     ],
     'labels' => [
-        'upload_file' =>'Importowanie nowych danych',
-        'export_file' =>'Exportowanie danych',
+        'upload_file' => 'Importowanie nowych danych',
+        'export_file' => 'Exportowanie danych',
 
-        'actions'=>'Akcje na danych',
-
+        'actions' => 'Akcje na danych',
 
     ],
     'misc' => [
-        'file' =>'Plik',
-
+        'file' => 'Plik',
 
     ],
     'errors' => [
-        'file' =>'Nie ma pliku',
-
+        'file' => 'Nie ma pliku',
 
     ],
 ];

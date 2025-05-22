@@ -13,7 +13,7 @@ return [
     |
     */
 
-    //'accepted' => 'Pole :attribute musi zostać zaakceptowane.',
+    // 'accepted' => 'Pole :attribute musi zostać zaakceptowane.',
     'accepted_if' => 'Pole :attribute musi zostać zaakceptowane jeśli pole :other ma wartość :value.',
     'accepted' => 'Pole :attribute musi zostać zaakceptowane.',
     'after' => 'Pole :attribute musi być datą późniejszą od :date.',
