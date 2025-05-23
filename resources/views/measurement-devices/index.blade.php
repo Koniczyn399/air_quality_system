@@ -1,33 +1,28 @@
 <x-app-layout>
-
-
-<x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        {{ __('translation.navigation.measurement_devices') }}
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl theme-text leading-tight">
+            {{ __('translation.navigation.measurement_devices') }}
         </h2>
     </x-slot>
 
-
-
-    <div class="py-12">
-
+    <div class="py-12 theme-container">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-2">
-            <a href="{{ route('measurement-devices.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">
-            {{__('translation.actions.add_new_device')}}
-        </a>
-        <a href="{{ route('data.upload') }}" class="bg-blue-500 text-white px-4 py-2 rounded">
-        {{__('translation.actions.upload_data')}}
-        </a>
-            @can('create', App\Models\User::class)
-                        <x-wireui-button primary label="{{ __('users.actions.create') }}"
-                            href="{{ route('users.create') }}" class="justify-self-end" />
-            @endcan
-               
-            @livewire('measurement-device-table')
+            <div class="theme-bg overflow-hidden shadow-xl sm:rounded-lg p-4">
+                <!-- Przyciski akcji -->
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <a href="{{ route('measurement-devices.create') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow-sm transition-colors duration-200">
+                        {{ __('translation.actions.add_new_device') }}
+                    </a>
+                    <a href="{{ route('data.upload') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md shadow-sm transition-colors duration-200">
+                        {{ __('translation.actions.upload_data') }}
+                    </a>
+                </div>
+
+                <!-- Tabela urządzeń -->
+                @livewire('measurement-device-table')
             </div>
         </div>
     </div>
-
-
 </x-app-layout>

@@ -90,9 +90,9 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Numer seryjny', 'serial_number')
-                ->sortable()
-                ->searchable(),
+            // Column::make('Numer seryjny', 'serial_number')
+            //     ->sortable()
+            //     ->searchable(),
 
             Column::make('Data kalibracji', 'calibration_date_formatted', 'calibration_date')
                 ->sortable(),
@@ -101,7 +101,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Status', 'status_formatted')
-                ->sortable()
+                // ->sortable()
                 ->searchable(),
 
             Column::make('Serwisant', 'user_name')
