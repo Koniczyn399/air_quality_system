@@ -40,6 +40,26 @@
                 <x-wireui-password placeholder="" wire:model="password" />
             </div>
         </div>
+        
+        <hr class="my-2 theme-border">
+
+        <div class="grid grid-cols-2 gap-2">
+            <div class="col-span-1">
+                <label for="role" class="theme-text">{{ __('users.attributes.roles') }}</label>
+            </div>
+            <div class="col-span-1">
+                <x-wireui-select
+                    id="role"
+                    wire:model="selectedRole"
+                    placeholder="{{ __('Wybierz rolę') }}"
+                    :options="$roles"
+                    option-label="name"
+                    option-value="id"
+                />
+                <x-input-error for="selectedRole" class="mt-2" />
+            </div>
+        </div>
+
 
         <hr class="my-2 theme-border">
 
