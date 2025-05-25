@@ -18,8 +18,20 @@ class MeasurementDeviceController extends Controller
 
     public function create()
     {
-        return view('measurement-devices.create');
+        // Pobierz tylko użytkowników z rolą serwisanta
+        $mainteiners = User::whereHas('roles', function($query) {
+                $query->where('name', 'MAINTEINER'); // lub inna nazwa roli serwisanta
+            })
+            ->select('id', 'name')
+            ->get()
+            ->map(fn($u) => [
+                'label' => $u->name,
+                'value' => $u->id,
+            ]);
+
+        return view('measurement-devices.create', compact('mainteiners'));
     }
+
 
     public function store(Request $request)
     {
@@ -53,11 +65,20 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        $mainteiners = User::role('mainteiner')->get();
+        // Pobierz tylko użytkowników z rolą serwisanta
+        $mainteiners = User::whereHas('roles', function($query) {
+                $query->where('name', 'MAINTEINER'); // lub inna nazwa roli serwisanta
+            })
+            ->select('id', 'name')
+            ->get()
+            ->map(fn($u) => [
+                'label' => $u->name,
+                'value' => $u->id,
+            ]);
 
         return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
     }
-
+    
     public function update(Request $request, MeasurementDevice $measurementDevice)
     {
         $validated = $request->validate([
