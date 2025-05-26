@@ -63,11 +63,33 @@ class ExportForm extends Component
         return $this->redirect(route('data.file', ['start_date' => $this->from, 'end_date' => $this->to, 'device_ids' => json_encode($device_ids)]));
     }
 
-    public function download()
+    public function system_report()
     {
         ExportForm::check_date();
 
-        return $this->redirect(route('data.invoice', ['start_date' => $this->from, 'end_date' => $this->to]));
+        return $this->redirect(route('data.system_report', ['start_date' => $this->from, 'end_date' => $this->to]));
+    }
+
+    public function devices_report()
+    {
+        ExportForm::check_date();
+
+        $device_ids = $this->device_ids;
+
+        if ($device_ids != null) {
+            $d = [];
+            foreach ($device_ids as $device) {
+                array_push($d, $device);
+            }
+            $device_ids = $d;
+
+        } else {
+            $device_ids = [];
+            array_push($device_ids, 0);
+        }
+
+        return $this->redirect(route('data.device_report', ['start_date' => $this->from, 'end_date' => $this->to,
+        'device_ids' => json_encode($device_ids)]));
     }
 
     public function check_date()
