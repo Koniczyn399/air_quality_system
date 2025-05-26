@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Measurement;
 use App\Models\MeasurementDevice;
+use App\Models\MeasurementHistory;
 use App\Models\Parameter;
 use App\Models\User;
 use App\Models\Value;
@@ -83,18 +84,24 @@ class DataController extends Controller
     {
 
         $device_ids = json_decode($device_ids);
-        // dd($device_ids);
+        $measurements=Measurement::query()->get();
 
-        $filename = 'data.csv';
+      
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ];
-
+        if(count($device_ids) == 1 && $device_ids[0]==0)
+        {
+            $measurements = Measurement::query()
+            ->join('measurement_devices', function ($m) {
+                $m->on('measurement_devices.id', '=', 'measurements.device_id');
+            })
+            ->select(
+                'measurements.id',
+                'measurements.device_id',
+                'measurements.measurements_date'
+            )
+            ->whereBetween('measurements_date', [$start_date, $end_date])
+            ->get();
+        }else{
         $measurements = Measurement::query()
             ->join('measurement_devices', function ($m) {
                 $m->on('measurement_devices.id', '=', 'measurements.device_id');
@@ -107,6 +114,22 @@ class DataController extends Controller
             ->whereBetween('measurements_date', [$start_date, $end_date])
             ->whereIn('measurements.device_id', $device_ids)
             ->get();
+        }
+
+
+        $filename = 'data.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+
+        dd($start_date, $end_date, $device_ids, $measurements);
+
 
         $callback = function () use ($measurements) {
             $handle = fopen('php://output', 'w');
@@ -167,7 +190,7 @@ class DataController extends Controller
         return $value;
     }
 
-    public function invoice($start_date, $end_date)
+    public function system_report($start_date, $end_date)
     {
         // $measurements = Measurement::query()
         // ->join('measurement_devices', function ($m) {
@@ -193,6 +216,58 @@ class DataController extends Controller
             'md' => $md,
             'p' => $p,
 
+        ]);
+
+        return $pdf->download();
+    }
+
+    public function device_report($start_date, $end_date, $device_ids)
+    {
+
+        $device_ids = json_decode($device_ids);
+        //dd($device_ids);
+
+        if(count($device_ids) == 1 && $device_ids[0]==0)
+        {
+            $devices_history = MeasurementHistory::query()
+            ->join('measurement_devices', function ($m) {
+                $m->on('measurement_devices.id', '=', 'measurement_histories.measurement_device_id');
+            })
+            ->select(
+                'measurement_histories.id',
+                'measurement_devices.name as device_name',
+                'measurement_histories.status',
+                'measurement_histories.changed_by',
+                'measurement_histories.notes',
+                'measurement_histories.created_at',
+            )
+            ->get();
+        }else{
+            $devices_history = MeasurementHistory::query()
+            ->join('measurement_devices', function ($m) {
+                $m->on('measurement_devices.id', '=', 'measurement_histories.measurement_device_id');
+            })
+            ->select(
+                'measurement_histories.id',
+                'measurement_devices.name as device_name',
+                'measurement_histories.status',
+                'measurement_histories.changed_by',
+                'measurement_histories.notes',
+                'measurement_histories.created_at',
+            )
+            ->whereIn('measurement_histories.measurement_device_id', $device_ids)
+            ->get();
+
+        }
+
+
+        //dd($devices_history);
+
+
+
+
+        $pdf = Pdf::loadView('pdfs.device_pdf', [
+            'devices_history' => $devices_history,
         ]);
 
         return $pdf->download();
