@@ -76,12 +76,13 @@
                 label="{{ __('data.actions.generate_system') }}" 
 
             />
-                        <x-wireui-button 
+            <x-wireui-button 
                 wire:click="devices_report" 
                 primary 
                 label="{{ __('data.actions.generate_devices') }}" 
 
             />
+
         </div>
     </div>
 

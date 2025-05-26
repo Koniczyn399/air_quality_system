@@ -70,6 +70,13 @@ class ExportForm extends Component
         return $this->redirect(route('data.system_report', ['start_date' => $this->from, 'end_date' => $this->to]));
     }
 
+    public function values_report()
+    {
+        ExportForm::check_date();
+
+        return $this->redirect(route('data.values_report', ['start_date' => $this->from, 'end_date' => $this->to]));
+    }
+
     public function devices_report()
     {
         ExportForm::check_date();

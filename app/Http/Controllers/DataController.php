@@ -9,6 +9,7 @@ use App\Models\Parameter;
 use App\Models\User;
 use App\Models\Value;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Symfony\Component\VarExporter\Internal\Values;
 
 class DataController extends Controller
 {
@@ -268,6 +269,72 @@ class DataController extends Controller
 
         $pdf = Pdf::loadView('pdfs.device_pdf', [
             'devices_history' => $devices_history,
+        ]);
+
+        return $pdf->download();
+    }
+
+
+    public function values_report($start_date, $end_date)
+    {
+        $values = Value::query()
+            ->join('parameters', function ($p) {
+                $p->on('parameters.id', '=', 'values.parameter_id');
+            })
+            ->join('measurements', function ($m) {
+            $m->on('measurements.id', '=', 'values.measurement_id');
+            })
+            ->select('values.id',
+                'measurements.id',
+                'parameters.name',
+                'parameters.unit',
+                'parameters.tag',
+                'values.value',
+                'measurements.measurements_date'
+            )
+            ->whereBetween('measurements_date', [$start_date, $end_date])
+            ->get();
+
+        $max_pm1=0;
+        $min_pm1=0;
+        $delta_pm1=0;
+
+        $max_pm2_5=0;
+        $min_pm2_5=0;
+        $delta_pm2_5=0;
+
+        $max_pm10=0;
+        $min_pm10=0;
+        $delta_pm10=0;
+
+        $max_humidity=0;
+        $min_humidity=0;
+        $delta_humidity=0;
+
+        $max_pressure=0;
+        $min_pressure=0;
+        $delta_pressure=0;
+
+        $max_temperature=0;
+        $min_temperature=0;
+        $delta_temperature=0;
+
+        foreach($values as $value){
+
+        }
+
+        // <x-wireui-button 
+        //     wire:click="values_report" 
+        //     primary 
+        //     label="{{ __('data.actions.generate_values') }}" 
+        // />
+
+        dd($values);
+
+        $pdf = Pdf::loadView('pdfs.values_pdf', [
+            'values' => $values,
+
+
         ]);
 
         return $pdf->download();
