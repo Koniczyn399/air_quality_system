@@ -31,6 +31,7 @@ Route::middleware([
         return view('dashboard', ['data' => $data]);
     })->name('dashboard');
 
+    Route::get('data.values_report/{start_date}/{end_date}', [DataController::class, 'values_report'])->name('data.values_report');
     Route::get('data.system_report/{start_date}/{end_date}', [DataController::class, 'system_report'])->name('data.system_report');
     Route::get('data.device_report/{start_date}/{end_date}/{device_ids}', [DataController::class, 'device_report'])->name('data.device_report');
     Route::get('data.file/{start_date}/{end_date}/{device_ids}', [DataController::class, 'file'])->name('data.file');
