@@ -71,10 +71,16 @@
         </div>
         <div>
             <x-wireui-button 
-                wire:click="download" 
+                wire:click="system_report" 
                 primary 
-                label="{{ __('data.actions.generate') }}" 
-                class="w-full"
+                label="{{ __('data.actions.generate_system') }}" 
+
+            />
+                        <x-wireui-button 
+                wire:click="devices_report" 
+                primary 
+                label="{{ __('data.actions.generate_devices') }}" 
+
             />
         </div>
     </div>
