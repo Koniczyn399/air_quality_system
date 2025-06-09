@@ -7,15 +7,24 @@ use App\Models\Parameter;
 use App\Models\User;
 use App\Services\GeolocationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MeasurementDeviceController extends Controller
 {
-    public function index()
-    {
-        $measurementDevices = MeasurementDevice::with('user')->get();
+        public function index(Request $request)
+        {
+            $query = MeasurementDevice::query();
 
-        return view('measurement-devices.index', compact('measurementDevices'));
-    }
+            if ($request->get('filter') === 'mine' && Auth::check()) {
+             $query->where('user_id', Auth::user()->id);
+            }
+
+            $devices = $query->get();
+
+            return view('measurement-devices.index', compact('devices'));
+        }
+
+
 
     public function create()
     {

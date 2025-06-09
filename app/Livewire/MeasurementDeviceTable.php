@@ -17,6 +17,9 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 final class MeasurementDeviceTable extends PowerGridComponent
 {
     public $proba;
+    public ?string $filter = 'all';
+
+
 
     use WithExport;
 
@@ -34,9 +37,16 @@ final class MeasurementDeviceTable extends PowerGridComponent
     }
 
     public function datasource(): Builder
-    {
-        return MeasurementDevice::query();
+{
+    $query = MeasurementDevice::query();
+
+    if ($this->filter === 'mine' && Auth::check()) {
+        $query->where('user_id', Auth::user()->id);
     }
+
+    return $query;
+}
+
 
     public function relationSearch(): array
     {

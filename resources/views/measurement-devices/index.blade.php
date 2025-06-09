@@ -20,10 +20,16 @@
                         label="{{ __('translation.actions.upload_data') }}" 
                         href="{{ route('data.upload') }}" 
                     />
+                    <form method="GET" action="{{ route('measurement-devices.index') }}">
+                        <input type="hidden" name="filter" value="{{ request('filter') === 'mine' ? 'all' : 'mine' }}">
+                        <x-wireui-button type="submit">
+                            {{ request('filter') === 'mine' ? 'Pokaż wszystkie urządzenia' : 'Pokaż moje urządzenia' }}
+                        </x-wireui-button>
+                    </form>
                 </div>
 
                 <!-- Tabela urządzeń -->
-                @livewire('measurement-device-table')
+                @livewire('measurement-device-table', ['filter' => request('filter')])
             </div>
         </div>
     </div>
