@@ -29,8 +29,8 @@ class MeasurementDeviceController extends Controller
     public function create()
     {
         // Pobierz tylko użytkowników z rolą serwisanta
-        $mainteiners = User::whereHas('roles', function($query) {
-                $query->where('name', 'MAINTEINER'); // lub inna nazwa roli serwisanta
+        $maintainers = User::whereHas('roles', function($query) {
+                $query->where('name', 'MAINTEINER'); 
             })
             ->select('id', 'name')
             ->get()
@@ -40,9 +40,8 @@ class MeasurementDeviceController extends Controller
             ]);
 
 
-        return view('measurement-devices.create', compact('mainteiners'));
+        return view('measurement-devices.create', compact('maintainers'));
     }
-
 
     public function store(Request $request)
     {
@@ -52,8 +51,11 @@ class MeasurementDeviceController extends Controller
             'serial_number' => 'required|string|max:255',
             'calibration_date' => 'required|date',
             'next_calibration_date' => 'required|date|after:calibration_date',
-            'status' => 'required|in:active,inactive,in_repair', // ważne!
+            'status' => 'required|in:active,inactive,in_repair',
             'description' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'user_id' => ['nullable', 'exists:users,id'],
             'parameter_ids' => 'nullable|json',
         ]);
 
@@ -66,7 +68,7 @@ class MeasurementDeviceController extends Controller
     {
         $measurementDevice->load('statusHistory.changedBy');
 
-        // Pobieranie lokalizacji (np. miasta) na podstawie współrzędnych
+        // Pobieranie lokalizacji
         $city = GeolocationService::getCityFromCoordinates(
             $measurementDevice->latitude,
             $measurementDevice->longitude
@@ -86,8 +88,8 @@ class MeasurementDeviceController extends Controller
     public function edit(MeasurementDevice $measurementDevice)
     {
         // Pobierz tylko użytkowników z rolą serwisanta
-        $mainteiners = User::whereHas('roles', function($query) {
-                $query->where('name', 'MAINTEINER'); // lub inna nazwa roli serwisanta
+        $maintainers = User::whereHas('roles', function($query) {
+                $query->where('name', 'MAINTEINER');
             })
             ->select('id', 'name')
             ->get()
@@ -98,9 +100,9 @@ class MeasurementDeviceController extends Controller
 
             $parameters = Parameter::query()->get();
 
-        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners','parameters'));
+        return view('measurement-devices.edit', compact('measurementDevice', 'maintainers','parameters'));
     }
-    
+
     public function update(Request $request, MeasurementDevice $measurementDevice)
     {
         $validated = $request->validate([
@@ -112,6 +114,8 @@ class MeasurementDeviceController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'user_id' => ['nullable', 'exists:users,id'],
             'parameter_ids' => 'nullable|json',
 
@@ -149,7 +153,6 @@ class MeasurementDeviceController extends Controller
 
     public function get_devices(): array
     {
-
         $start = ['All'];
         $devices = MeasurementDevice::query()
             ->select(
