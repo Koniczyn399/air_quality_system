@@ -106,7 +106,7 @@
                         name="user_id"
                         label="Serwisant"
                         placeholder="Wybierz serwisanta"
-                        :options="$mainteiners"
+                        :options="$maintainers"
                         option-label="label"
                         option-value="value"
                         :selected="old('user_id', $measurementDevice->user_id)"
