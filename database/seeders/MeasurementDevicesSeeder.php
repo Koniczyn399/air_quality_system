@@ -30,6 +30,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'active',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,4,1,2,3]",
             ],
             [
                 'name' => 'ALL in One v3',
@@ -41,6 +42,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'active',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,4,1,2,3]",
             ],
             [
                 'name' => 'ALL in One v2',
@@ -52,6 +54,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'active',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,4,1,2,3]",
             ],
             [
                 'name' => 'Miernik temperatury T-1000',
@@ -63,6 +66,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'active',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,4]",
             ],
             [
                 'name' => 'Analizator wilgotności HA-300',
@@ -74,6 +78,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'inactive',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,4]",
             ],
             [
                 'name' => 'Miernik powietrza i pyłu Airomex 2',
@@ -85,6 +90,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'in_repair',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,2,3]",
             ],
             [
                 'name' => 'Miernik powietrza i pyłu Airomex 3',
@@ -96,6 +102,7 @@ class MeasurementDevicesSeeder extends Seeder
                 'status' => 'in_repair',
                 'latitude' => $faker->latitude(50, 55),
                 'longitude' => $faker->longitude(15, 25),
+                'parameter_ids'=> "[6,5,2,3]",
             ],
 
         ];

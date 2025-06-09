@@ -118,6 +118,15 @@
                                 @endif
                             </dd>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4">
+                            <dt class="text-sm font-medium theme-text-subtle">Parametry</dt>
+                            <dd class="mt-1 sm:mt-0 sm:col-span-2 text-sm theme-text">
+                               
+                                @foreach($parameters as $parameter)
+                                    {{ $parameter->name}},
+                                @endforeach
+                            </dd>
+                        </div>
                     </dl>
                 </div>
             </div>

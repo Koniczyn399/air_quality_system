@@ -81,6 +81,20 @@
                     @error('status')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
+                <!-- Parametry -->
+                <div class="col-span-1">
+                    <x-wireui-select
+                        label="{{ __('data.attributes.parameters') }}"
+                        placeholder="{{ __('data.attributes.parameters') }}"
+                        multiselect
+                        :async-data="route('measurement-devices.get_parameters')"
+                        option-label="name"
+                        option-value="id"
+                        class="w-full theme-input"
+                        wire:model="parameter_ids"
+                    />
+                </div>
+
                 <!-- Serwisant -->
                 <div class="col-span-1">
                     <x-wireui-select

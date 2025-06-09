@@ -6,6 +6,7 @@ return [
         'start_date' => 'Od',
         'end_date' => 'Do',
         'devices' => 'Urządzenia',
+        'parameters' => 'Parametry',
     ],
     'actions' => [
         'choose_device' => 'Wybierz urządzenie',

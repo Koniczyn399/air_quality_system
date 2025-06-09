@@ -48,6 +48,7 @@ Route::middleware([
     Route::name('users.create')->get('/user_create', [UserController::class, 'create']);
 
     Route::name('measurement-devices.get_devices')->get('/get_devices', [MeasurementDeviceController::class, 'get_devices']);
+    Route::name('measurement-devices.get_parameters')->get('/get_parameters', [MeasurementDeviceController::class, 'get_parameters']);
 
     Route::get('/measurement-devices/table', MeasurementDeviceTable::class)->name('measurement-devices.table');
     Route::resource('measurement-devices', MeasurementDeviceController::class);

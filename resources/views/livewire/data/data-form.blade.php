@@ -16,8 +16,8 @@
                 a 
                 href="{{ route('data.export') }}" 
                 primary 
-                label="{{ __('translation.placeholder.save') }}" 
-                class="w-full"
+                label="{{ __('translation.actions.next_page') }}" 
+            
             />
         </div>
     </div>
@@ -39,7 +39,7 @@
                 primary 
                 label="{{ __('translation.placeholder.save') }}" 
                 spinner 
-                class="mt-2 w-full"
+                class="mt-2"
             />
         </div>
     </div>
