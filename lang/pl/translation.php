@@ -34,6 +34,7 @@ return [
     'actions' => [
         'add_new_device' => 'Dodaj nowe urządzenie',
         'upload_data' => 'Import/Export danych pomiarowych',
+        'next_page' =>'Przejdź',
 
     ],
     'labels' => [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
+use App\Models\Parameter;
 use App\Models\User;
 use App\Services\GeolocationService;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class MeasurementDeviceController extends Controller
                 'value' => $u->id,
             ]);
 
+
         return view('measurement-devices.create', compact('mainteiners'));
     }
 
@@ -43,6 +45,7 @@ class MeasurementDeviceController extends Controller
             'next_calibration_date' => 'required|date|after:calibration_date',
             'status' => 'required|in:active,inactive,in_repair', // ważne!
             'description' => 'nullable|string',
+            'parameter_ids' => 'nullable|json',
         ]);
 
         MeasurementDevice::create($validated);
@@ -60,7 +63,15 @@ class MeasurementDeviceController extends Controller
             $measurementDevice->longitude
         );
 
-        return view('measurement-devices.show', compact('measurementDevice', 'city'));
+        // dd(json_decode($measurementDevice->parameter_ids)   );
+        $parameters = Parameter::query()
+        ->whereIn('parameters.id', json_decode($measurementDevice->parameter_ids))
+        ->get();
+        
+
+
+
+        return view('measurement-devices.show', compact('measurementDevice', 'city','parameters'));
     }
 
     public function edit(MeasurementDevice $measurementDevice)
@@ -76,7 +87,9 @@ class MeasurementDeviceController extends Controller
                 'value' => $u->id,
             ]);
 
-        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners'));
+            $parameters = Parameter::query()->get();
+
+        return view('measurement-devices.edit', compact('measurementDevice', 'mainteiners','parameters'));
     }
     
     public function update(Request $request, MeasurementDevice $measurementDevice)
@@ -91,8 +104,22 @@ class MeasurementDeviceController extends Controller
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair',
             'user_id' => ['nullable', 'exists:users,id'],
+            'parameter_ids' => 'nullable|json',
 
         ]);
+        // $ids =$request->input("parameter_ids");
+
+        // $ids=json_decode($ids);
+        // //dd($ids);
+        // // $ids = str_replace("[","",$ids);
+        // // $ids = str_replace("]","",$ids);
+        // // $ids=json_encode(explode(',',$ids));
+
+
+        // $request->merge([
+        // 'parameter_ids' => $ids]);
+
+        // dd($request->request);
 
         if ($measurementDevice->status != $request->status) {
             $measurementDevice->addStatusHistory($request->status, 'Zmiana statusu przez formularz edycji');
@@ -125,4 +152,34 @@ class MeasurementDeviceController extends Controller
 
         return $result;
     }
+
+        public function get_parameters(): array
+    {
+
+
+        // Pobierz parametry
+        $parameters = Parameter::query()->get()->toArray();
+        //dd($parameters);
+
+
+        return $parameters;
+    }
+
+                // <!-- Parametry -->
+                // <div class="col-span-1">
+                //     <x-wireui-select
+                //         label="{{ __('data.attributes.parameters') }}"
+                //         placeholder="{{ __('data.attributes.parameters') }}"
+                //         multiselect
+                //         class="w-full theme-input"  
+               
+                //     >
+                //     <x-wireui-select.option disabled selected label="{{ 9 }}" value="    sdfsd "  />
+                //     @foreach ( $parameters as $parameter)
+                //         <x-wireui-select.option label="{{ $parameter['name'] }}" value="{{ $parameter['id'] }}"  />
+                //     @endforeach
+                
+                
+                // </x-wireui-select>
+                // </div>
 }

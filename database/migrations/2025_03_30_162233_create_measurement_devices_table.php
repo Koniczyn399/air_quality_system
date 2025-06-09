@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('status')->default('active'); // Zmieniamy boolean na string
             $table->decimal('latitude', 10, 8)->nullable(); // Szerokość geograficzna
             $table->decimal('longitude', 11, 8)->nullable(); // Długość geograficzna
+            $table->json('parameter_ids');
             $table->timestamps();
         });
     }

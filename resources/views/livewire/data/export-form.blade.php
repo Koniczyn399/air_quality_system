@@ -56,7 +56,7 @@
                 wire:model="device_ids"
                 option-label="name"
                 option-value="id"
-                class="w-full theme-input"
+                class="w-full theme-input mt-2"
             />
         </div>
     </div>
@@ -74,14 +74,24 @@
                 wire:click="system_report" 
                 primary 
                 label="{{ __('data.actions.generate_system') }}" 
+                class="w-full theme-input mt-2"
 
             />
-                        <x-wireui-button 
+            <x-wireui-button 
                 wire:click="devices_report" 
                 primary 
                 label="{{ __('data.actions.generate_devices') }}" 
+                class="w-full theme-input mt-2"
 
             />
+
+                    <x-wireui-button 
+            wire:click="values_report" 
+            primary 
+            label="{{ __('data.actions.generate_values') }}" 
+            class="w-full theme-input mt-2"
+        />
+
         </div>
     </div>
 
