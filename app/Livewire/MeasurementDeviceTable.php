@@ -13,11 +13,11 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
-
+use Illuminate\Support\Facades\DB;
 final class MeasurementDeviceTable extends PowerGridComponent
 {
     public $proba;
-    public ?string $filter = 'all';
+    
 
 
 
@@ -37,15 +37,19 @@ final class MeasurementDeviceTable extends PowerGridComponent
     }
 
     public function datasource(): Builder
-{
-    $query = MeasurementDevice::query();
+    {
+        $query = MeasurementDevice::query();
+        $user  = Auth::user();
 
-    if ($this->filter === 'mine' && Auth::check()) {
-        $query->where('user_id', Auth::user()->id);
+        // jeżeli użytkownik ma rolę serwisanta (MAINTEINER), filtrujemy po swoim ID
+        /** @var \App\Models\User $user */
+        if ($user && $user->hasRole(RoleType::MAINTEINER->value)) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query;
     }
 
-    return $query;
-}
 
 
     public function relationSearch(): array
