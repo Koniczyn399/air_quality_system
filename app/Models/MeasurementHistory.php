@@ -11,9 +11,9 @@ class MeasurementHistory extends Model
 
     protected $fillable = [
         'measurement_device_id',
-        'status',  
+        'status',
         'changed_by',
-        'notes'
+        'notes',
     ];
 
     public function device(): BelongsTo

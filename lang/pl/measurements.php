@@ -1,12 +1,12 @@
 <?php
 
-return[
-    'attributes' =>[
+return [
+    'attributes' => [
 
-        'id'=> 'ID',
-        'measurements_date'=>'Data pomiaru',
-        'created_at'=>'Utworzono',
-        'device_name'=>'Nazwa urządzenia',
+        'id' => 'ID',
+        'measurements_date' => 'Data pomiaru',
+        'created_at' => 'Utworzono',
+        'device_name' => 'Nazwa urządzenia',
 
     ],
     'actions' => [
@@ -20,7 +20,7 @@ return[
         'create_form_title' => 'Dodawanie nowego pomiaru',
         'edit_form_title' => 'Edycja pomiaru',
     ],
-    
+
     'messages' => [
         'successes' => [
             'stored' => 'Dodano klienta :name',

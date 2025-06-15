@@ -4,18 +4,17 @@ namespace App\Livewire;
 
 use App\Models\Measurement;
 use App\Models\Value;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class ValuesTable extends PowerGridComponent
 {
     public string $tableName = 'values-table-a0bsl6-table';
+
     public string $device_id = '';
 
     public function setUp(): array
@@ -33,34 +32,30 @@ final class ValuesTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        
 
+        $measurements = Measurement::query()
+            ->select(
+                'measurements.id'
+            )
+            ->where('measurements.device_id', '=', $this->device_id)->get()->toArray();
 
-        $measurements=Measurement::query()
-        ->select(
-            'measurements.id'
-        ) 
-        ->where('measurements.device_id', '=', $this->device_id)->get()->toArray();
+        // dd($measurements);
 
-        //dd($measurements);
-;
-        $query=Value::query()
+        $query = Value::query()
 
-        //Zapytanie by pomiary dotyczyły tylko tego urządzenia
-        ->join('measurements', function ($measurements) {
-            $measurements->on('measurements.id', '=', 'values.measurement_id');
-        })
-        ->select([
-            'values.id',
-            'values.parameter_id',
-            'values.measurement_id',
-            'values.value',
-            'values.created_at',
+        // Zapytanie by pomiary dotyczyły tylko tego urządzenia
+            ->join('measurements', function ($measurements) {
+                $measurements->on('measurements.id', '=', 'values.measurement_id');
+            })
+            ->select([
+                'values.id',
+                'values.parameter_id',
+                'values.measurement_id',
+                'values.value',
+                'values.created_at',
 
-        ])
-        ->whereIn('values.measurement_id', $measurements);
-
-
+            ])
+            ->whereIn('values.measurement_id', $measurements);
 
         return $query;
     }
@@ -97,7 +92,7 @@ final class ValuesTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action('Action'),
         ];
     }
 
@@ -120,7 +115,7 @@ final class ValuesTable extends PowerGridComponent
                 ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 

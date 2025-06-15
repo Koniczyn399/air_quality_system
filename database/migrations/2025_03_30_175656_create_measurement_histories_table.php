@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('measurement_histories', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('measurement_device_id')->constrained()->onDelete('cascade');
-        $table->string('status'); // 'active', 'inactive', 'in_repair'
-        $table->foreignId('changed_by')->constrained('users');
-        $table->text('notes')->nullable();
-        $table->timestamps();
-    });
+        Schema::create('measurement_histories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('measurement_device_id')->constrained()->onDelete('cascade');
+            $table->string('status'); // 'active', 'inactive', 'in_repair'
+            $table->foreignId('changed_by')->constrained('users');
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

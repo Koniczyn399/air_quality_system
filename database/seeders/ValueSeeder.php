@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\MeasurementDevice;
 use App\Models\Value;
+use Illuminate\Database\Seeder;
 
 class ValueSeeder extends Seeder
 {
@@ -16,7 +15,7 @@ class ValueSeeder extends Seeder
     {
         // MeasurementDevice::each(function ($device) {
         //     Value::factory()
-        //         ->count(rand(20, 50)) 
+        //         ->count(rand(20, 50))
         //         ->create([
         //             'measurement_id' => $device->id
         //         ]);

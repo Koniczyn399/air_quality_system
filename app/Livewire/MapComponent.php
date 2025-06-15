@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\MeasurementDevice;
+use Livewire\Component;
 
 class MapComponent extends Component
 {

@@ -12,7 +12,7 @@ return [
     */
 
     'theme' => \PowerComponents\LivewirePowerGrid\Themes\Tailwind::class,
-    //'theme' => \PowerComponents\LivewirePowerGrid\Themes\Bootstrap5::class,
+    // 'theme' => \PowerComponents\LivewirePowerGrid\Themes\Bootstrap5::class,
 
     'cache_ttl' => null,
 
@@ -44,12 +44,19 @@ return [
          * https://flatpickr.js.org
          */
         'flatpickr' => [
+            // ..
             'locales' => [
-                'pt_BR' => [
-                    'locale'     => 'pt',
+                'pl_PL' => [
+                    'locale' => 'pl',
                     'dateFormat' => 'd/m/Y H:i',
                     'enableTime' => true,
-                    'time_24hr'  => true,
+                    'time_24hr' => true,
+                ],
+                'us' => [
+                    'locale' => 'us',
+                    'dateFormat' => 'm/d/Y',
+                    'enableTime' => true,
+                    'time_24hr' => false,
                 ],
             ],
         ],
@@ -118,10 +125,10 @@ return [
     */
 
     'exportable' => [
-        'default'      => 'openspout_v4',
+        'default' => 'openspout_v4',
         'openspout_v4' => [
             'xlsx' => \PowerComponents\LivewirePowerGrid\Components\Exports\OpenSpout\v4\ExportToXLS::class,
-            'csv'  => \PowerComponents\LivewirePowerGrid\Components\Exports\OpenSpout\v4\ExportToCsv::class,
+            'csv' => \PowerComponents\LivewirePowerGrid\Components\Exports\OpenSpout\v4\ExportToCsv::class,
         ],
     ],
 

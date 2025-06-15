@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
 use App\Models\Parameter;
+use Illuminate\Database\Seeder;
 
 class ParameterSeeder extends Seeder
 {
@@ -15,34 +13,33 @@ class ParameterSeeder extends Seeder
             [
                 'name' => 'PM1',
                 'unit' => 'µg/m³',
-                'tag' => 'PM1'
+                'tag' => 'PM1',
             ],
             [
                 'name' => 'PM2.5',
                 'unit' => 'µg/m³',
-                'tag' => 'PM2_5'
+                'tag' => 'PM2_5',
             ],
             [
                 'name' => 'PM10',
                 'unit' => 'µg/m³',
-                'tag' => 'PM10'
+                'tag' => 'PM10',
             ],
             [
                 'name' => 'Wilgotność',
                 'unit' => '%',
-                'tag' => 'HUM'
+                'tag' => 'HUM',
             ],
             [
                 'name' => 'Ciśnienie',
                 'unit' => 'hPa',
-                'tag' => 'PRESS'
+                'tag' => 'PRESS',
             ],
             [
                 'name' => 'Temperatura',
                 'unit' => '°C',
-                'tag' => 'TEMP'
-            ]
-
+                'tag' => 'TEMP',
+            ],
 
         ];
 
