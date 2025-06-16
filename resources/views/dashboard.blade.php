@@ -24,7 +24,7 @@
                 @foreach ($data as $device)
                     <hr class="my-2">
                     <dd class="mt-1 sm:mt-0 sm:col-span-2 text-sm theme-text">
-                        &nbsp;&nbsp;&nbsp; {{ $device->name }}: {{  $device->calibration_date }}
+                        &nbsp;&nbsp;&nbsp; {{ $device->name }}: {{  $device->next_calibration_date }}
                         <div class="" style="right: 30%;">
                         &nbsp;&nbsp;<x-wireui-button  href="{{ route('measurement-devices.show', ['measurement_device' => $device->id])}}" secondary class="mr-2"
                         label="{{ __('translation.placeholder.show') }}"
