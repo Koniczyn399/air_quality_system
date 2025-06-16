@@ -205,6 +205,7 @@
                 });
 
                 L.marker([lat, lng]).addTo(addDeviceMap).bindPopup("Wybrana lokalizacja").openPopup();
+                
             });
         });
     </script>
