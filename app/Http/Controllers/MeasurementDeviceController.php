@@ -29,18 +29,21 @@ class MeasurementDeviceController extends Controller
     public function create()
     {
         // Pobierz tylko użytkowników z rolą serwisanta
-        $maintainers = User::whereHas('roles', function($query) {
-                $query->where('name', 'MAINTEINER'); 
-            })
-            ->select('id', 'name')
-            ->get()
-            ->map(fn($u) => [
-                'label' => $u->name,
-                'value' => $u->id,
-            ]);
+        // $maintainers = User::whereHas('roles', function($query) {
+        //         $query->where('name', 'MAINTEINER'); 
+        //     })
+        //     ->select('id', 'name')
+        //     ->get()
+        //     ->map(fn($u) => [
+        //         'label' => $u->name,
+        //         'value' => $u->id,
+        //     ]);
 
 
-        return view('measurement-devices.create', compact('maintainers'));
+        //return view('measurement-devices.create', compact('maintainers'));
+        return view(
+            'measurement-devices.form'
+        );
     }
 
     public function store(Request $request)
@@ -87,20 +90,28 @@ class MeasurementDeviceController extends Controller
 
     public function edit(MeasurementDevice $measurementDevice)
     {
-        // Pobierz tylko użytkowników z rolą serwisanta
-        $maintainers = User::whereHas('roles', function($query) {
-                $query->where('name', 'MAINTEINER');
-            })
-            ->select('id', 'name')
-            ->get()
-            ->map(fn($u) => [
-                'label' => $u->name,
-                'value' => $u->id,
-            ]);
+            //     $maintainers = User::whereHas('roles', function($query) {
+            //     $query->where('name', 'MAINTEINER');
+            // })
+            // ->select('id', 'name')
+            // ->get()
+            // ->map(fn($u) => [
+            //     'label' => $u->name,
+            //     'value' => $u->id,
+            // ]);
 
-            $parameters = Parameter::query()->get();
+            // $parameters = Parameter::query()->get();
+            // $this->parameters = $parameters;
+            // $this->maintainers = $maintainers;
 
-        return view('measurement-devices.edit', compact('measurementDevice', 'maintainers','parameters'));
+        // return view('measurement-devices.edit', compact('measurementDevice', 'maintainers','parameters'));
+            return view(
+            'measurement-devices.form',
+            [
+                'measurementDevice' => $measurementDevice,
+
+            ]
+        );
     }
 
     public function update(Request $request, MeasurementDevice $measurementDevice)
@@ -165,33 +176,5 @@ class MeasurementDeviceController extends Controller
         return $result;
     }
 
-        public function get_parameters(): array
-    {
 
-
-        // Pobierz parametry
-        $parameters = Parameter::query()->get()->toArray();
-        //dd($parameters);
-
-
-        return $parameters;
-    }
-
-                // <!-- Parametry -->
-                // <div class="col-span-1">
-                //     <x-wireui-select
-                //         label="{{ __('data.attributes.parameters') }}"
-                //         placeholder="{{ __('data.attributes.parameters') }}"
-                //         multiselect
-                //         class="w-full theme-input"  
-               
-                //     >
-                //     <x-wireui-select.option disabled selected label="{{ 9 }}" value="    sdfsd "  />
-                //     @foreach ( $parameters as $parameter)
-                //         <x-wireui-select.option label="{{ $parameter['name'] }}" value="{{ $parameter['id'] }}"  />
-                //     @endforeach
-                
-                
-                // </x-wireui-select>
-                // </div>
 }

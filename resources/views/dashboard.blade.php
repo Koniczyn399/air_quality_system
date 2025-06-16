@@ -88,7 +88,7 @@
                     if (device.latitude && device.longitude) {
                         const marker = L.marker([device.latitude, device.longitude]).addTo(map);
                         marker.bindPopup(`
-                            <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                            <div class="mt-1 sm:mt-0 sm:col-span-2 text-sm theme-text">
                                 <b>${device.name}</b><br>
                                 {{-- Data kalibracji: ${device.calibration_date} --}}
                             </div>
