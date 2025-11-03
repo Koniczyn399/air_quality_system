@@ -114,7 +114,7 @@ use WireUiActions;
         // }
 
 
-        $this->measurementDevice->addStatusHistory($this->status, 'Zmiana statusu przez formularz edycji');
+        
 
 
 
@@ -122,10 +122,13 @@ use WireUiActions;
         $this->parameter_ids = json_encode($this->parameter_ids);
 
 
-        MeasurementDevice::updateOrCreate(
+        $m =MeasurementDevice::updateOrCreate(
             ['id' => $this->id],
             $this->validate()
         );
+        $this->measurementDevice=$m;
+
+        $this->measurementDevice->addStatusHistory($this->status, 'Zmiana statusu przez formularz edycji');
 
         
 

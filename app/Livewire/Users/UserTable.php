@@ -3,15 +3,19 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\Auth\RoleType;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
-use Illuminate\Support\Facades\Auth;
-use App\Enums\Auth\RoleType;
+
+
+
 
 final class UserTable extends PowerGridComponent
 {
@@ -32,7 +36,40 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query()->with('roles');
+
+        return User::query()
+        ->join('model_has_roles', function ($roles) {
+            $roles->on('users.id', '=', 'model_has_roles.model_id');
+        })
+        ->join('roles', function ($users) {
+            $users->on('model_has_roles.role_id', '=', 'roles.id');
+        })
+        ->select([
+            'users.id',
+            'model_has_roles.model_id',
+            'users.name',
+            'users.email',
+            'roles.name as role_name',
+            'users.created_at',
+            ]);
+
+
+        // $query = DB::table("model_has_roles")
+        // ->join('roles', function ($roles) {
+        //     $roles->on('model_has_roles.role_id', '=', 'roles.id');
+        // })
+        // ->join('users', function ($users) {
+        //     $users->on('model_has_roles.model_id', '=', 'users.id');
+        // })
+        // ->select([
+        //     'users.id',
+        //     'users.name',
+        //     'users.email',
+        //     'roles.name as role_name',
+        //     'users.created_at',
+        //     ]);
+        //return $query;
+        //return User::query()->with('roles');
     }
 
     public function relationSearch(): array
@@ -40,17 +77,29 @@ final class UserTable extends PowerGridComponent
         return [];
     }
 
+
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('id')
             ->add('name')
             ->add('email')
-            ->add('roles', function ($user) {
-                return $user->roles->pluck('name')->join(', ');
-            }
-
-            )
+            //->add('role_name')
+            ->add('role_name', function ($user) {
+            return $user->roles->pluck('name')->join(', ');
+            })
+            //     $role="";
+            //     if($user->hasRole(RoleType::ADMIN->value)){
+            //     $role= $role."admin, ";
+            //     }
+            //     if ($user->hasRole(RoleType::MAINTEINER->value)){
+            //     $role= $role."mainteiner, ";
+            //     }
+            //     if ($user->hasRole(RoleType::USER->value)){
+            //     $role= $role."user, ";
+            //     }
+            //     return $role;
+            // })
             ->add('created_at');
     }
 
@@ -68,7 +117,7 @@ final class UserTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make(__('users.attributes.roles'), 'roles')
+            Column::make(__('users.attributes.roles'), 'role_name')
                 ->sortable()
                 ->searchable(),
 
@@ -123,7 +172,7 @@ final class UserTable extends PowerGridComponent
                 ->class('text-red-500 hover:text-red-700')
                 ->dispatch('delete_device', [
                     'id' => $user->id,
-                    'confirm' => [
+                    'confirm' => [ 
                         'title' => 'Potwierdzenie usunięcia',
                         'description' => 'Czy na pewno chcesz usunąć tego użytkownika?',
                         'accept' => [

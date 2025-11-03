@@ -7,6 +7,7 @@ return [
         'end_date' => 'Do',
         'devices' => 'Urządzenia',
         'parameters' => 'Parametry',
+        'select_devices' => 'Wybierz urządzenia do importu danych',
     ],
     'actions' => [
         'choose_device' => 'Wybierz urządzenie',
@@ -23,6 +24,7 @@ return [
         'edit_form_title' => 'Edycja pomiaru',
         'generate_report' => 'Wygeneruj raport',
         'data_management' =>'Zarządzanie danymi',
+        'select_file' => 'Wybierz plik',
     ],
 
     'messages' => [

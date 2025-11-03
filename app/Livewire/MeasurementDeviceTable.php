@@ -38,7 +38,21 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        $query = MeasurementDevice::query();
+        $query = MeasurementDevice::query()
+        ->leftjoin('users', function ($user) {
+            $user->on('measurement_devices.user_id', '=', 'users.id');
+        })->select([
+            'measurement_devices.id',
+            'measurement_devices.name',
+            'measurement_devices.model',
+            'measurement_devices.serial_number',
+            'measurement_devices.calibration_date',
+            'measurement_devices.next_calibration_date',
+            'measurement_devices.status',
+            'users.id as users_id',
+            'users.name as user_name',
+            ]);
+        ;
         $user  = Auth::user();
 
         // jeżeli użytkownik ma rolę serwisanta (MAINTEINER), filtrujemy po swoim ID
@@ -78,7 +92,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 '</div>'
             )
             )
-            ->add('user_name', fn ($device) => $device->user ? $device->user->name : 'Brak');
+            ->add('user_name', fn ($device) => $device->user_name ? $device->user_name : 'Brak');
 
     }
 

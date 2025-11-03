@@ -38,6 +38,7 @@ Route::middleware([
 
     // Route::name('data.export_file')->get('/start_date/{start_date}/end_date/{end_date}', [DataController::class, 'export_file']);
     Route::name('data.export')->get('/export', [DataController::class, 'export']);
+     Route::name('data.import')->get('/import', [DataController::class, 'import']);
 
     Route::name('data.show')->get('/show/{measurement}', [DataController::class, 'show']);
     Route::name('data.index')->get('/index', [DataController::class, 'index']);
