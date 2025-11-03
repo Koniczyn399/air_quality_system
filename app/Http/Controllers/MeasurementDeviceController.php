@@ -7,7 +7,9 @@ use App\Models\Parameter;
 use App\Models\User;
 use App\Services\GeolocationService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+use function Laravel\Prompts\select;
 
 class MeasurementDeviceController extends Controller
 {
@@ -125,25 +127,8 @@ class MeasurementDeviceController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'status' => 'required|in:active,inactive,in_repair',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
             'user_id' => ['nullable', 'exists:users,id'],
-            'parameter_ids' => 'nullable|json',
-
         ]);
-        // $ids =$request->input("parameter_ids");
-
-        // $ids=json_decode($ids);
-        // //dd($ids);
-        // // $ids = str_replace("[","",$ids);
-        // // $ids = str_replace("]","",$ids);
-        // // $ids=json_encode(explode(',',$ids));
-
-
-        // $request->merge([
-        // 'parameter_ids' => $ids]);
-
-        // dd($request->request);
 
         if ($measurementDevice->status != $request->status) {
             $measurementDevice->addStatusHistory($request->status, 'Zmiana statusu przez formularz edycji');
