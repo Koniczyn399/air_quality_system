@@ -17,7 +17,7 @@ class MeasurementDevice extends Model
     protected $casts = [
         'calibration_date' => 'date',
         'next_calibration_date' => 'date',
-        'parameter_ids'=>'array',
+        'parameter_ids'=>'json',
     ];
 
     public function statusHistory(): HasMany

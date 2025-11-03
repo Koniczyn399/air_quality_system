@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Measurement;
 use App\Models\Value;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -19,7 +20,6 @@ final class ValuesTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
 
         return [
             PowerGrid::header()
@@ -32,67 +32,67 @@ final class ValuesTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-
-        $measurements = Measurement::query()
-            ->select(
-                'measurements.id'
-            )
-            ->where('measurements.device_id', '=', $this->device_id)->get()->toArray();
-
-        // dd($measurements);
-
-        $query = Value::query()
-
-        // Zapytanie by pomiary dotyczyły tylko tego urządzenia
-            ->join('measurements', function ($measurements) {
-                $measurements->on('measurements.id', '=', 'values.measurement_id');
-            })
+        return Measurement::query()
             ->select([
-                'values.id',
-                'values.parameter_id',
-                'values.measurement_id',
-                'values.value',
-                'values.created_at',
-
+                'measurements.id',
+                'measurements.measurements_date',
+                DB::raw('MAX(CASE WHEN values.parameter_id = 6 THEN values.value ELSE NULL END) as temp_value'),
+                DB::raw('MAX(CASE WHEN values.parameter_id = 4 THEN values.value ELSE NULL END) as hum_value'),
+                DB::raw('MAX(CASE WHEN values.parameter_id = 5 THEN values.value ELSE NULL END) as press_value'),
+                DB::raw('MAX(CASE WHEN values.parameter_id = 1 THEN values.value ELSE NULL END) as pm1_value'),
+                DB::raw('MAX(CASE WHEN values.parameter_id = 2 THEN values.value ELSE NULL END) as pm25_value'),
+                DB::raw('MAX(CASE WHEN values.parameter_id = 3 THEN values.value ELSE NULL END) as pm10_value'),
             ])
-            ->whereIn('values.measurement_id', $measurements);
-
-        return $query;
-    }
-
-    public function relationSearch(): array
-    {
-        return [];
+            ->join('values', 'measurements.id', '=', 'values.measurement_id')
+            ->where('measurements.device_id', $this->device_id)
+            ->groupBy('measurements.id', 'measurements.measurements_date');
     }
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
-            ->add('id')
-            ->add('measurement_id')
-            ->add('parameter_id')
-            ->add('value')
-            ->add('created_at');
+            ->add('temp_value')
+            ->add('hum_value')
+            ->add('press_value')
+            ->add('pm1_value')
+            ->add('pm25_value')
+            ->add('pm10_value')
+            ->add('measurements_date'); 
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
-            Column::make('Measurement id', 'measurement_id'),
-            Column::make('Parameter id', 'parameter_id'),
-            Column::make('Value', 'value')
+
+
+            Column::make('Temperatura', 'temp_value')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->sortable(),
-
-            Column::make('Created at', 'created_at')
+            Column::make('Wilgotność', 'hum_value')
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action'),
+            Column::make('Ciśnienie', 'press_value')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('PM1', 'pm1_value')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('PM2.5', 'pm25_value')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('PM10', 'pm10_value')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('Data Pomiaru', 'measurements_date')
+                ->sortable()
+                ->searchable(),
+
         ];
     }
 
@@ -101,33 +101,4 @@ final class ValuesTable extends PowerGridComponent
         return [
         ];
     }
-
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    public function actions(Value $row): array
-    {
-        return [
-            Button::add('edit')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id]),
-        ];
-    }
-
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
-    }
-    */
 }
