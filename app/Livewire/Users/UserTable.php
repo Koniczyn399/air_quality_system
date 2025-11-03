@@ -14,9 +14,6 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
-
-
-
 final class UserTable extends PowerGridComponent
 {
     public string $tableName = 'user-table-ksr2tk-table';

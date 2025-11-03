@@ -5,14 +5,9 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\MeasurementDeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueController;
-
-
-use App\Livewire\MeasurementDeviceTable;
-use App\Livewire\Data\ExportForm;
-
-
+use App\Http\Controllers\MeasurementController;
 use App\Models\MeasurementDevice;
-use Illuminate\Support\Carbon;  
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -63,6 +58,7 @@ Route::middleware([
     Route::get('/measurement-devices/table', function () {
         return view('measurement-devices.table');
     })->name('measurement-devices.table');
+
     Route::resource('measurement-devices', MeasurementDeviceController::class);
     Route::get('measurement-devices/{measurement_device}', [MeasurementDeviceController::class, 'show'])->name('measurement-devices.show');
     Route::get('/measurements/create', [MeasurementController::class, 'create'])
