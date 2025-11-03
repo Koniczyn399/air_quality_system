@@ -11,12 +11,7 @@ class MeasurementDevice extends Model
     protected $fillable = [
         'name', 'model', 'serial_number',
         'calibration_date', 'next_calibration_date',
-<<<<<<<<< Temporary merge branch 1
-        'description', 'status', 'user_id'
-=========
-        'description', 'status',
-        'latitude', 'longitude' 
->>>>>>>>> Temporary merge branch 2
+        'description', 'status', 'user_id', 'latitude', 'longitude'
     ];
 
     protected $casts = [

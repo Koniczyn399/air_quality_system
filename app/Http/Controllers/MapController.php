@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementDevice;
-use App\Models\Measurement;
-
 
 class MapController extends Controller
 {

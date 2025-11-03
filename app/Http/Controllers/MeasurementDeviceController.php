@@ -115,14 +115,8 @@ class MeasurementDeviceController extends Controller
             'next_calibration_date' => 'required|date|after:calibration_date',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
-<<<<<<<<< Temporary merge branch 1
             'status' => 'required|in:active,inactive,in_repair',
             'user_id' => ['nullable', 'exists:users,id'],
-
-=========
-            'status' => 'required|in:active,inactive,in_repair'
-            
->>>>>>>>> Temporary merge branch 2
         ]);
 
         if ($measurementDevice->status != $request->status) {

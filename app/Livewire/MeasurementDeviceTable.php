@@ -16,7 +16,6 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class MeasurementDeviceTable extends PowerGridComponent
 {
-    public $proba;
     public ?string $filter = 'all';
 
 
@@ -61,7 +60,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
             ->add('model')
             ->add('serial_number')
             ->add('calibration_date_formatted', fn ($device) => $device->calibration_date->format('d-m-Y'))
-            ->add('next_calibration_date_formatted', fn ($device) => $device->next_calibration_date->format('d-m-Y'))
+            ->add('next_calibration_date_formatted', fn ($device) => $device->next_calibration_date ? $device->next_calibration_date->format('d-m-Y') : 'Brak')
             ->add('status_formatted', fn ($device) => Blade::render(
                 '<div class="flex items-center gap-2">'.
                 match ($device->status) {
@@ -74,7 +73,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
                 '</div>'
             )
             )
-            ->add('user_name', fn ($device) => $device->user ? $device->user->name : 'Brak');
+            ->add('user_name', fn ($device) => $device->user ? $device->user->name : __('Brak'));
         
     }
 
@@ -151,13 +150,12 @@ final class MeasurementDeviceTable extends PowerGridComponent
         /** @var \App\Models\User $user */
         if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
             $actions[] = Button::add('edit_device')
-                ->slot(Blade::render('<x-wireui-icon name="wrench" class="w-5 h-5" mini />'))
+                ->slot(Blade::render('<x-wireui-icon name="wrench" class="w-5 h-5" />'))
                 ->tooltip('Edytuj urządzenie')
                 ->class('text-yellow-500 hover:text-yellow-700')
                 ->route('measurement-devices.edit', ['measurement_device' => $device->id]);
 
-                $actions[] = Button::add('delete')
->>>>>>>>> Temporary merge branch 2
+            $actions[] = Button::add('delete')
                 ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
                 ->tooltip('Usuń')
                 ->class('text-red-500 hover:text-red-700')
@@ -175,16 +173,11 @@ final class MeasurementDeviceTable extends PowerGridComponent
                             'label' => 'Anuluj'
                         ]
                     ]
-<<<<<<<<< Temporary merge branch 1
-                ])
-        ];
-    }
-=========
                 ]);
-        }
-
-        return $actions;
     }
+
+    return $actions;
+}
 
 #[\Livewire\Attributes\On('delete_confirmed')]
 public function deleteConfirmed($id): void
@@ -197,7 +190,4 @@ public function deleteConfirmed($id): void
         $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
     }
 }
->>>>>>>>> Temporary merge branch 2
-
-
 }
