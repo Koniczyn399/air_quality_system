@@ -66,9 +66,10 @@ use WireUiActions;
 
 
         $this->maintainers = $maintainers;
-        $this->measurementDevice =$measurementDevice;
+
 
             if (isset($measurementDevice->id)) {
+                $this->measurementDevice =$measurementDevice;
                 $this->id = $measurementDevice->id;
                 $this->name = $measurementDevice->name;
                 $this->model = $measurementDevice->model;
@@ -113,19 +114,27 @@ use WireUiActions;
         // }
 
 
+        
+
+
+
 
         $this->parameter_ids = json_encode($this->parameter_ids);
 
 
-        MeasurementDevice::updateOrCreate(
+        $m =MeasurementDevice::updateOrCreate(
             ['id' => $this->id],
             $this->validate()
         );
+        $this->measurementDevice=$m;
+
+        $this->measurementDevice->addStatusHistory($this->status, 'Zmiana statusu przez formularz edycji');
 
         
 
 
-        return $this->redirect(route('measurement-devices.index'));
+        return redirect()->route('measurement-devices.index')
+            ->with('success', 'Urządzenie zaktualizowane pomyślnie');
     }
 
     public function open_parameters()
