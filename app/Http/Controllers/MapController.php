@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MeasurementDevice;
+use App\Models\Measurement;
+use App\Models\Parametrs;
+use Illuminate\Http\Request;
 
 class MapController extends Controller
 {
     public function index()
     {
-        $devices = MeasurementDevice::select('id', 'name', 'latitude', 'longitude', 'status')->get();
-
-        return view('map', compact('devices'));
+        $measurements = Measurement::with('parametrs')->latest()->get();
+        return view('map', compact('measurements'));
     }
 }
