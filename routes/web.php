@@ -5,6 +5,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\MeasurementDeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueController;
+use App\Http\Controllers\MeasurementController;
 use App\Livewire\MeasurementDeviceTable;
 use App\Models\MeasurementDevice;
 use Carbon\Carbon;
@@ -58,6 +59,15 @@ Route::middleware([
     Route::get('/measurement-devices/table', MeasurementDeviceTable::class)->name('measurement-devices.table');
     Route::resource('measurement-devices', MeasurementDeviceController::class);
     Route::get('measurement-devices/{measurement_device}', [MeasurementDeviceController::class, 'show'])->name('measurement-devices.show');
+    Route::get('/measurements/create', [MeasurementController::class, 'create'])
+        ->name('measurements.create');
+    Route::post('/measurements', [MeasurementController::class, 'store'])
+    ->name('measurements.store');
+    Route::get('/measurements/{measurement}/edit', [MeasurementController::class, 'edit'])
+    ->name('measurements.edit');
+    Route::resource('measurements', MeasurementController::class);
+    Route::resource('values', ValueController::class);
+    Route::delete('/measurements/{measurement}', [MeasurementController::class, 'destroy'])->name('measurements.destroy');    
     Route::resource('users', UserController::class)->only([
         'index',
         // 'create',
