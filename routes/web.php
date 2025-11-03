@@ -7,8 +7,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueController;
 
 use App\Livewire\Data\ExportForm;
-use App\Http\Controllers\MapController;
-
+use App\Http\Livewire\MeasurementDeviceTable;
+use App\Models\MeasurementDevice;
+use Illuminate\Support\Carbon;  
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');

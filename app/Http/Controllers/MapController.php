@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Measurement;
-use App\Models\Parametrs;
-use Illuminate\Http\Request;
+use App\Models\MeasurementDevice;
 
 class MapController extends Controller
 {
