@@ -45,7 +45,7 @@
         observer.observe(htmlElement, { attributes: true });
 
         // Dane urządzeń przekazane z kontrolera
-        const devices = @json($devices);
+        const devices = @json($devices ?? []);
 
         // Dodanie markerów na mapę
         devices.forEach(device => {

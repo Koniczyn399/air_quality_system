@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MeasurementDevice;
-use App\Models\Parameter;
 use App\Models\User;
-use App\Services\GeolocationService;
+use App\Models\Parameter;
 use Illuminate\Http\Request;
+use App\Models\MeasurementDevice;
 use Illuminate\Support\Facades\Log;
+use App\Services\GeolocationService;
 
 use function Laravel\Prompts\select;
+use Illuminate\Support\Facades\Auth;
 
 class MeasurementDeviceController extends Controller
 {
@@ -24,6 +25,7 @@ class MeasurementDeviceController extends Controller
             $devices = $query->get();
 
             return view('measurement-devices.index', compact('devices'));
+        
         }
 
 

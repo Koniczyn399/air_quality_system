@@ -17,9 +17,7 @@ use Illuminate\Support\Facades\DB;
 final class MeasurementDeviceTable extends PowerGridComponent
 {
     public $proba;
-    
     public ?string $filter = 'all';
-
 
 
     use WithExport;
@@ -167,6 +165,7 @@ final class MeasurementDeviceTable extends PowerGridComponent
 
         // Sprawdzamy, czy użytkownik ma rolę 'ADMIN' lub 'MAINTEINER' (Serwisant)
         // Używamy RoleType::ADMIN->value i RoleType::MAINTEINER->value
+                /** @var \App\Models\User $user */
         if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
             $actions[] = Button::add('edit_device')
                 ->slot(Blade::render('<x-wireui-icon name="wrench" class="w-5 h-5" />'))
@@ -193,19 +192,21 @@ final class MeasurementDeviceTable extends PowerGridComponent
                         ]
                     ]
                 ]);
+            }
+
+        return $actions;
     }
         
-#[\Livewire\Attributes\On('delete_confirmed')]
-public function deleteConfirmed($id): void
-{
-    $device = MeasurementDevice::find($id);
-    if ($device) {
-        $device->delete();
-        $this->dispatch('showToast', type: 'success', message: 'Urządzenie zostało usunięte');
-    } else {
-        $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
+    #[\Livewire\Attributes\On('delete_confirmed')]
+    public function deleteConfirmed($id): void
+    {
+        $device = MeasurementDevice::find($id);
+        if ($device) {
+            $device->delete();
+            $this->dispatch('showToast', type: 'success', message: 'Urządzenie zostało usunięte');
+        } else {
+            $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono urządzenia do usunięcia');
+        }
     }
-}
-
 
 }
