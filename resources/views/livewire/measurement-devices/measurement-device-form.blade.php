@@ -80,23 +80,7 @@
 
             <!-- Parametry -->
 
-            @if (isset($measurementDevice))
-            <div class="col-span-1">
-                <x-wireui-select
-                    label="{{ __('data.attributes.parameters') }}"
-                    placeholder="{{ __('data.attributes.parameters') }}"
-                    multiselect
-                    :options="$this->parameters"
-                    option-label="name"
-                    option-value="id"
-                    class="w-full theme-input"
-                    wire:model="parameter_ids"
-                >
 
-                </x-wireui-select>
-
-            </div>
-            @else
             <div class="col-span-1">
                 <x-wireui-select
                     label="{{ __('data.attributes.parameters') }}"
@@ -113,7 +97,6 @@
 
             </div>
 
-            @endif
 
             <!-- Serwisant -->
             <div class="col-span-1">
@@ -165,7 +148,12 @@
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium theme-text hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                 Anuluj
             </a>
-            <x-wireui-button type="submit" primary label="Aktualizuj urządzenie" />
+            
+            @if(isset($measurementDevice))
+                <x-wireui-button type="submit" primary label="Aktualizuj urządzenie" />
+            @elseif (!isset($measurementDevice))
+                <x-wireui-button type="submit" primary label="Dodaj urządzenie" />
+            @endif
         </div>
     </form>
 

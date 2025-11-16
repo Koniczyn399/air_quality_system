@@ -5,11 +5,9 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\MeasurementDeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueController;
-
-use App\Livewire\Data\ExportForm;
-use App\Http\Livewire\MeasurementDeviceTable;
+use App\Http\Controllers\MeasurementController;
 use App\Models\MeasurementDevice;
-use Illuminate\Support\Carbon;  
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +38,7 @@ Route::middleware([
 
     // Route::name('data.export_file')->get('/start_date/{start_date}/end_date/{end_date}', [DataController::class, 'export_file']);
     Route::name('data.export')->get('/export', [DataController::class, 'export']);
+     Route::name('data.import')->get('/import', [DataController::class, 'import']);
 
     Route::name('data.show')->get('/show/{measurement}', [DataController::class, 'show']);
     Route::name('data.index')->get('/index', [DataController::class, 'index']);
@@ -59,8 +58,18 @@ Route::middleware([
     Route::get('/measurement-devices/table', function () {
         return view('measurement-devices.table');
     })->name('measurement-devices.table');
+
     Route::resource('measurement-devices', MeasurementDeviceController::class);
     Route::get('measurement-devices/{measurement_device}', [MeasurementDeviceController::class, 'show'])->name('measurement-devices.show');
+    Route::get('/measurements/create', [MeasurementController::class, 'create'])
+        ->name('measurements.create');
+    Route::post('/measurements', [MeasurementController::class, 'store'])
+    ->name('measurements.store');
+    Route::get('/measurements/{measurement}/edit', [MeasurementController::class, 'edit'])
+    ->name('measurements.edit');
+    Route::resource('measurements', MeasurementController::class);
+    Route::resource('values', ValueController::class);
+    Route::delete('/measurements/{measurement}', [MeasurementController::class, 'destroy'])->name('measurements.destroy');    
     Route::resource('users', UserController::class)->only([
         'index',
         // 'create',

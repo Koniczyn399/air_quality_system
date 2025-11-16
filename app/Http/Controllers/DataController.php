@@ -80,6 +80,17 @@ class DataController extends Controller
 
     }
 
+    public function import()
+    {
+        // $this->authorize('viewAny', User::class);
+
+        return view(
+            'data.import.form'
+
+        );
+
+    }
+
     // https://medium.com/@kanishkanuwanperera/building-a-csv-import-export-feature-in-laravel-10-step-by-step-guide-with-no-external-packages-6b73295aa0c1
     public function file($start_date, $end_date, $device_ids)
     {

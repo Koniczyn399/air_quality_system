@@ -11,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Enums\Auth\RoleType;
+use App\Models\Role;
 
 
 class User extends Authenticatable
@@ -73,4 +74,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
+    
 }

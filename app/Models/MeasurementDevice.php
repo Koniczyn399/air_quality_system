@@ -48,4 +48,10 @@ class MeasurementDevice extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function parameters()
+    {
+        return Parameter::whereIn('id', $this->parameter_ids ?? [])->get();
+    }
+
 }
