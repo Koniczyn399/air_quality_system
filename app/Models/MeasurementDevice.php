@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
 
 class MeasurementDevice extends Model
 {
@@ -51,7 +52,7 @@ class MeasurementDevice extends Model
 
     public function parameters()
     {
-        return Parameter::whereIn('id', $this->parameter_ids ?? [])->get();
+        $ids = json_decode($this->parameter_ids, true) ?? [];
+        return Parameter::whereIn('id', $ids)->get();
     }
-
 }
