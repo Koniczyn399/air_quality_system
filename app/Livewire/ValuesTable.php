@@ -32,7 +32,7 @@ final class ValuesTable extends PowerGridComponent
         'all' => 'Cały okres',
     ];
 
-    public string $activeQuickRange = '30d';
+    public string $activeQuickRange = 'all';
 
     public array $parameterRanges = [];
 
@@ -141,7 +141,9 @@ final class ValuesTable extends PowerGridComponent
                             $query->havingRaw("{$alias} <= ?", [$max]);
                         }
                     }
-                });
+                })
+                
+                ;
     }
 
     public function fields(): PowerGridFields
@@ -270,7 +272,7 @@ final class ValuesTable extends PowerGridComponent
 
     public function applyQuickRange(string $rangeKey, bool $resetPagination = true): void
     {
-        $range = array_key_exists($rangeKey, $this->quickRangeOptions) ? $rangeKey : '30d';
+        $range = array_key_exists($rangeKey, $this->quickRangeOptions) ? $rangeKey : 'all';
 
         $this->activeQuickRange = $range;
 
@@ -296,7 +298,7 @@ final class ValuesTable extends PowerGridComponent
 
     public function resetDateFilters(): void
     {
-        $this->applyQuickRange('30d');
+        $this->applyQuickRange('all');
     }
 
     public function toggleAdvancedFilters(): void

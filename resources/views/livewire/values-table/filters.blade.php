@@ -6,7 +6,7 @@
                 <input
                     type="date"
                     wire:model.live.debounce.500ms="dateFrom"
-                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 h-8 text-xs {{ filled($dateFrom) ? 'text-gray-900' : 'text-gray-400' }}"
+                    class="theme-input rounded-md shadow-sm h-8 text-xs placeholder:text-gray-400 dark:placeholder:text-gray-500 {{ filled($dateFrom) ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-400' }}"
                     max="{{ $dateTo ?? now()->toDateString() }}"
                 />
             </label>
@@ -16,7 +16,7 @@
                 <input
                     type="date"
                     wire:model.live.debounce.500ms="dateTo"
-                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 h-8 text-xs {{ filled($dateTo) ? 'text-gray-900' : 'text-gray-400' }}"
+                    class="theme-input rounded-md shadow-sm h-8 text-xs placeholder:text-gray-400 dark:placeholder:text-gray-500 {{ filled($dateTo) ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-400' }}"
                     min="{{ $dateFrom ?? null }}"
                     max="{{ now()->toDateString() }}"
                 />
@@ -28,7 +28,9 @@
                         type="button"
                         wire:click="applyQuickRange('{{ $rangeKey }}')"
                         class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors
-                            {{ $activeQuickRange === $rangeKey ? 'bg-indigo-600 text-white border-indigo-600' : 'theme-bg border-gray-200 text-gray-600 hover:border-indigo-200 hover:text-indigo-600' }}"
+                            {{ $activeQuickRange === $rangeKey
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'theme-bg theme-text border-gray-200 dark:border-gray-600 hover:border-indigo-200 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400' }}"
                     >
                         {{ $rangeLabel }}
                     </button>
@@ -39,7 +41,7 @@
                 <button
                     type="button"
                     wire:click="toggleAdvancedFilters"
-                    class="ml-auto inline-flex items-center gap-2 text-xs font-semibold text-indigo-600 border border-indigo-100 rounded-full px-3 py-1.5 hover:bg-indigo-50"
+                    class="ml-auto inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border text-indigo-600 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
                 >
                     Filtry zaawansowane
                     <span class="text-sm">{{ $showAdvancedFilters ? '▴' : '▾' }}</span>
@@ -63,14 +65,14 @@
                                 step="{{ $field['step'] }}"
                                 placeholder="Min"
                                 wire:model.live.debounce.500ms="parameterRanges.{{ $field['alias'] }}.min"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 h-8 text-xs"
+                                class="w-full theme-input rounded-md shadow-sm h-8 text-xs placeholder:text-gray-400 dark:placeholder:text-gray-500"
                             />
                             <input
                                 type="number"
                                 step="{{ $field['step'] }}"
                                 placeholder="Max"
                                 wire:model.live.debounce.500ms="parameterRanges.{{ $field['alias'] }}.max"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 h-8 text-xs"
+                                class="w-full theme-input rounded-md shadow-sm h-8 text-xs placeholder:text-gray-400 dark:placeholder:text-gray-500"
                             />
                         </div>
                     </div>
