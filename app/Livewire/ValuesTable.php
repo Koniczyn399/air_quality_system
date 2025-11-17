@@ -52,9 +52,34 @@ final class ValuesTable extends PowerGridComponent
                 DB::raw('MAX(CASE WHEN values.parameter_id = 2 THEN values.value ELSE NULL END) as pm25_value'),
                 DB::raw('MAX(CASE WHEN values.parameter_id = 3 THEN values.value ELSE NULL END) as pm10_value'),
             ])
-            ->join('values', 'measurements.id', '=', 'values.measurement_id')
-            ->where('measurements.device_id', $this->device_id)
-            ->groupBy('measurements.id', 'measurements.measurements_date');
+                ->join('values', 'measurements.id', '=', 'values.measurement_id')
+                ->where('measurements.device_id', $this->device_id)
+                ->when($this->dateFrom, fn ($query) => $query->whereDate('measurements.measurements_date', '>=', $this->dateFrom))
+                ->when($this->dateTo, fn ($query) => $query->whereDate('measurements.measurements_date', '<=', $this->dateTo))
+                ->groupBy('measurements.id', 'measurements.measurements_date')
+                ->tap(function ($query) {
+                    foreach ($this->getDeviceParameterIds() as $parameterId) {
+                        $meta = $this->parameterMeta[$parameterId] ?? null;
+
+                        if (!$meta) {
+                            continue;
+                        }
+
+                        $alias = $meta['alias'];
+                        $min   = data_get($this->parameterRanges, $alias.'.min');
+                        $max   = data_get($this->parameterRanges, $alias.'.max');
+
+                        if ($min !== null && $min !== '') {
+                            $query->havingRaw("{$alias} >= ?", [$min]);
+                        }
+
+                        if ($max !== null && $max !== '') {
+                            $query->havingRaw("{$alias} <= ?", [$max]);
+                        }
+                    }
+                })
+                
+                ;
     }
 
     public function fields(): PowerGridFields

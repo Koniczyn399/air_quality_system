@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Parameter;
 use Illuminate\Http\Request;
 use App\Models\MeasurementDevice;
-use Illuminate\Support\Facades\Log;
+
 use App\Services\GeolocationService;
 
-use function Laravel\Prompts\select;
 use Illuminate\Support\Facades\Auth;
 
 class MeasurementDeviceController extends Controller
@@ -45,9 +43,23 @@ class MeasurementDeviceController extends Controller
 
 
         //return view('measurement-devices.create', compact('maintainers'));
+
+    
+        
         return view(
             'measurement-devices.form'
         );
+
+
+        
+    }
+
+    public function create_new($headers = null)
+    {
+
+        return view(
+        'measurement-devices.form',['headers'=>$headers]);
+    
     }
 
     public function store(Request $request)

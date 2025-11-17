@@ -61,8 +61,11 @@ Route::middleware([
 
     Route::resource('measurement-devices', MeasurementDeviceController::class);
     Route::get('measurement-devices/{measurement_device}', [MeasurementDeviceController::class, 'show'])->name('measurement-devices.show');
-    Route::get('/measurements/create', [MeasurementController::class, 'create'])
-        ->name('measurements.create');
+
+    Route::get('create_new/{headers}', [MeasurementDeviceController::class, 'create_new'])->name('measurement-devices.create_new');
+   
+
+    Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
     Route::post('/measurements', [MeasurementController::class, 'store'])
     ->name('measurements.store');
     Route::get('/measurements/{measurement}/edit', [MeasurementController::class, 'edit'])

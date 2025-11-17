@@ -44,9 +44,11 @@
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- https://sweetalert2.github.io/ -->
     
     <script>
         document.addEventListener('livewire:initialized', () => {
+            
             // Obsługa potwierdzenia usuwania
             Livewire.on('delete_device', (event) => {
                 Swal.fire({
@@ -66,6 +68,27 @@
                     }
                 });
             });
+
+
+            // Obsługa potwierdzenia dodawania urządzenia
+            Livewire.on('add_device', (event) => {
+                Swal.fire({
+                    title: event.confirm?.title || 'Potwierdź decyzję',
+                    text: event.confirm?.description || 'Czy chcesz dodać nowe urządzenie zanim wczytasz pomiary ?',
+                    icon: 'question',
+                    draggable: true,
+                    showCancelButton: true,
+                    confirmButtonColor: '#80d630ff',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: event.confirm?.accept?.label || 'Tak, dodaj',
+                    cancelButtonText: event.confirm?.reject?.label || 'Anuluj'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.dispatch("add_device_confirmed");
+                    }
+                });
+            });
+
 
             // Obsługa powiadomień
             Livewire.on('showToast', (event) => {
