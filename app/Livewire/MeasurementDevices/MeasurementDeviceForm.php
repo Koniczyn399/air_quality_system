@@ -41,11 +41,15 @@ use WireUiActions;
 
     public $latitude;
     public $longitude;
+
+    public $selected_headers=null;
     
 
-    public function mount(MeasurementDevice $measurementDevice){
+    public function mount(MeasurementDevice $measurementDevice, $headers = null){
 
-        //dd($category);
+       $selected_headers = json_decode($headers);
+       //dd($selected_headers);
+    
                 // Pobierz tylko użytkowników z rolą serwisanta
         $maintainers = User::whereHas('roles', function($query) {
             $query->where('name', 'MAINTEINER');
@@ -68,37 +72,42 @@ use WireUiActions;
         $this->maintainers = $maintainers;
 
 
-            if (isset($measurementDevice->id)) {
-                $this->measurementDevice =$measurementDevice;
-                $this->id = $measurementDevice->id;
-                $this->name = $measurementDevice->name;
-                $this->model = $measurementDevice->model;
-                $this->serial_number = $measurementDevice->serial_number;
-                $this->calibration_date = $measurementDevice->calibration_date;
-                $this->next_calibration_date = $measurementDevice->next_calibration_date;
-                $this->status = $measurementDevice->status;
+        if (isset($measurementDevice->id)) {
+            $this->measurementDevice =$measurementDevice;
+            $this->id = $measurementDevice->id;
+            $this->name = $measurementDevice->name;
+            $this->model = $measurementDevice->model;
+            $this->serial_number = $measurementDevice->serial_number;
+            $this->calibration_date = $measurementDevice->calibration_date;
+            $this->next_calibration_date = $measurementDevice->next_calibration_date;
+            $this->status = $measurementDevice->status;
 
-                $params = Parameter::query()
-                ->get()
-                ->map(fn($p) => [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                ])
-                ->toArray();
-                
+            $params = Parameter::query()
+            ->get()
+            ->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+            ])
+            ->toArray();
+            
 
-                $this->parameters= $params;
+            $this->parameters= $params;
 
-                $this->parameter_ids = json_decode($measurementDevice->parameter_ids);
+            $this->parameter_ids = json_decode($measurementDevice->parameter_ids);
 
+            $this->user_id = $measurementDevice->user_id;
+            $this->description = $measurementDevice->description;
 
-                $this->user_id = $measurementDevice->user_id;
-                $this->description = $measurementDevice->description;
+            $this->latitude = $measurementDevice->latitude;
+            $this->longitude = $measurementDevice->longitude;
 
-                $this->latitude = $measurementDevice->latitude;
-                $this->longitude = $measurementDevice->longitude;
+        }
 
+            if($selected_headers!=null){
+
+                $this->parameter_ids = $selected_headers;
             }
+
         
     }
 
@@ -112,12 +121,6 @@ use WireUiActions;
         // } else {
         //     $this->authorize('create', MeasurementDevice::class);
         // }
-
-
-        
-
-
-
 
         $this->parameter_ids = json_encode($this->parameter_ids);
 

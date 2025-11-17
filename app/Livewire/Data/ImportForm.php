@@ -10,6 +10,7 @@ use WireUi\Traits\WireUiActions;
 use App\Models\MeasurementDevice;
 use Illuminate\Support\Facades\Storage;
 
+use function PHPUnit\Framework\isEmpty;
 
 class ImportForm extends Component
 {
@@ -18,7 +19,7 @@ class ImportForm extends Component
 
     public $devices;
 
-    public $device_ids;
+    public $device_ids=null;
 
     public $meaurements = '';
 
@@ -32,11 +33,14 @@ class ImportForm extends Component
 
     public $filename = null;
 
+    public $new_device_headers = null;
+
     public function mount() {}
 
     // Triggeruje się gdy plik zostanie wysłany do formularza / Zostanie cokolwiek wysłane do formularza lub zaznaczone w formularzu
     public function updated()
     {
+        dd($this->file);
         $extension = $this->file->getClientOriginalExtension();
         $this->extension = $extension;
 
@@ -117,29 +121,10 @@ class ImportForm extends Component
                 }
                 $preview = $preview ."<br>";
                  
-               
             }
-            
 
-            // $this->dispatch('add_device', [
-            //         'id' => $d,
-            //         'confirm' => [
-            //             'title' => 'Zapytanie o urządzenie',
-            //             'description' => 'Nie znaleziono urządzenia pod podane parametry. Chcesz utworzyć nowe ?',
-            //             'accept' => [
-            //                 'label' => 'Tak, dodaj',
-            //                 'method' => 'delete',
-            //                 'params' => ['measurement_device' => $d],
-            //             ],
-            //             'reject' => [
-            //                 'label' => 'Anuluj',
-            //             ],
-            //         ],
-            //     ]);
-
-
-
-            //Stara, wolna logika
+ 
+            //Stara, wolniejsza logika
 
             // $hh = implode(';', $csv[0]);
             // $headers = explode(';', $hh);
@@ -166,10 +151,16 @@ class ImportForm extends Component
 
 
            
-
+          
          
 
             $compatibile_devices = ImportForm::check_devices($header);
+
+            //dd($compatibile_devices);
+
+            if (empty($compatibile_devices)){
+                 $this->dispatch('add_device');
+            }
 
             $device_info="";
             if(!empty($compatibile_devices) ){
@@ -177,9 +168,8 @@ class ImportForm extends Component
                 foreach($compatibile_devices as $device)
                 {
                     $device_info= $device_info."ID: " .$device->id ."  ". $device->name."<br>";
-
                 }
-            $device_info= $device_info. "<br>";
+                $device_info= $device_info. "<br>";
             }
 
 
@@ -189,6 +179,14 @@ class ImportForm extends Component
                 
         }
 
+    }
+
+    
+    #[\Livewire\Attributes\On('add_device_confirmed')]
+    public function add_device_confirmed(): void
+    {
+        $this->redirect(route('measurement-devices.create_new',['headers'=>json_encode($this->new_device_headers)]));
+        
     }
 
 
@@ -227,10 +225,12 @@ class ImportForm extends Component
             }
             
         }
+
         $this->data_headers=$dh;
         $this->data_headers_2=$dh_2;
 
 
+        $this->new_device_headers= $dh;            
         $compatibile_devices=array();
        
 
@@ -245,8 +245,7 @@ class ImportForm extends Component
                 
                 $readed_parameters[]= $parameter_names[$query_parameter_ids[$ii]-1];
             }
-            
-            
+
         
             //Jeśli match będzie true po tej pętli to znaczy że urządzenie jest kompatybilne
            
@@ -271,48 +270,6 @@ class ImportForm extends Component
        return $compatibile_devices;
     }
 
-
-
-    // private function return_database_headers(array $array)
-    // {
-    //     $headers = [];
-
-    //     for ($i = 0; $i < count($array); $i++) {
-    //         switch ($array[$i]) {
-    //             case 'devid':
-    //                 array_push($headers, 'devid');
-    //                 break;
-    //             case 'created_at':
-    //                 array_push($headers, 'created_at');
-    //                 break;
-    //             case 'PM1':
-    //                 array_push($headers, 1);
-    //                 break;
-    //             case 'PM2_5':
-    //                 array_push($headers, 2);
-    //                 break;
-    //             case 'PM10':
-    //                 array_push($headers, 3);
-    //                 break;
-    //             case 'Humidity':
-    //                 array_push($headers, 4);
-    //                 break;
-    //             case 'Pressure':
-    //                 array_push($headers, 5);
-    //                 break;
-    //             case 'Temperature':
-    //                 array_push($headers, 6);
-    //                 break;
-
-    //             default:
-    //                 dd('Coś jest nie tak w nagłówkami w wczytanym pliku');
-    //                 break;
-    //         }
-    //     }
-
-    //     return $headers;
-
-    // }
 
     public function submit()
     {
@@ -475,6 +432,7 @@ class ImportForm extends Component
             }
         }
     }
+
 
     // public function rules()
     // {

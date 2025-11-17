@@ -141,7 +141,9 @@ final class ValuesTable extends PowerGridComponent
                             $query->havingRaw("{$alias} <= ?", [$max]);
                         }
                     }
-                });
+                })
+                
+                ;
     }
 
     public function fields(): PowerGridFields
