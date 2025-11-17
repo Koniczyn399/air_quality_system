@@ -16,20 +16,23 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\Auth\RoleType;
 
-
-
 final class ValuesTable extends PowerGridComponent
 {
     public string $tableName = 'values-table-a0bsl6-table';
-
     public ?string $device_id = null;
 
-
-    protected $listeners = ['deleteMeasurementConfirmed' => 'deleteMeasurement'];
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'deleteMeasurement' => 'deleteMeasurement',
+            ]
+        );
+    }
 
     public function setUp(): array
     {
-
         return [
             PowerGrid::header()
                 ->showSearchInput(),
@@ -77,7 +80,6 @@ final class ValuesTable extends PowerGridComponent
                 ->searchable(),
         ];
 
-        // ✅ pobieramy urządzenie, żeby sprawdzić jego parametry
         $device = MeasurementDevice::find($this->device_id);
         $deviceParams = [];
 
@@ -93,7 +95,6 @@ final class ValuesTable extends PowerGridComponent
             $deviceParams = array_map('intval', $ids);
         }
 
-        // ✅ dodajemy tylko kolumny dla parametrów, które urządzenie posiada
         if (in_array(6, $deviceParams)) {
             $columns[] = Column::make('Temperatura', 'temp_value')->sortable()->searchable();
         }
@@ -113,7 +114,6 @@ final class ValuesTable extends PowerGridComponent
             $columns[] = Column::make('PM10', 'pm10_value')->sortable()->searchable();
         }
 
-        // ✅ kolumna z akcjami
         $columns[] = Column::action('Akcje');
 
         return $columns;
@@ -123,52 +123,67 @@ final class ValuesTable extends PowerGridComponent
     {
         $actions = [];
         $user = Auth::user();
+        
         /** @var \App\Models\User $user */
         if ($user && ($user->hasRole(RoleType::ADMIN->value) || $user->hasRole(RoleType::MAINTEINER->value))) {
-        $actions[] = Button::add('edit_value')
+            
+            $actions[] = Button::add('edit_value')
                 ->slot(Blade::render('<x-wireui-icon name="wrench" class="w-5 h-5" mini />'))
                 ->tooltip('Edytuj pomiar')
                 ->class('text-yellow-500 hover:text-yellow-700')
-                ->route('measurements.edit', ['measurement' => $measurement]);
+                ->route('measurements.edit', ['measurement' => $measurement, 'device_id' => $this->device_id]);
 
-        $actions[] = Button::add('delete')
+            $actions[] = Button::add('delete')
                 ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
-                ->tooltip('Usuń')
+                ->tooltip('Usuń pomiar')
                 ->class('text-red-500 hover:text-red-700')
-                ->dispatch('delete_measurement', [
+                ->dispatch('deleteMeasurement', [
                     'id' => $measurement->id,
                     'confirm' => [
                         'title' => 'Potwierdzenie usunięcia',
                         'description' => 'Czy na pewno chcesz usunąć ten pomiar?',
                         'accept' => [
                             'label' => 'Tak, usuń',
-                            'method' => 'delete',
-                            'params' => ['id' => $measurement->id],
+                            'method' => 'deleteMeasurement',
+                            'params' => $measurement->id,
                         ],
-                        'reject' => ['label' => 'Anuluj'],
+                        'reject' => [
+                            'label' => 'Anuluj',
+                        ],
                     ],
                 ]);
         }
+        
         return $actions;
     }
 
     public function filters(): array
     {
-        return [
-        ];
+        return [];
     }
 
-    #[\Livewire\Attributes\On('delete_confirmed')]
-    public function deleteConfirmed($id): void
+    #[\Livewire\Attributes\On('deleteMeasurement')]
+    public function deleteMeasurement($id): void
     {
+        // Sprawdzamy czy $id jest tablicą (jak czasem Livewire przekazuje)
+        if (is_array($id)) {
+            $id = $id['id'] ?? $id[0] ?? null;
+        }
+
         $measurement = Measurement::find($id);
 
         if ($measurement) {
+            // Usuń powiązane wartości
+            $measurement->values()->delete();
+            // Usuń pomiar
             $measurement->delete();
+            
             $this->dispatch('showToast', type: 'success', message: 'Pomiar został usunięty.');
+            
+            // Odśwież tabelę
+            $this->refresh();
         } else {
             $this->dispatch('showToast', type: 'error', message: 'Nie znaleziono pomiaru do usunięcia.');
         }
     }
-
 }
