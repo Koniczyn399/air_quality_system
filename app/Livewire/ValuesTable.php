@@ -157,54 +157,38 @@ final class ValuesTable extends PowerGridComponent
     }
 
     public function columns(): array
-    {
-        $columns = [
-            Column::make('Data Pomiaru', 'measurements_date')
-                ->sortable()
-                ->searchable(),
-        ];
+{
+    $columns = [
+        Column::make('Data Pomiaru', 'measurements_date')
+            ->sortable()
+            ->searchable(),
+    ];
 
-        $device = MeasurementDevice::find($this->device_id);
-        $deviceParams = [];
+    $deviceParams = $this->getDeviceParameterIds();
 
-        if ($device) {
-            $ids = is_array($device->parameter_ids)
-                ? $device->parameter_ids
-                : json_decode($device->parameter_ids, true);
-        foreach ($this->getDeviceParameterIds() as $parameterId) {
-            $meta = $this->parameterMeta[$parameterId] ?? null;
-
-            if (!$meta) {
-                continue;
-            }
-
-            $deviceParams = array_map('intval', $ids);
-        }
-
-        if (in_array(6, $deviceParams)) {
-            $columns[] = Column::make('Temperatura', 'temp_value')->sortable()->searchable();
-        }
-        if (in_array(4, $deviceParams)) {
-            $columns[] = Column::make('Wilgotność', 'hum_value')->sortable()->searchable();
-        }
-        if (in_array(5, $deviceParams)) {
-            $columns[] = Column::make('Ciśnienie', 'press_value')->sortable()->searchable();
-        }
-        if (in_array(1, $deviceParams)) {
-            $columns[] = Column::make('PM1', 'pm1_value')->sortable()->searchable();
-        }
-        if (in_array(2, $deviceParams)) {
-            $columns[] = Column::make('PM2.5', 'pm25_value')->sortable()->searchable();
-        }
-        if (in_array(3, $deviceParams)) {
-            $columns[] = Column::make('PM10', 'pm10_value')->sortable()->searchable();
-            $columns[] = Column::make($meta['label'], $meta['alias'])->sortable()->searchable();
-        }
-
-        $columns[] = Column::action('Akcje');
-
-        return $columns;
+    if (in_array(6, $deviceParams)) {
+        $columns[] = Column::make('Temperatura', 'temp_value')->sortable()->searchable();
     }
+    if (in_array(4, $deviceParams)) {
+        $columns[] = Column::make('Wilgotność', 'hum_value')->sortable()->searchable();
+    }
+    if (in_array(5, $deviceParams)) {
+        $columns[] = Column::make('Ciśnienie', 'press_value')->sortable()->searchable();
+    }
+    if (in_array(1, $deviceParams)) {
+        $columns[] = Column::make('PM1', 'pm1_value')->sortable()->searchable();
+    }
+    if (in_array(2, $deviceParams)) {
+        $columns[] = Column::make('PM2.5', 'pm25_value')->sortable()->searchable();
+    }
+    if (in_array(3, $deviceParams)) {
+        $columns[] = Column::make('PM10', 'pm10_value')->sortable()->searchable();
+    }
+
+    $columns[] = Column::action('Akcje');
+
+    return $columns;
+}
 
     public function actions(Measurement $measurement): array
     {
@@ -251,9 +235,15 @@ final class ValuesTable extends PowerGridComponent
 
     #[\Livewire\Attributes\On('deleteMeasurement')]
     public function deleteMeasurement($id): void
-    public function updatedParameterRanges(): void
     {
-        $this->resetPage();
+        // Tutaj powinna być implementacja usuwania pomiaru
+        // Na przykład:
+        $measurement = Measurement::find($id);
+        if ($measurement) {
+            $measurement->values()->delete();
+            $measurement->delete();
+            $this->dispatch('showToast', type: 'success', message: 'Pomiar został usunięty.');
+        }
     }
 
     public function updatedDateFrom(?string $value): void
