@@ -9,6 +9,8 @@ use App\Http\Controllers\MeasurementController;
 use App\Models\MeasurementDevice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Measurements\MeasurementForm;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,8 +67,9 @@ Route::middleware([
         ->name('measurements.create');
     Route::post('/measurements', [MeasurementController::class, 'store'])
     ->name('measurements.store');
-    Route::get('/measurements/{measurement}/edit', [MeasurementController::class, 'edit'])
-    ->name('measurements.edit');
+    Route::resource('measurements', MeasurementController::class); 
+    Route::get('/measurements/{measurement}/edit/{device_id?}', MeasurementForm::class)
+        ->name('measurements.edit');
     Route::resource('measurements', MeasurementController::class);
     Route::resource('values', ValueController::class);
     Route::delete('/measurements/{measurement}', [MeasurementController::class, 'destroy'])->name('measurements.destroy');    
