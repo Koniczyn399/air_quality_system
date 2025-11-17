@@ -3,6 +3,7 @@
         {{ __('data.labels.data_management') }}
     </h3>
 
+
     <hr class="my-2 border-gray-200 dark:border-gray-700">
 
     <div class="grid grid-cols-2 gap-2">
@@ -15,7 +16,7 @@
                 placeholder="{{ __('data.attributes.select_devices') }}"
                 multiselect
                 :async-data="route('measurement-devices.get_devices', $devices)"
-                wire:model="device_ids"
+                wire:model.live="device_ids"
                 option-label="name"
                 option-value="id"
                 class="w-full theme-input mt-2"
@@ -33,9 +34,10 @@
             </label>
         </div>
         <div>
-        <input type="file" wire:model="file" class="theme-input w-full">
-            @error('file') <span class="text-red-600 dark:text-red-400">{{ $message }}</span> @enderror
-
+            <x-wireui-input type="file" wire:model.defer="file" class="theme-input w-full" />
+            @error('file') 
+                <span class="text-red-600 dark:text-red-400">{{ $message }}</span> 
+            @enderror
 
         </div>
     </div>
