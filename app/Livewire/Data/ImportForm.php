@@ -40,7 +40,7 @@ class ImportForm extends Component
     // Triggeruje się gdy plik zostanie wysłany do formularza / Zostanie cokolwiek wysłane do formularza lub zaznaczone w formularzu
     public function updated()
     {
-        dd($this->file);
+       
         $extension = $this->file->getClientOriginalExtension();
         $this->extension = $extension;
 
