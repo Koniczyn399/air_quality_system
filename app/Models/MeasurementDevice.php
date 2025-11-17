@@ -53,5 +53,9 @@ class MeasurementDevice extends Model
     {
         return Parameter::whereIn('id', $this->parameter_ids ?? [])->get();
     }
+    public function values(): HasMany
+    {
+        return $this->hasMany(Value::class, 'measurement_id');
+    }
 
 }
