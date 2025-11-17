@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Measurement;
-use App\Models\Value;
 use App\Models\MeasurementDevice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,31 +14,93 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\Auth\RoleType;
+use Illuminate\Support\Carbon;
 
 final class ValuesTable extends PowerGridComponent
 {
     public string $tableName = 'values-table-a0bsl6-table';
     public ?string $device_id = null;
 
-    protected function getListeners()
-    {
-        return array_merge(
-            parent::getListeners(),
-            [
-                'deleteMeasurement' => 'deleteMeasurement',
-            ]
-        );
-    }
+    public ?string $dateFrom = null;
+
+    public ?string $dateTo = null;
+
+    public array $quickRangeOptions = [
+        '24h' => 'Ostatnie 24h',
+        '7d'  => 'Ostatnie 7 dni',
+        '30d' => 'Ostatnie 30 dni',
+        'all' => 'Cały okres',
+    ];
+
+    public string $activeQuickRange = '30d';
+
+    public array $parameterRanges = [];
+
+    public bool $showAdvancedFilters = false;
+
+    protected array $parameterMeta = [
+        6 => [
+            'alias' => 'temp_value',
+            'label' => 'Temperatura',
+            'unit'  => '°C',
+            'step'  => '0.1',
+        ],
+        4 => [
+            'alias' => 'hum_value',
+            'label' => 'Wilgotność',
+            'unit'  => '%',
+            'step'  => '0.1',
+        ],
+        5 => [
+            'alias' => 'press_value',
+            'label' => 'Ciśnienie',
+            'unit'  => 'hPa',
+            'step'  => '1',
+        ],
+        1 => [
+            'alias' => 'pm1_value',
+            'label' => 'PM1',
+            'unit'  => 'µg/m³',
+            'step'  => '0.1',
+        ],
+        2 => [
+            'alias' => 'pm25_value',
+            'label' => 'PM2.5',
+            'unit'  => 'µg/m³',
+            'step'  => '0.1',
+        ],
+        3 => [
+            'alias' => 'pm10_value',
+            'label' => 'PM10',
+            'unit'  => 'µg/m³',
+            'step'  => '0.1',
+        ],
+    ];
+
+    protected ?array $cachedDeviceParameterIds = null;
+
+
+    protected $listeners = ['deleteMeasurementConfirmed' => 'deleteMeasurement'];
 
     public function setUp(): array
     {
         return [
             PowerGrid::header()
-                ->showSearchInput(),
+                ->showSearchInput()
+                ->includeViewOnTop('livewire.values-table.filters'),
             PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
+    }
+
+    public function booted(): void
+    {
+        if (is_null($this->dateFrom) && is_null($this->dateTo)) {
+            $this->applyQuickRange($this->activeQuickRange, false);
+        }
+
+        $this->ensureParameterRangeKeys();
     }
 
     public function datasource(): Builder
@@ -55,9 +116,32 @@ final class ValuesTable extends PowerGridComponent
                 DB::raw('MAX(CASE WHEN values.parameter_id = 2 THEN values.value ELSE NULL END) as pm25_value'),
                 DB::raw('MAX(CASE WHEN values.parameter_id = 3 THEN values.value ELSE NULL END) as pm10_value'),
             ])
-            ->join('values', 'measurements.id', '=', 'values.measurement_id')
-            ->where('measurements.device_id', $this->device_id)
-            ->groupBy('measurements.id', 'measurements.measurements_date');
+                ->join('values', 'measurements.id', '=', 'values.measurement_id')
+                ->where('measurements.device_id', $this->device_id)
+                ->when($this->dateFrom, fn ($query) => $query->whereDate('measurements.measurements_date', '>=', $this->dateFrom))
+                ->when($this->dateTo, fn ($query) => $query->whereDate('measurements.measurements_date', '<=', $this->dateTo))
+                ->groupBy('measurements.id', 'measurements.measurements_date')
+                ->tap(function ($query) {
+                    foreach ($this->getDeviceParameterIds() as $parameterId) {
+                        $meta = $this->parameterMeta[$parameterId] ?? null;
+
+                        if (!$meta) {
+                            continue;
+                        }
+
+                        $alias = $meta['alias'];
+                        $min   = data_get($this->parameterRanges, $alias.'.min');
+                        $max   = data_get($this->parameterRanges, $alias.'.max');
+
+                        if ($min !== null && $min !== '') {
+                            $query->havingRaw("{$alias} >= ?", [$min]);
+                        }
+
+                        if ($max !== null && $max !== '') {
+                            $query->havingRaw("{$alias} <= ?", [$max]);
+                        }
+                    }
+                });
     }
 
     public function fields(): PowerGridFields
@@ -87,9 +171,11 @@ final class ValuesTable extends PowerGridComponent
             $ids = is_array($device->parameter_ids)
                 ? $device->parameter_ids
                 : json_decode($device->parameter_ids, true);
+        foreach ($this->getDeviceParameterIds() as $parameterId) {
+            $meta = $this->parameterMeta[$parameterId] ?? null;
 
-            if (!is_array($ids)) {
-                $ids = explode(',', (string) $device->parameter_ids);
+            if (!$meta) {
+                continue;
             }
 
             $deviceParams = array_map('intval', $ids);
@@ -112,6 +198,7 @@ final class ValuesTable extends PowerGridComponent
         }
         if (in_array(3, $deviceParams)) {
             $columns[] = Column::make('PM10', 'pm10_value')->sortable()->searchable();
+            $columns[] = Column::make($meta['label'], $meta['alias'])->sortable()->searchable();
         }
 
         $columns[] = Column::action('Akcje');
@@ -164,6 +251,138 @@ final class ValuesTable extends PowerGridComponent
 
     #[\Livewire\Attributes\On('deleteMeasurement')]
     public function deleteMeasurement($id): void
+    public function updatedParameterRanges(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDateFrom(?string $value): void
+    {
+        $this->activeQuickRange = 'custom';
+
+        if ($value && $this->dateTo && $value > $this->dateTo) {
+            $this->dateTo = $value;
+        }
+
+        $this->resetPage();
+    }
+
+    public function updatedDateTo(?string $value): void
+    {
+        $this->activeQuickRange = 'custom';
+
+        if ($value && $this->dateFrom && $value < $this->dateFrom) {
+            $this->dateFrom = $value;
+        }
+
+        $this->resetPage();
+    }
+
+    public function applyQuickRange(string $rangeKey, bool $resetPagination = true): void
+    {
+        $range = array_key_exists($rangeKey, $this->quickRangeOptions) ? $rangeKey : '30d';
+
+        $this->activeQuickRange = $range;
+
+        if ($range === 'all') {
+            $this->dateFrom = null;
+            $this->dateTo   = null;
+        } else {
+            $this->dateTo = Carbon::now()->toDateString();
+
+            $startPoint = match ($range) {
+                '24h' => Carbon::now()->subHours(24),
+                '7d'  => Carbon::now()->subDays(7),
+                default => Carbon::now()->subDays(30),
+            };
+
+            $this->dateFrom = $startPoint->toDateString();
+        }
+
+        if ($resetPagination) {
+            $this->resetPage();
+        }
+    }
+
+    public function resetDateFilters(): void
+    {
+        $this->applyQuickRange('30d');
+    }
+
+    public function toggleAdvancedFilters(): void
+    {
+        $this->showAdvancedFilters = !$this->showAdvancedFilters;
+    }
+
+    protected function ensureParameterRangeKeys(): void
+    {
+        foreach ($this->getDeviceParameterIds() as $parameterId) {
+            $meta = $this->parameterMeta[$parameterId] ?? null;
+
+            if (!$meta) {
+                continue;
+            }
+
+            $alias = $meta['alias'];
+
+            if (!isset($this->parameterRanges[$alias])) {
+                $this->parameterRanges[$alias] = ['min' => null, 'max' => null];
+            }
+        }
+    }
+
+    protected function getDeviceParameterIds(): array
+    {
+        if (!is_null($this->cachedDeviceParameterIds)) {
+            return $this->cachedDeviceParameterIds;
+        }
+
+        if (!$this->device_id) {
+            return $this->cachedDeviceParameterIds = [];
+        }
+
+        $device = MeasurementDevice::find($this->device_id);
+
+        if (!$device) {
+            return $this->cachedDeviceParameterIds = [];
+        }
+
+        $ids = $device->parameter_ids;
+
+        if (!is_array($ids)) {
+            $decoded = json_decode($ids, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $ids = $decoded;
+            } else {
+                $ids = array_filter(explode(',', (string) $ids));
+            }
+        }
+
+        $ids = array_map('intval', $ids);
+
+        return $this->cachedDeviceParameterIds = array_filter($ids);
+    }
+
+    public function getParameterFilterFieldsProperty(): array
+    {
+        $this->ensureParameterRangeKeys();
+
+        $fields = [];
+
+        foreach ($this->getDeviceParameterIds() as $parameterId) {
+            if (!isset($this->parameterMeta[$parameterId])) {
+                continue;
+            }
+
+            $fields[] = $this->parameterMeta[$parameterId];
+        }
+
+        return $fields;
+    }
+
+    #[\Livewire\Attributes\On('delete_confirmed')]
+    public function deleteConfirmed($id): void
     {
         // Sprawdzamy czy $id jest tablicą (jak czasem Livewire przekazuje)
         if (is_array($id)) {
