@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class PollutionColorHelper
 {
-    public static function getPollutionColor($value, $parameter)
+    public static function getPollutionColor($value, $parameterName)
     {
         switch ($parameterName) {
             case 'PM1':
