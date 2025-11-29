@@ -3,10 +3,13 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Livewire\Component;
+use Illuminate\Support\Str;
+use App\Enums\Auth\RoleType;
 use WireUi\Traits\WireUiActions;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class UserForm extends Component
 {
@@ -80,8 +83,17 @@ class UserForm extends Component
             $user->syncRoles($role);
         }
 
+
+
+        Session::flash('message', 'Użytkownik został zmodyfikowany'); 
+        Session::flash('icon', 'success'); 
+
+
         return $this->redirect(route('users.index'));
     }
+
+                //     icon: {{ session()->get('icon','warning') }},
+                // title: {{ session()->get('status','Brak statusu') }},
 
     public function rules()
     {
