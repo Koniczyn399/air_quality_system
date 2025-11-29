@@ -49,9 +49,9 @@ use WireUiActions;
     public function mount(MeasurementDevice $measurementDevice, $headers = null){
 
        $selected_headers = json_decode($headers);
-       //dd($selected_headers);
+
     
-                // Pobierz tylko użytkowników z rolą serwisanta
+        // Pobierz tylko użytkowników z rolą serwisanta
         $maintainers = User::whereHas('roles', function($query) {
             $query->where('name', 'MAINTEINER');
         })
@@ -122,6 +122,7 @@ use WireUiActions;
         // } else {
         //     $this->authorize('create', MeasurementDevice::class);
         // }
+      
 
 
         if (isset($this->measurementDevice->id)) {
@@ -133,6 +134,7 @@ use WireUiActions;
         }
 
         $this->parameter_ids = json_encode($this->parameter_ids);
+        //dd($this->parameter_ids);
 
 
         $m =MeasurementDevice::updateOrCreate(
@@ -194,6 +196,7 @@ use WireUiActions;
             ],
 
             'parameter_ids' => [
+                'required',
                 'json',
             ],
             'user_id' => [
