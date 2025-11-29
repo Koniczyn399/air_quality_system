@@ -7,7 +7,7 @@ return [
         'end_date' => 'Do',
         'devices' => 'Urządzenia',
         'parameters' => 'Parametry',
-        'select_devices' => 'Wybierz urządzenia do importu danych',
+        'select_devices' => 'Wybierz urządzenie do importu danych. ( Domyślnie jest używane id urządzenia z pliku )',
     ],
     'actions' => [
         'choose_device' => 'Wybierz urządzenie',

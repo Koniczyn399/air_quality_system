@@ -7,27 +7,6 @@
     <hr class="my-2 border-gray-200 dark:border-gray-700">
 
     <div class="grid grid-cols-2 gap-2">
-
-        <br><br><br>
-        <div style="position: absolute; width:400px ">
-           
-            <x-wireui-select
-                label="{{ __('data.attributes.select_devices') }}"
-                placeholder="{{ __('data.attributes.select_devices') }}"
-                multiselect
-                :async-data="route('measurement-devices.get_devices', $devices)"
-                wire:model.live="device_ids"
-                option-label="name"
-                option-value="id"
-                class="w-full theme-input mt-2"
-                
-            />
-        </div>
-    </div>
-
-    <hr class="my-2 border-gray-200 dark:border-gray-700">
-
-    <div class="grid grid-cols-2 gap-2">
         <div>
             <label for="file" class="block text-sm font-medium theme-text-subtle">
                 {{ __('data.labels.select_file') }}
@@ -41,6 +20,28 @@
 
         </div>
     </div>
+
+    @if ($eligible_devices)
+    <hr class="my-2 border-gray-200 dark:border-gray-700">
+    <div class="grid grid-cols-2 gap-2">
+        <br><br><br>
+        <div style="position: absolute; width:400px ">
+        
+           
+            <x-wireui-select
+                label="{{ __('data.attributes.select_devices') }}"
+                placeholder="{{ __('data.actions.choose_device') }}"
+                
+                :options="$this->eligible_devices"
+                wire:model.live="device_ids"
+                option-label="name"
+                option-value="id"
+                class="w-full theme-input mt-2"
+                
+            />
+        </div>
+    </div>
+    @endif
 
     <hr class="my-2 border-gray-200 dark:border-gray-700">
 

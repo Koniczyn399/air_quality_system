@@ -92,7 +92,6 @@
                     class="w-full theme-input"
                     wire:model="parameter_ids"
                 >
-
                 </x-wireui-select>
 
             </div>
