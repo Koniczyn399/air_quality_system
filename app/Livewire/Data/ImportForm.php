@@ -345,79 +345,65 @@ class ImportForm extends Component
                 }
             } else {
 
-            //Stara, wolna logika
-
-            //     $csv = array_map('str_getcsv', file(Storage::path($this->filename)));
-            //     ini_set('max_execution_time', '300');
-
-            //     // headers
-            //     $hh = implode(';', $csv[0]);
-            //     $headers = explode(';', $hh);
-            //     $headers = DataForm::return_database_headers($headers);
-
-            //     for ($i = 1; $i < count($csv); $i++) {
-            //         $cc = implode(';', $csv[$i]);
-            //         $c = explode(';', $cc);
-
-            //         // dd($c, $headers);
-
-            //         $date = date_create($c[1]);
-            //         $date = date_format($date, 'Y-m-d H:i:s');
-
-            //         $m = Measurement::firstOrCreate(
-            //             [
-            //                 'measurements_date' => $date,
-            //                 'device_id' => trim($c[0], 'DEV00'),
-            //             ]
-            //         );
-
-            //         $measurement_id = $m->id;
-
-            //         for ($j = 2; $j < count($headers); $j++) {
-            //             Value::firstOrCreate(
-            //                 [
-            //                     'measurement_id' => $measurement_id,
-            //                     'parameter_id' => $headers[$j],
-            //                     'value' => $c[$j],
-            //                 ]
-            //             );
-            //         }
-            //     }
-            // }
-
-            //dd($this->devices_data[0]);
-            foreach ($this->devices_data as $value) {
-
-                //dd($value, $this->data_headers_2, $this->data_headers);
                 $headers=$this->data_headers_2;
                 $p_id=$this->data_headers;
+                $measurement_array=[];
+                $start_id=0;
+                $values_array=[];
 
-                $date = date_create($value["created_at"]);
-                $date = date_format($date, 'Y-m-d H:i:s');
+                foreach ($this->devices_data as $value) {
 
-                    
-                $m = Measurement::firstOrCreate(
-                    [
+                    $date = date_create($value["created_at"]);
+                    $date = date_format($date, 'Y-m-d H:i:s');
+
+                        
+                    $measurement_array[]=[
                         'measurements_date' => $date,
                         'device_id' => trim($value["devid"], 'DEV00'),
-                    ]
-                );
-
-                $measurement_id = $m->id;
-
-                for ($j = 0; $j < count($headers); $j++) {
-                    
-                    Value::firstOrCreate(
-                        [
-                            'measurement_id' => $measurement_id,
-                            'parameter_id' => $p_id[$j],
-                            'value' => $value[$headers[$j]],
-                        ]
-                    );
+                        'created_at'=>now(),
+                        'updated_at'=>now()
+                    ];
                 }
 
-            }
-           
+
+                $inc=Measurement::query()->select([
+                    'measurements.id'
+                ])->get()->toArray();
+                $inc=count($inc);
+                if($inc!=0){
+                    $start_id=$inc;
+                }
+                
+                Measurement::insert($measurement_array);
+               
+
+                foreach ($this->devices_data as $d) {
+
+
+                    for ($j = 0; $j < count($headers); $j++) {
+
+                        $created_at = date_create($d["created_at"]);
+                        $created_at = date_format($created_at, 'Y-m-d H:i:s');
+
+                        $values_array[]=[
+                            'measurement_id'=>$start_id,
+                            'parameter_id' => $p_id[$j],
+                            'value' => $d[$headers[$j]],
+                            'created_at'=>$created_at,
+                            'updated_at'=>now(),
+                        ];
+                        $start_id++;
+                    }
+
+                }
+                
+
+                
+                foreach (array_chunk($values_array, 1000) as $chunk) {
+                    Value::insert($chunk);
+                }
+
+
 
 
 

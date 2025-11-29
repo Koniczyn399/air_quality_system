@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Parameter;
 use WireUi\Traits\WireUiActions;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 class MeasurementDeviceForm extends Component
 {
@@ -122,6 +123,15 @@ use WireUiActions;
         //     $this->authorize('create', MeasurementDevice::class);
         // }
 
+
+        if (isset($this->measurementDevice->id)) {
+            Session::flash('message', 'Urządzenie zostało zmodyfikowane'); 
+            Session::flash('icon', 'success'); 
+        } else {
+            Session::flash('message', 'Urządzenie zostało dodane'); 
+            Session::flash('icon', 'success'); 
+        }
+
         $this->parameter_ids = json_encode($this->parameter_ids);
 
 
@@ -136,8 +146,7 @@ use WireUiActions;
         
 
 
-        return redirect()->route('measurement-devices.index')
-            ->with('success', 'Urządzenie zaktualizowane pomyślnie');
+        return redirect()->route('measurement-devices.index');
     }
 
     public function open_parameters()

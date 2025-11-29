@@ -18,10 +18,43 @@
     @livewireStyles
 </head>
 
+
 <body class="font-sans antialiased">
     <x-banner />
+    
+    
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- https://sweetalert2.github.io/ -->
+
+    @if(Session::has('message'))
+        <div class="flash_message" style='display: none;'>{{ Session::get('message') }}</div>
+        <div class="flash_icon" style='display: none;'>{{ Session::get('icon') }}</div>
+
+        <script>
+            let icon_var =document.getElementsByClassName("flash_icon");
+            icon_var = icon_var[0].innerHTML;
+            let message_var =document.getElementsByClassName("flash_message");
+            message_var = message_var[0].innerHTML;
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: icon_var,
+                title: message_var,
+                showConfirmButton: false,
+                timer: 3000
+                });
+        </script>
+    @endif
+
+
     <x-wireui-notifications />
+    
     <x-wireui-dialog />
+
+    
+
 
     <div class="min-h-screen theme-bg">
         @livewire('navigation-menu')
@@ -39,13 +72,12 @@
         </main>
     </div>
 
-    @stack('modals')
-    @livewireScripts
 
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- https://sweetalert2.github.io/ -->
+
+    @stack('modals')
     
+    @livewireScripts
+        
     <script>
         document.addEventListener('livewire:initialized', () => {
             
@@ -93,6 +125,7 @@
             // Obsługa powiadomień
             Livewire.on('showToast', (event) => {
                 Swal.fire({
+                    toast: true,
                     position: 'top-end',
                     icon: event.type,
                     title: event.message,
@@ -101,7 +134,10 @@
                 });
             });
         });
+
     </script>
+
+
     
 </body>
 </html>
