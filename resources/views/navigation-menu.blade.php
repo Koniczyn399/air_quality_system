@@ -16,6 +16,9 @@
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')" class="theme-nav-link">
                         Użytkownicy
                     </x-nav-link>
+                    <x-nav-link href="{{ route('measurements.index') }}" :active="request()->routeIs('measurements.index')" class="theme-nav-link">
+                        Pomiary
+                    </x-nav-link>
                     <x-nav-link href="{{ route('measurement-devices.index') }}" :active="request()->routeIs('measurement-devices.index')" class="theme-nav-link">
                         Urządzenia
                     </x-nav-link>

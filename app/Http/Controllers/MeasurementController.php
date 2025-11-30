@@ -18,14 +18,19 @@ class MeasurementController extends Controller
             return redirect()->route('values.index')->with('error', 'Nie znaleziono urządzenia.');
         }
 
-        $paramIds = is_array($device->parameter_ids)
-            ? $device->parameter_ids
-            : json_decode($device->parameter_ids, true);
+        // Wymuszamy tablicę. Nawet jeśli w DB jest "" albo "1,2,3"
+        $paramIds = $device->parameter_ids;
+
+        if (!is_array($paramIds)) {
+            $decoded = json_decode($paramIds, true);
+            $paramIds = is_array($decoded) ? $decoded : [];
+        }
 
         $parameters = Parameter::whereIn('id', $paramIds)->get();
 
         return view('measurements.create', compact('device', 'parameters'));
     }
+
 
     public function store(Request $request)
     {
@@ -52,6 +57,17 @@ class MeasurementController extends Controller
 
         return redirect()->route('values.index', ['device_id' => $measurement->device_id])
             ->with('success', 'Pomiar został dodany.');
+    }
+
+    public function index()
+    {
+        // Pobieramy wszystkie pomiary + urządzenie + wartości + parametry
+        $measurements = Measurement::with([
+            'device',
+            'values.parameter'
+        ])->orderBy('created_at', 'desc')->get();
+
+        return view('measurements.index', compact('measurements'));
     }
 
     public function edit(Measurement $measurement)
