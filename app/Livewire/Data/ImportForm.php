@@ -8,9 +8,8 @@ use App\Models\Measurement;
 use Livewire\WithFileUploads;
 use WireUi\Traits\WireUiActions;
 use App\Models\MeasurementDevice;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
-
-use function PHPUnit\Framework\isEmpty;
 
 class ImportForm extends Component
 {
@@ -34,149 +33,107 @@ class ImportForm extends Component
     public $filename = null;
 
     public $new_device_headers = null;
+    public $eligible_devices =null;
 
     public function mount() {}
 
     // Triggeruje się gdy plik zostanie wysłany do formularza / Zostanie cokolwiek wysłane do formularza lub zaznaczone w formularzu
     public function updated()
     {
+        if($this->file!=null){
         
-        $extension = $this->file->getClientOriginalExtension();
-        $this->extension = $extension;
+            $extension = $this->file->getClientOriginalExtension();
+            $this->extension = $extension;
 
-        // Przetwarzanie pliku na tablicę. Plik zapisywany jest w storage/app/private/files
-        $filename = 'files/'.$this->file->getClientOriginalName();
-        $this->file->storeAs(path: 'files', name: $this->file->getClientOriginalName());
-        $this->filename = $filename;
-
-    
-
-        if ($extension == 'json') {
-            $devices_data = Storage::json($filename);
-            $this->devices_data = $devices_data;
-
-            // Wrzucanie wszystkich danych z pliku w jednego Stringa
-            $preview = '';
-            foreach ($devices_data as $d) {
-
-                $preview = $preview.'id: '.$d['id'].'<br>';
-                $preview = $preview.'device_id: '.$d['device_id'].'<br>';
-                $preview = $preview.'date_time: '.$d['date_time'].'<br>';
-
-                $parameters = $d['parameters'];
-
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm1: '.$parameters['pm1'].'<br>';
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm2_5: '.$parameters['pm2_5'].'<br>';
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm10: '.$parameters['pm10'].'<br>';
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'humidity: '.$parameters['humidity'].'<br>';
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pressure: '.$parameters['pressure'].'<br>';
-                $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'temperature: '.$parameters['temperature'].'<br>';
-
-                $preview = $preview.'<br><br>';
-
-            }
-
-            $this->meaurements = $preview;
-        } elseif ($extension == 'csv') 
-        {
-
-            //$csv = array_map('str_getcsv', file(Storage::path($filename)));
-            ini_set('max_execution_time', '30000');
-
-           
-            
-            // 1. Split by new line. Use the PHP_EOL constant for cross-platform compatibility.
-            $csv=file(Storage::path($filename));
-            //dd($csv);
+            // Przetwarzanie pliku na tablicę. Plik zapisywany jest w storage/app/private/files
+            $filename = 'files/'.$this->file->getClientOriginalName();
+            $this->file->storeAs(path: 'files', name: $this->file->getClientOriginalName());
+            $this->filename = $filename;
 
         
-            // 2. Extract the header and convert it into a Laravel collection.
-            $header = collect(explode(';',str_replace("\r","",str_replace("\n","",array_shift($csv))) ) );
 
-            //dd($header);
+            if ($extension == 'json') {
+                $devices_data = Storage::json($filename);
+                $this->devices_data = $devices_data;
+
+                // Wrzucanie wszystkich danych z pliku w jednego Stringa
+                $preview = '';
+                foreach ($devices_data as $d) {
+
+                    $preview = $preview.'id: '.$d['id'].'<br>';
+                    $preview = $preview.'device_id: '.$d['device_id'].'<br>';
+                    $preview = $preview.'date_time: '.$d['date_time'].'<br>';
+
+                    $parameters = $d['parameters'];
+
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm1: '.$parameters['pm1'].'<br>';
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm2_5: '.$parameters['pm2_5'].'<br>';
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pm10: '.$parameters['pm10'].'<br>';
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'humidity: '.$parameters['humidity'].'<br>';
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'pressure: '.$parameters['pressure'].'<br>';
+                    $preview = $preview.'&nbsp;&nbsp;&nbsp;'.'temperature: '.$parameters['temperature'].'<br>';
+
+                    $preview = $preview.'<br><br>';
+
+                }
+
+                $this->meaurements = $preview;
+            } elseif ($extension == 'csv') 
+            {
+
             
-            // 3. Convert the rows into a Laravel collection.
-            $rows = collect($csv);
-            //dd($rows);
-        
+                $csv=file(Storage::path($filename));
+                $header = collect(explode(';',str_replace("\r","",str_replace("\n","",array_shift($csv))) ) );
+                $rows = collect($csv);
+                $data = $rows->map(
+                    fn($row) => $header->combine((explode(';',str_replace("\r","",str_replace("\n","",$row))) ) )
+                
+                );
 
-            // 4. Map through the rows and combine them with the header to produce the final collection.
-            $data = $rows->map(
-                fn($row) => $header->combine((explode(';',str_replace("\r","",str_replace("\n","",$row))) ) )
+                $preview = "<bold>Wczytane pomiary</bold><br>";
             
-            );
-
-            //dd($data[0]);
-
-            $preview = "<bold>Wczytane pomiary</bold><br>";
-           
-            for ($head=0; $head < count($header); $head++) { 
-                $preview = $preview . $header[$head]." ";
-            }
-            $preview = $preview ."<br>";
-            foreach ($data as $d) {
-                for ($i=0; $i < count($header); $i++) { 
-                     $preview = $preview . $d[$header[$i]]. " | ";
-                   
+                for ($head=0; $head < count($header); $head++) { 
+                    $preview = $preview . $header[$head]." ";
                 }
                 $preview = $preview ."<br>";
-                 
-            }
-
- 
-            //Stara, wolniejsza logika
-
-            // $hh = implode(';', $csv[0]);
-            // $headers = explode(';', $hh);
-            // $imported_device_ids=array();
-
-            // for ($i = 1; $i < count($csv); $i++) {
-            //     $cc = implode(';', $csv[$i]);
-            //     $c = explode(';', $cc);
-
-            //     $preview = $preview.'id: '.$i.'<br>';
-            //     $preview = $preview.'device_id: '.$c[0].'<br>';
-            //     $imported_device_ids[]=$c[0];
-                
-            //     $preview = $preview.'date_time: '.$c[1].'<br>';
-
-            //     for ($j = 2; $j < count($headers); $j++) {
-            //         $preview = $preview.'&nbsp;&nbsp;&nbsp;'.$headers[$j].': '.$c[$j].'<br>';
-            //     }
-
-            //     $preview = $preview.'<br><br>';
-
-            // }
-            // ini_set('max_execution_time', '30');
-
-
-           
-          
-         
-
-            $compatibile_devices = ImportForm::check_devices($header);
-
-            //dd($compatibile_devices);
-
-            if (empty($compatibile_devices)){
-                 $this->dispatch('add_device');
-            }
-
-            $device_info="";
-            if(!empty($compatibile_devices) ){
-                $device_info="<bold>Kompatybilne urządzenia<bold><br>";
-                foreach($compatibile_devices as $device)
-                {
-                    $device_info= $device_info."ID: " .$device->id ."  ". $device->name."<br>";
+                foreach ($data as $d) {
+                    for ($i=0; $i < count($header); $i++) { 
+                        $preview = $preview . $d[$header[$i]]. " | ";
+                    
+                    }
+                    $preview = $preview ."<br>";
+                    
                 }
-                $device_info= $device_info. "<br>";
-            }
+            
+
+                $compatibile_devices = ImportForm::check_devices($header);
 
 
-            $this->meaurements = $device_info . $preview;
-            $this->devices_data = $data;
+                if (empty($compatibile_devices)){
+                    $this->dispatch('add_device');
+                }
+                
+                $this->eligible_devices=collect($compatibile_devices);
+               
 
                 
+
+                $device_info="";
+                if(!empty($compatibile_devices) ){
+                    $device_info="<bold>Kompatybilne urządzenia<bold><br>";
+                    foreach($compatibile_devices as $device)
+                    {
+                        $device_info= $device_info."ID: " .$device->id ."  ". $device->name."<br>";
+                    }
+                    $device_info= $device_info. "<br>";
+                }
+
+
+                $this->meaurements = $device_info . $preview;
+                $this->devices_data = $data;
+
+                    
+            }
         }
 
     }
@@ -345,79 +302,89 @@ class ImportForm extends Component
                 }
             } else {
 
-            //Stara, wolna logika
-
-            //     $csv = array_map('str_getcsv', file(Storage::path($this->filename)));
-            //     ini_set('max_execution_time', '300');
-
-            //     // headers
-            //     $hh = implode(';', $csv[0]);
-            //     $headers = explode(';', $hh);
-            //     $headers = DataForm::return_database_headers($headers);
-
-            //     for ($i = 1; $i < count($csv); $i++) {
-            //         $cc = implode(';', $csv[$i]);
-            //         $c = explode(';', $cc);
-
-            //         // dd($c, $headers);
-
-            //         $date = date_create($c[1]);
-            //         $date = date_format($date, 'Y-m-d H:i:s');
-
-            //         $m = Measurement::firstOrCreate(
-            //             [
-            //                 'measurements_date' => $date,
-            //                 'device_id' => trim($c[0], 'DEV00'),
-            //             ]
-            //         );
-
-            //         $measurement_id = $m->id;
-
-            //         for ($j = 2; $j < count($headers); $j++) {
-            //             Value::firstOrCreate(
-            //                 [
-            //                     'measurement_id' => $measurement_id,
-            //                     'parameter_id' => $headers[$j],
-            //                     'value' => $c[$j],
-            //                 ]
-            //             );
-            //         }
-            //     }
-            // }
-
-            //dd($this->devices_data[0]);
-            foreach ($this->devices_data as $value) {
-
-                //dd($value, $this->data_headers_2, $this->data_headers);
                 $headers=$this->data_headers_2;
                 $p_id=$this->data_headers;
+                $measurement_array=[];
+                $start_id=0;
+                $values_array=[];
 
-                $date = date_create($value["created_at"]);
-                $date = date_format($date, 'Y-m-d H:i:s');
+                if($this->device_ids!=null)
+                {
+                    $selected_device=$this->device_ids;
+                    foreach ($this->devices_data as $value) {
 
+                    $date = date_create($value["created_at"]);
+                    $date = date_format($date, 'Y-m-d H:i:s');
+
+                        
+                    $measurement_array[]=[
+                        'measurements_date' => $date,
+                        'device_id' => $selected_device,
+                        'created_at'=>now(),
+                        'updated_at'=>now()
+                    ];
+                }
                     
-                $m = Measurement::firstOrCreate(
-                    [
+                }else{
+
+                    foreach ($this->devices_data as $value) {
+
+                    $date = date_create($value["created_at"]);
+                    $date = date_format($date, 'Y-m-d H:i:s');
+
+                        
+                    $measurement_array[]=[
                         'measurements_date' => $date,
                         'device_id' => trim($value["devid"], 'DEV00'),
-                    ]
-                );
-
-                $measurement_id = $m->id;
-
-                for ($j = 0; $j < count($headers); $j++) {
-                    
-                    Value::firstOrCreate(
-                        [
-                            'measurement_id' => $measurement_id,
-                            'parameter_id' => $p_id[$j],
-                            'value' => $value[$headers[$j]],
-                        ]
-                    );
+                        'created_at'=>now(),
+                        'updated_at'=>now()
+                    ];
+                }
                 }
 
-            }
-           
+                
+
+                
+
+
+                $inc=Measurement::query()->select([
+                    'measurements.id'
+                ])->get()->toArray();
+                $inc=count($inc);
+                if($inc!=0){
+                    $start_id=$inc;
+                }
+                
+                Measurement::insert($measurement_array);
+               
+
+                foreach ($this->devices_data as $d) {
+
+
+                    for ($j = 0; $j < count($headers); $j++) {
+
+                        $created_at = date_create($d["created_at"]);
+                        $created_at = date_format($created_at, 'Y-m-d H:i:s');
+
+                        $values_array[]=[
+                            'measurement_id'=>$start_id,
+                            'parameter_id' => $p_id[$j],
+                            'value' => $d[$headers[$j]],
+                            'created_at'=>$created_at,
+                            'updated_at'=>now(),
+                        ];
+                        $start_id++;
+                    }
+
+                }
+                
+
+                
+                foreach (array_chunk($values_array, 1000) as $chunk) {
+                    Value::insert($chunk);
+                }
+
+
 
 
 

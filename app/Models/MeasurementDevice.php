@@ -12,13 +12,13 @@ class MeasurementDevice extends Model
     protected $fillable = [
         'name', 'model', 'serial_number',
         'calibration_date', 'next_calibration_date',
-        'description', 'status', 'user_id', 'latitude', 'longitude'
+        'description', 'status', 'user_id', 'latitude', 'longitude','parameter_ids'
     ];
 
     protected $casts = [
         'calibration_date' => 'date',
         'next_calibration_date' => 'date',
-        'parameter_ids'=>'json',
+        
     ];
 
     public function statusHistory(): HasMany
