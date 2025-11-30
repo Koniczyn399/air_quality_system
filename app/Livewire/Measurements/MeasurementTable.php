@@ -10,124 +10,106 @@ use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Facades\Rule;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use App\Models\MeasurementDevice;
 
 final class MeasurementTable extends PowerGridComponent
 {
-    public string $tableName = 'measurement-table-ld6keh-table';
+    public string $tableName = 'measurement-table';
 
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
-            PowerGrid::header()
-                ->showSearchInput(),
-            PowerGrid::footer()
-                ->showPerPage()
-                ->showRecordCount(),
+            PowerGrid::header(),
+            PowerGrid::footer()->showPerPage()->showRecordCount(),
         ];
     }
 
     public function datasource(): Builder
     {
         return Measurement::query()
-            ->join('measurement_devices', function ($measurement_devices) {
-                $measurement_devices->on('measurements.device_id', '=', 'measurement_devices.id');
-            })
-            ->select([
-                'measurements.id',
-                'measurements.measurements_date',
-                'measurements.created_at',
-                'measurement_devices.name as device_name',
-
-            ]);
+            ->with(['device', 'values.parameter'])
+            ->leftJoin('measurement_devices', 'measurement_devices.id', '=', 'measurements.device_id')
+            ->select('measurements.*', 'measurement_devices.name as device_name');
     }
+
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('id')
             ->add('measurements_date')
-            ->add('device_name')
+            ->add('device_name', fn($m) => $m->device?->name ?? '-')
+
+            ->add('wilgotnosc', fn($m) => $m->valueByName('Wilgotność'))
+            ->add('cisnienie', fn($m) => $m->valueByName('Ciśnienie'))
+            ->add('temperatura', fn($m) => $m->valueByName('Temperatura'))
+
+            ->add('pm1', fn($m) => $m->valueByName('PM1'))
+            ->add('pm25', fn($m) => $m->valueByName('PM2.5'))
+            ->add('pm10', fn($m) => $m->valueByName('PM10'))
 
             ->add('created_at')
-            ->add('created_at_formatted', fn (Measurement $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->add('created_at_formatted', fn($m) => $m->created_at->format('d/m/Y H:i'));
     }
+
 
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
-                ->searchable()
-                ->sortable(),
+            Column::make('Data pomiaru', 'measurements_date')->sortable()->searchable(),
+            Column::make('Urządzenie', 'device_name')->sortable(),
 
-            Column::make(__('measurements.attributes.measurements_date'), 'measurements_date')
-                ->searchable()
-                ->sortable(),
-            Column::make(__('measurements.attributes.device_name'), 'device_name')
-                ->searchable()
-                ->sortable(),
+            Column::make('Wilgotność', 'wilgotnosc'),
+            Column::make('Ciśnienie', 'cisnienie'),
+            Column::make('Temperatura', 'temperatura'),
+            Column::make('PM1', 'pm1'),
+            Column::make('PM2.5', 'pm25'),
+            Column::make('PM10', 'pm10'),
 
-            Column::make(__('measurements.attributes.created_at'), 'created_at')
-                ->hidden(),
-
-            Column::make(__('measurements.attributes.created_at'), 'created_at_formatted', 'created_at')
-                ->searchable(),
-
-            Column::action(__('translation.actions.actions')),
+            Column::action('Akcje'),
         ];
     }
+
 
     public function filters(): array
     {
         return [
-            Filter::inputText('name'),
-            Filter::datepicker('created_at_formatted', 'created_at'),
+            Filter::select('device_name')
+                ->dataSource(MeasurementDevice::all())
+                ->optionLabel('name')
+                ->optionValue('name')
+                // ADD THIS: Tell the query to look at the real table column
+                ->builder(function (Builder $builder, string $value) {
+                    $builder->where('measurement_devices.name', $value);
+                }),
+
+
+            Filter::datepicker('measurements_date'),
         ];
-    }
-
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    #[\Livewire\Attributes\On('removeMeasurementAction')]
-    public function removeMeasurementAction($id): void
-    {
-        // $this->authorize('delete', Measurement::findOrFail($id));
-        Measurement::findOrFail($id)->delete();
     }
 
     public function actions(Measurement $measurement): array
     {
         return [
             Button::add('show_measurement')
-                ->slot(Blade::render('<x-wireui-icon name="eye" class="w-5 h-5" mini />'))
-                ->tooltip(__('measurements.actions.show_measurement'))
+                ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
+                ->tooltip('Podgląd')
                 ->class('text-green-500')
                 ->route('data.show', ['measurement' => $measurement]),
 
             Button::add('removeMeasurementAction')
-                ->slot(Blade::render('<x-wireui-icon name="x-mark" class="w-5 h-5" mini />'))
-                ->tooltip(__('measurements.actions.remove_measurement'))
+                ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
+                ->tooltip('Usuń')
                 ->class('text-red-500')
                 ->dispatch('removeMeasurementAction', ['id' => $measurement->id]),
         ];
     }
 
-    /*
-    public function actionRules(Measurement $row): array
+    #[\Livewire\Attributes\On('removeMeasurementAction')]
+    public function removeMeasurementAction($id): void
     {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+        Measurement::findOrFail($id)->delete();
     }
-    */
 }

@@ -18,6 +18,7 @@ class MeasurementDevice extends Model
     protected $casts = [
         'calibration_date' => 'date',
         'next_calibration_date' => 'date',
+        'parameter_ids' => 'array',
         
     ];
 
@@ -52,9 +53,10 @@ class MeasurementDevice extends Model
 
     public function parameters()
     {
-        $ids = json_decode($this->parameter_ids, true) ?? [];
+        $ids = $this->parameter_ids ?? [];
         return Parameter::whereIn('id', $ids)->get();
     }
+
     public function values(): HasMany
     {
         return $this->hasMany(Value::class, 'measurement_id');
