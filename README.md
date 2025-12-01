@@ -1,72 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# System Monitorowania Jakości Powietrza
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Projekt zespołowy realizowany w ramach zajęć. Aplikacja internetowa służąca do gromadzenia, zarządzania i wizualizacji danych o jakości powietrza. System umożliwia monitorowanie stanu czujników, przeglądanie pomiarów na interaktywnej mapie oraz generowanie raportów.
 
-## About Laravel
+## Wykorzystane technologie
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+W projekcie wykorzystano następujące technologie (wersje):
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Laravel 12** (PHP 8.2+) - backend aplikacji
+- **Livewire 3** - dynamiczne komponenty frontendowe
+- **Tailwind CSS 3** - warstwa wizualna (obsługa trybu jasnego i ciemnego)
+- **MySQL 8.0** - baza danych
+- **Docker & Laravel Sail** - środowisko uruchomieniowe
+- **Spatie Permission** - zarządzanie rolami i uprawnieniami
+- **WireUI & PowerGrid** - komponenty interfejsu (tabele, formularze)
+- **OpenStreetMap** - wizualizacja danych na mapie
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Wymagania wstępne
 
-## Learning Laravel
+Aby uruchomić projekt, upewnij się, że posiadasz zainstalowane:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Docker** (Docker Desktop lub Docker Engine) - musi być uruchomiony.
+- **Git** - do pobrania repozytorium.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Instrukcja uruchomienia
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Projekt jest przygotowany do pracy w środowisku Docker przy użyciu Laravel Sail.
 
-## Laravel Sponsors
+### Krok po kroku
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Sklonuj repozytorium:
+   ```bash
+   git clone <adres-repozytorium>
+   cd air_quality_system
+   ```
 
-### Premium Partners
+2. Utwórz plik konfiguracyjny:
+   ```bash
+   cp .env.example .env
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. Zainstaluj zależności PHP (skrypt wykorzystuje tymczasowy kontener):
+   ```bash
+   bash laravel_install_vendor.sh
+   ```
 
-## Contributing
+4. Uruchom aplikację:
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. Wygeneruj klucz aplikacji:
+   ```bash
+   ./vendor/bin/sail artisan key:generate
+   ```
 
-## Code of Conduct
+6. Zainstaluj zależności frontendowe i zbuduj pliki zasobów:
+   ```bash
+   ./vendor/bin/sail npm install
+   ./vendor/bin/sail npm run build
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. Uruchom migracje bazy danych wraz z danymi startowymi:
+   ```bash
+   ./vendor/bin/sail artisan migrate --seed
+   ```
 
-## Security Vulnerabilities
+Aplikacja będzie dostępna pod adresem: http://localhost
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Dostęp do systemu (Logowanie)
 
-## License
+Po uruchomieniu seedera (`php artisan migrate --seed`), w bazie danych zostaną utworzone domyślne konta testowe dla każdej z ról. Hasło dla wszystkich kont to: `12345678`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Rola | Email | Hasło |
+| :--- | :--- | :--- |
+| **Administrator** | `admin@example.com` | `12345678` |
+| **Serwisant** | `mainteiner@example.com` | `12345678` |
+| **Użytkownik** | `test@example.com` | `12345678` |
 
+## Zatrzymanie projektu
 
-## Generowanie nowego env
+Aby zatrzymać działające kontenery, wykonaj w terminalu polecenie:
+```bash
+./vendor/bin/sail down
+```
+Jeśli uruchomiłeś serwer deweloperski (`npm run dev`) w osobnym terminalu, możesz go zatrzymać skrótem klawiszowym `Ctrl + C`.
 
-cp .env.example .env
-php artisan key:generate
+## Funkcjonalności systemu
+
+### Zarządzanie Użytkownikami
+- Rejestracja i logowanie użytkowników.
+- System ról i uprawnień (Administrator, Serwisant, Użytkownik).
+- Zarządzanie kontami użytkowników przez administratora (dodawanie, edycja, usuwanie).
+
+### Urządzenia Pomiarowe
+- Ewidencja urządzeń pomiarowych (nazwa, model, numer seryjny).
+- Monitorowanie statusu urządzeń (aktywne, nieaktywne, w naprawie).
+- Śledzenie dat kalibracji (powiadomienia o zbliżającym się terminie na dashboardzie).
+- Historia zmian statusów urządzeń.
+- Przypisywanie lokalizacji geograficznej do urządzeń.
+
+### Pomiary i Dane
+- Gromadzenie danych pomiarowych z urządzeń.
+- Import danych z plików CSV.
+- Eksport danych pomiarowych.
+- Generowanie raportów PDF (systemowe, wartości, dla konkretnych urządzeń).
+- Przeglądanie szczegółowych wartości parametrów dla każdego pomiaru.
+
+### Wizualizacja i Mapa
+- Interaktywna mapa z naniesionymi lokalizacjami czujników.
+- Wizualizacja stanu powietrza za pomocą kolorowych znaczników.
+- Dashboard prezentujcy kluczowe informacje (np. urządzenia wymagające kalibracji).
+
+## Autorzy
+- Szymon Pinczak
+- Michał Grabka
+- Vladyslava Mamchenko
+- Jakub Kurtyka
