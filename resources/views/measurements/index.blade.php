@@ -7,8 +7,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="theme-bg theme-border border-b overflow-hidden shadow-xl sm:rounded-lg p-2">
-                <x-wireui-button primary label="{{ __('translation.actions.upload_data') }}" href="{{ route('data.upload') }}" class="justify-self-end" />
+            <div class="theme-bg theme-border border-b overflow-hidden shadow-xl sm:rounded-lg p-4">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <x-wireui-button positive label="Dodaj nowy pomiar" href="{{ route('measurements.create', ['device' => 1]) }}" /> 
+                    
+                    <x-wireui-button primary label="{{ __('translation.actions.upload_data') }}" href="{{ route('data.upload') }}" />
+                </div>
 
                 <livewire:measurements.measurement-table />
             </div>
