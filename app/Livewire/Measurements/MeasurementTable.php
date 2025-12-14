@@ -3,6 +3,7 @@
 namespace App\Livewire\Measurements;
 
 use App\Models\Measurement;
+use App\Models\MeasurementDevice;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
@@ -12,10 +13,14 @@ use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
-use App\Models\MeasurementDevice;
+// ZMIANA 1: Poprawny import dla WireUI v2
+use WireUi\Traits\WireUiActions; 
 
 final class MeasurementTable extends PowerGridComponent
 {
+    // ZMIANA 2: Użycie poprawnego Traita
+    use WireUiActions; 
+
     public string $tableName = 'measurement-table';
 
     public function setUp(): array
@@ -33,7 +38,6 @@ final class MeasurementTable extends PowerGridComponent
             ->leftJoin('measurement_devices', 'measurement_devices.id', '=', 'measurements.device_id')
             ->select('measurements.*', 'measurement_devices.name as device_name');
     }
-
 
     public function fields(): PowerGridFields
     {
@@ -54,7 +58,6 @@ final class MeasurementTable extends PowerGridComponent
             ->add('created_at_formatted', fn($m) => $m->created_at->format('d/m/Y H:i'));
     }
 
-
     public function columns(): array
     {
         return [
@@ -72,7 +75,6 @@ final class MeasurementTable extends PowerGridComponent
         ];
     }
 
-
     public function filters(): array
     {
         return [
@@ -80,11 +82,9 @@ final class MeasurementTable extends PowerGridComponent
                 ->dataSource(MeasurementDevice::all())
                 ->optionLabel('name')
                 ->optionValue('name')
-                // ADD THIS: Tell the query to look at the real table column
                 ->builder(function (Builder $builder, string $value) {
                     $builder->where('measurement_devices.name', $value);
                 }),
-
 
             Filter::datepicker('measurements_date'),
         ];
@@ -93,23 +93,69 @@ final class MeasurementTable extends PowerGridComponent
     public function actions(Measurement $measurement): array
     {
         return [
+            // 1. PODGLĄD
             Button::add('show_measurement')
-                ->slot(Blade::render('<x-wireui-icon name="information-circle" class="w-5 h-5 text-blue-500" />'))
+                ->slot('<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>')
                 ->tooltip('Podgląd')
-                ->class('text-green-500')
                 ->route('data.show', ['measurement' => $measurement]),
 
+            // 2. EDYCJA
+            Button::add('edit')
+                ->slot('<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>')
+                ->tooltip('Edytuj')
+                ->route('measurements.edit', ['measurement' => $measurement]),
+
+            // 3. USUWANIE (Z WireUI Dialog)
             Button::add('removeMeasurementAction')
-                ->slot(Blade::render('<x-wireui-icon name="trash" class="w-5 h-5" />'))
+                ->slot('<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>')
                 ->tooltip('Usuń')
-                ->class('text-red-500')
-                ->dispatch('removeMeasurementAction', ['id' => $measurement->id]),
+                ->class('cursor-pointer')
+                ->dispatch('triggerDelete', ['id' => $measurement->id]),
         ];
     }
 
-    #[\Livewire\Attributes\On('removeMeasurementAction')]
-    public function removeMeasurementAction($id): void
+    // --- METODY DO OBSŁUGI DIALOGU ---
+
+    /**
+     * Otwiera okienko potwierdzenia WireUI
+     */
+    #[\Livewire\Attributes\On('triggerDelete')]
+    public function triggerDelete($id)
     {
-        Measurement::findOrFail($id)->delete();
+        $this->dialog()->confirm([
+            'title'       => 'Potwierdzenie usunięcia',
+            'description' => 'Czy na pewno chcesz trwale usunąć ten pomiar?',
+            'icon'        => 'error',
+            'accept'      => [
+                'label'  => 'Tak, usuń',
+                'method' => 'deleteMeasurement',
+                'params' => $id,
+            ],
+            'reject' => [
+                'label'  => 'Anuluj',
+            ],
+        ]);
+    }
+
+    /**
+     * Wykonuje faktyczne usuwanie po kliknięciu "Tak"
+     */
+    public function deleteMeasurement($id)
+    {
+        $measurement = Measurement::find($id);
+
+        if ($measurement) {
+            $measurement->delete();
+            
+            $this->notification()->success(
+                $title = 'Sukces',
+                $description = 'Pomiar został usunięty.'
+            );
+        } else {
+            $this->notification()->error(
+                $title = 'Błąd',
+                $description = 'Nie znaleziono pomiaru.'
+            );
+        }
     }
 }
