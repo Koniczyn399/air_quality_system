@@ -109,9 +109,13 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
       
+@if (isset($labels))
+
 
 
     <script>
+
+
      let lineChart;
 
         let labels = {!! json_encode($labels) !!};
@@ -211,6 +215,7 @@
   
 
     </script>
+    @endif
 
 </form>
 
