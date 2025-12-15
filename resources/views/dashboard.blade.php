@@ -265,24 +265,41 @@
             const devices = @json($mappedDevices); 
             const htmlElement = document.documentElement;
 
+            // Funkcja pomocnicza do pobierania URL w zależności od aktualnej klasy 'dark'
             const getTileUrl = (mode) => {
-                if (htmlElement.classList.contains('dark')) return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+                // Sprawdzamy klasę 'dark' na żywo w momencie wywołania funkcji
+                if (htmlElement.classList.contains('dark')) {
+                    return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+                }
                 return mode === 'tech' 
                     ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png' 
                     : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png';
             };
 
-            // LOGIKA ADMINA
+            // 1. LOGIKA ADMINA
             if (isTechnical) {
                 const map = L.map('map-tech').setView([52.237049, 21.017532], 6);
-                L.tileLayer(getTileUrl('tech'), { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                
+                // ZMIANA 1: Przypisujemy warstwę do zmiennej, aby móc ją potem edytować
+                const tileLayer = L.tileLayer(getTileUrl('tech'), { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                
+                // ZMIANA 2: Nasłuchiwanie zmiany motywu (Observer)
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            // Gdy zmieni się klasa w <html>, aktualizujemy URL mapy
+                            tileLayer.setUrl(getTileUrl('tech'));
+                        }
+                    });
+                });
+                observer.observe(htmlElement, { attributes: true });
+
                 const bounds = L.latLngBounds();
                 devices.forEach(device => {
                     if (device.latitude && device.longitude) {
-                        // Ikona admina
-                        let iconColor = '#3B82F6'; // Domyślny niebieski
-                        if (device.device_status === 'inactive') iconColor = '#9CA3AF'; // Szary
-                        if (device.device_status === 'in_repair') iconColor = '#F97316'; // Pomarańczowy
+                        let iconColor = '#3B82F6';
+                        if (device.device_status === 'inactive') iconColor = '#9CA3AF';
+                        if (device.device_status === 'in_repair') iconColor = '#F97316';
 
                         L.marker([device.latitude, device.longitude], {
                             icon: L.divIcon({ className: 'admin-marker', html: `<div style="background-color: ${iconColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white;"></div>`, iconSize: [14, 14] })
@@ -294,15 +311,31 @@
                 return;
             }
 
-            // LOGIKA USERA (TYLKO AKTYWNE)
+            // 2. LOGIKA USERA (TYLKO AKTYWNE)
             const mapUser = L.map('map-user').setView([52.237049, 21.017532], 6);
-            L.tileLayer(getTileUrl('user'), { attribution: '&copy; OpenStreetMap' }).addTo(mapUser);
+            
+            // ZMIANA 3: To samo dla Usera - przypisanie do zmiennej
+            const tileLayerUser = L.tileLayer(getTileUrl('user'), { attribution: '&copy; OpenStreetMap' }).addTo(mapUser);
+
+            // ZMIANA 4: Nasłuchiwanie zmiany motywu dla mapy usera
+            const observerUser = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        tileLayerUser.setUrl(getTileUrl('user'));
+                    }
+                });
+            });
+            observerUser.observe(htmlElement, { attributes: true });
+
             
             const loader = document.getElementById('map-loader');
             const statusDiv = document.getElementById('location-status-bar');
             const listContainer = document.getElementById('nearby-devices-list');
             const widget = document.getElementById('nearest-sensor-widget');
             const widgetGrid = document.getElementById('widget-parameters-grid');
+
+            // ... reszta Twojego kodu (funkcje getDistanceFromLatLonInKm, createParamCard, updateNearestWidget, handleUserLocation) ...
+            // (Skopiuj tutaj resztę funkcji bez zmian, bo one działają poprawnie)
 
             function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
                 const R = 6371; 

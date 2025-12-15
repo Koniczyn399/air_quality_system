@@ -6,7 +6,9 @@ use Livewire\Component;
 use App\Models\Measurement;
 use App\Models\MeasurementDevice;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.app')]
 class MeasurementForm extends Component
 {
     public $measurement_id;
