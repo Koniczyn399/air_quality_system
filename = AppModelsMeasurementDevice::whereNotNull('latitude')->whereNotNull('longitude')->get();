@@ -1,0 +1,453 @@
+Array
+(
+    [0] => Array
+        (
+            [id] => 21093
+            [measurement_id] => 7793
+            [parameter_id] => 3
+            [value] => 28.5
+            [created_at] => 2025-12-01 16:20:48
+        )
+
+    [1] => Array
+        (
+            [id] => 21092
+            [measurement_id] => 7793
+            [parameter_id] => 2
+            [value] => 27
+            [created_at] => 2025-12-01 16:20:47
+        )
+
+    [2] => Array
+        (
+            [id] => 21091
+            [measurement_id] => 7793
+            [parameter_id] => 1
+            [value] => 15
+            [created_at] => 2025-12-01 16:20:46
+        )
+
+    [3] => Array
+        (
+            [id] => 21086
+            [measurement_id] => 7792
+            [parameter_id] => 2
+            [value] => 46
+            [created_at] => 2025-12-01 16:20:44
+        )
+
+    [4] => Array
+        (
+            [id] => 21085
+            [measurement_id] => 7792
+            [parameter_id] => 1
+            [value] => 21
+            [created_at] => 2025-12-01 16:20:44
+        )
+
+    [5] => Array
+        (
+            [id] => 21087
+            [measurement_id] => 7792
+            [parameter_id] => 3
+            [value] => 35
+            [created_at] => 2025-12-01 16:20:44
+        )
+
+    [6] => Array
+        (
+            [id] => 21081
+            [measurement_id] => 7791
+            [parameter_id] => 3
+            [value] => 22
+            [created_at] => 2025-12-01 16:20:43
+        )
+
+    [7] => Array
+        (
+            [id] => 21079
+            [measurement_id] => 7791
+            [parameter_id] => 1
+            [value] => 18
+            [created_at] => 2025-12-01 16:20:43
+        )
+
+    [8] => Array
+        (
+            [id] => 21080
+            [measurement_id] => 7791
+            [parameter_id] => 2
+            [value] => 30
+            [created_at] => 2025-12-01 16:20:43
+        )
+
+    [9] => Array
+        (
+            [id] => 21074
+            [measurement_id] => 7790
+            [parameter_id] => 2
+            [value] => 39
+            [created_at] => 2025-12-01 16:20:42
+        )
+
+    [10] => Array
+        (
+            [id] => 21073
+            [measurement_id] => 7790
+            [parameter_id] => 1
+            [value] => 39
+            [created_at] => 2025-12-01 16:20:42
+        )
+
+    [11] => Array
+        (
+            [id] => 21075
+            [measurement_id] => 7790
+            [parameter_id] => 3
+            [value] => 55.5
+            [created_at] => 2025-12-01 16:20:42
+        )
+
+    [12] => Array
+        (
+            [id] => 21069
+            [measurement_id] => 7789
+            [parameter_id] => 3
+            [value] => 27
+            [created_at] => 2025-12-01 16:20:41
+        )
+
+    [13] => Array
+        (
+            [id] => 21067
+            [measurement_id] => 7789
+            [parameter_id] => 1
+            [value] => 37
+            [created_at] => 2025-12-01 16:20:41
+        )
+
+    [14] => Array
+        (
+            [id] => 21068
+            [measurement_id] => 7789
+            [parameter_id] => 2
+            [value] => 34
+            [created_at] => 2025-12-01 16:20:41
+        )
+
+    [15] => Array
+        (
+            [id] => 21062
+            [measurement_id] => 7788
+            [parameter_id] => 2
+            [value] => 45
+            [created_at] => 2025-12-01 16:20:40
+        )
+
+    [16] => Array
+        (
+            [id] => 21063
+            [measurement_id] => 7788
+            [parameter_id] => 3
+            [value] => 41
+            [created_at] => 2025-12-01 16:20:40
+        )
+
+    [17] => Array
+        (
+            [id] => 21061
+            [measurement_id] => 7788
+            [parameter_id] => 1
+            [value] => 31
+            [created_at] => 2025-12-01 16:20:39
+        )
+
+    [18] => Array
+        (
+            [id] => 21057
+            [measurement_id] => 7787
+            [parameter_id] => 3
+            [value] => 56
+            [created_at] => 2025-12-01 16:20:39
+        )
+
+    [19] => Array
+        (
+            [id] => 21055
+            [measurement_id] => 7787
+            [parameter_id] => 1
+            [value] => 31
+            [created_at] => 2025-12-01 16:20:38
+        )
+
+    [20] => Array
+        (
+            [id] => 21056
+            [measurement_id] => 7787
+            [parameter_id] => 2
+            [value] => 43
+            [created_at] => 2025-12-01 16:20:38
+        )
+
+    [21] => Array
+        (
+            [id] => 21049
+            [measurement_id] => 7786
+            [parameter_id] => 1
+            [value] => 18
+            [created_at] => 2025-12-01 16:20:37
+        )
+
+    [22] => Array
+        (
+            [id] => 21051
+            [measurement_id] => 7786
+            [parameter_id] => 3
+            [value] => 28
+            [created_at] => 2025-12-01 16:20:37
+        )
+
+    [23] => Array
+        (
+            [id] => 21050
+            [measurement_id] => 7786
+            [parameter_id] => 2
+            [value] => 36
+            [created_at] => 2025-12-01 16:20:37
+        )
+
+    [24] => Array
+        (
+            [id] => 21043
+            [measurement_id] => 7785
+            [parameter_id] => 1
+            [value] => 13
+            [created_at] => 2025-12-01 16:20:36
+        )
+
+    [25] => Array
+        (
+            [id] => 21045
+            [measurement_id] => 7785
+            [parameter_id] => 3
+            [value] => 58
+            [created_at] => 2025-12-01 16:20:36
+        )
+
+    [26] => Array
+        (
+            [id] => 21044
+            [measurement_id] => 7785
+            [parameter_id] => 2
+            [value] => 47
+            [created_at] => 2025-12-01 16:20:36
+        )
+
+    [27] => Array
+        (
+            [id] => 21039
+            [measurement_id] => 7784
+            [parameter_id] => 3
+            [value] => 40
+            [created_at] => 2025-12-01 16:20:35
+        )
+
+    [28] => Array
+        (
+            [id] => 21038
+            [measurement_id] => 7784
+            [parameter_id] => 2
+            [value] => 46
+            [created_at] => 2025-12-01 16:20:35
+        )
+
+    [29] => Array
+        (
+            [id] => 21037
+            [measurement_id] => 7784
+            [parameter_id] => 1
+            [value] => 17
+            [created_at] => 2025-12-01 16:20:35
+        )
+
+    [30] => Array
+        (
+            [id] => 21033
+            [measurement_id] => 7783
+            [parameter_id] => 3
+            [value] => 52
+            [created_at] => 2025-12-01 16:20:34
+        )
+
+    [31] => Array
+        (
+            [id] => 21032
+            [measurement_id] => 7783
+            [parameter_id] => 2
+            [value] => 33
+            [created_at] => 2025-12-01 16:20:34
+        )
+
+    [32] => Array
+        (
+            [id] => 21031
+            [measurement_id] => 7783
+            [parameter_id] => 1
+            [value] => 13
+            [created_at] => 2025-12-01 16:20:34
+        )
+
+    [33] => Array
+        (
+            [id] => 21026
+            [measurement_id] => 7782
+            [parameter_id] => 2
+            [value] => 32
+            [created_at] => 2025-12-01 16:20:33
+        )
+
+    [34] => Array
+        (
+            [id] => 21027
+            [measurement_id] => 7782
+            [parameter_id] => 3
+            [value] => 43.5
+            [created_at] => 2025-12-01 16:20:33
+        )
+
+    [35] => Array
+        (
+            [id] => 21025
+            [measurement_id] => 7782
+            [parameter_id] => 1
+            [value] => 28
+            [created_at] => 2025-12-01 16:20:33
+        )
+
+    [36] => Array
+        (
+            [id] => 21021
+            [measurement_id] => 7781
+            [parameter_id] => 3
+            [value] => 46.5
+            [created_at] => 2025-12-01 16:20:32
+        )
+
+    [37] => Array
+        (
+            [id] => 21020
+            [measurement_id] => 7781
+            [parameter_id] => 2
+            [value] => 40
+            [created_at] => 2025-12-01 16:20:31
+        )
+
+    [38] => Array
+        (
+            [id] => 21019
+            [measurement_id] => 7781
+            [parameter_id] => 1
+            [value] => 32
+            [created_at] => 2025-12-01 16:20:31
+        )
+
+    [39] => Array
+        (
+            [id] => 21015
+            [measurement_id] => 7780
+            [parameter_id] => 3
+            [value] => 47.5
+            [created_at] => 2025-12-01 16:20:30
+        )
+
+    [40] => Array
+        (
+            [id] => 21013
+            [measurement_id] => 7780
+            [parameter_id] => 1
+            [value] => 14
+            [created_at] => 2025-12-01 16:20:29
+        )
+
+    [41] => Array
+        (
+            [id] => 21014
+            [measurement_id] => 7780
+            [parameter_id] => 2
+            [value] => 47
+            [created_at] => 2025-12-01 16:20:29
+        )
+
+    [42] => Array
+        (
+            [id] => 21009
+            [measurement_id] => 7779
+            [parameter_id] => 3
+            [value] => 43.5
+            [created_at] => 2025-12-01 16:20:29
+        )
+
+    [43] => Array
+        (
+            [id] => 21007
+            [measurement_id] => 7779
+            [parameter_id] => 1
+            [value] => 26
+            [created_at] => 2025-12-01 16:20:28
+        )
+
+    [44] => Array
+        (
+            [id] => 21008
+            [measurement_id] => 7779
+            [parameter_id] => 2
+            [value] => 21
+            [created_at] => 2025-12-01 16:20:28
+        )
+
+    [45] => Array
+        (
+            [id] => 21001
+            [measurement_id] => 7778
+            [parameter_id] => 1
+            [value] => 14
+            [created_at] => 2025-12-01 16:20:27
+        )
+
+    [46] => Array
+        (
+            [id] => 21003
+            [measurement_id] => 7778
+            [parameter_id] => 3
+            [value] => 55
+            [created_at] => 2025-12-01 16:20:27
+        )
+
+    [47] => Array
+        (
+            [id] => 21002
+            [measurement_id] => 7778
+            [parameter_id] => 2
+            [value] => 31
+            [created_at] => 2025-12-01 16:20:27
+        )
+
+    [48] => Array
+        (
+            [id] => 20995
+            [measurement_id] => 7777
+            [parameter_id] => 1
+            [value] => 20
+            [created_at] => 2025-12-01 16:20:26
+        )
+
+    [49] => Array
+        (
+            [id] => 20996
+            [measurement_id] => 7777
+            [parameter_id] => 2
+            [value] => 39
+            [created_at] => 2025-12-01 16:20:26
+        )
+
+)

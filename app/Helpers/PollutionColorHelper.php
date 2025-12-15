@@ -4,71 +4,52 @@ namespace App\Helpers;
 
 class PollutionColorHelper
 {
-    public static function getPollutionColor($value, $parameterName)
+    public static function getPollutionColor($value, $parameterName = null, $parameterTag = null)
     {
-        switch ($parameterName) {
-            case 'PM1':
-                if ($value <= 10) {
-                    return '#00e400'; 
-                } elseif ($value <= 20) {
-                    return '#ffff00'; 
-                } elseif ($value <= 30) {
-                    return '#ff7e00'; 
-                } else {
-                    return '#ff0000'; 
-                }
+        $v = is_numeric($value) ? floatval($value) : 0.0;
+        $raw = $parameterTag ?: ($parameterName ?: '');
+        $norm = strtolower(str_replace(['_', '-', '.', ' '], '', $raw));
 
-            case 'PM2.5':
-                if ($value <= 12) {
-                    return '#00e400';
-                } elseif ($value <= 35.4) {
-                    return '#ffff00';
-                } elseif ($value <= 55.4) {
-                    return '#ff7e00';
-                } else {
-                    return '#ff0000';
-                }
-
-            case 'PM10':
-                if ($value <= 54) {
-                    return '#00e400';
-                } elseif ($value <= 154) {
-                    return '#ffff00';
-                } elseif ($value <= 254) {
-                    return '#ff7e00';
-                } else {
-                    return '#ff0000';
-                }
-
-            case 'Wilgotność':
-                if ($value <= 30) {
-                    return '#ff7e00';
-                } elseif ($value <= 60) {
-                    return '#00e400';
-                } else {
-                    return '#ffff00';
-                }
-
-            case 'Ciśnienie':
-                if ($value <= 1000) {
-                    return '#ff7e00'; 
-                } elseif ($value <= 1020) {
-                    return '#00e400'; 
-                } else {
-                    return '#ffff00';
-                }
-
-            case 'Temperatura':
-                if ($value <= 18) {
-                    return '#0000ff';
-                } elseif ($value <= 24) {
-                    return '#00e400';
-                } else {
-                    return '#ff0000';
-                }
-
-            default:
-                return '#808080';
+        if ($norm === 'pm1') {
+            if ($v <= 10) return '#2ecc71';
+            if ($v <= 20) return '#f39c12';
+            if ($v <= 30) return '#e67e22';
+            return '#c0392b';
         }
+
+        if ($norm === 'pm25' || $norm === 'pm2.5') {
+            if ($v <= 12) return '#2ecc71';
+            if ($v <= 35.4) return '#f39c12';
+            if ($v <= 55.4) return '#e67e22';
+            return '#c0392b';
+        }
+
+        if ($norm === 'pm10') {
+            if ($v <= 54) return '#2ecc71';
+            if ($v <= 154) return '#f39c12';
+            if ($v <= 254) return '#e67e22';
+            return '#c0392b';
+        }
+
+        if ($norm === 'hum' || $norm === 'wilgotnosc') {
+            if ($v <= 30) return '#e67e22';
+            if ($v <= 60) return '#2ecc71';
+            return '#f39c12';
+        }
+
+        if ($norm === 'press' || $norm === 'pressure' || $norm === 'cisnienie') {
+            if ($v < 1000) return '#e67e22';
+            if ($v <= 1020) return '#2ecc71';
+            return '#f39c12';
+        }
+
+        if ($norm === 'temp' || $norm === 'temperatura' || $norm === 'temperature') {
+            if ($v <= 0) return '#3498db';
+            if ($v <= 18) return '#16a085';
+            if ($v <= 24) return '#f39c12';
+            return '#e67e22';
+        }
+
+        return '#808080';
     }
 }
