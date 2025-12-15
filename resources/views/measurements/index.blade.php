@@ -11,6 +11,9 @@
                 <x-wireui-button primary label="{{ __('translation.actions.upload_data') }}" href="{{ route('data.upload') }}" class="justify-self-end" />
 
                 <livewire:measurements.measurement-table />
+
+                
+
             </div>
         </div>
     </div>

@@ -18,6 +18,8 @@ final class MeasurementTable extends PowerGridComponent
 {
     public string $tableName = 'measurement-table';
 
+    public string $name = 'sdfsdfsd';
+
     public function setUp(): array
     {
         return [
