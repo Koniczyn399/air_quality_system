@@ -1,148 +1,134 @@
 <x-app-layout>
-    <div class="p-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
-        <div class="flex items-center gap-4">
-            <label for="parameter-select" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Wybierz parametr:
-            </label>
-            <select id="parameter-select" class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-                @foreach($parameters as $parameter)
-                    <option value="{{ $parameter->name }}" {{ $parameter->name === 'PM2.5' ? 'selected' : '' }}>
-                        {{ $parameter->name }}{{ $parameter->unit ? ' (' . $parameter->unit . ')' : '' }}
-                    </option>
-                @endforeach
-            </select>
-            <div class="ml-auto flex items-center gap-3 text-xs">
-                <span class="font-medium text-gray-700 dark:text-gray-300">Legenda:</span>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded-full" style="background-color: #00e400;"></div>
-                    <span class="text-gray-700 dark:text-gray-300">Dobre</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded-full" style="background-color: #ffff00;"></div>
-                    <span class="text-gray-700 dark:text-gray-300">Umiarkowane</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded-full" style="background-color: #ff7e00;"></div>
-                    <span class="text-gray-700 dark:text-gray-300">Szkodliwe</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded-full" style="background-color: #ff0000;"></div>
-                    <span class="text-gray-700 dark:text-gray-300">Niebezpieczne</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex items-center justify-center">
-        <div id="map" class="w-full border-2 border-gray-300 dark:border-gray-700 rounded-lg shadow-md m-2.5" style="height: calc(100vh - 84px);"></div>    
-    </div>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <div class="p-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center gap-4">
+        <div class="text-lg font-semibold">Air quality map</div>
+        <div class="flex items-center gap-2">
+            <label for="param" class="text-sm">Parameter:</label>
+            <select id="param" class="border rounded px-2 py-1 text-sm">
+                <option value="">All</option>
+                @foreach($parameters as $p)
+                    <option value="{{ $p->id }}" @selected((string)$selectedParameterId === (string)$p->id)>{{ $p->name }} ({{ $p->tag }})</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+    <div id="map" style="height: calc(100vh - 140px);"></div>
+
     <script>
-        const htmlElement = document.documentElement;
-        const map = L.map('map').setView([52.237049, 21.017532], 6);
-        let currentTileLayer;
-        let markers = [];
+        const devices = @json($devices);
+        const selectedParam = '{{ $selectedParameterId }}';
 
-        const lightTileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-        const darkTileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'; 
-        function loadTileLayer(tileUrl) {
-            if (currentTileLayer) {
-                map.removeLayer(currentTileLayer);
-            }
-            currentTileLayer = L.tileLayer(tileUrl, {
-                maxZoom: 18,
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        console.log('=== MAP DEBUG ===');
+        console.log('Total devices:', devices.length);
+        console.log('First device:', devices[0]);
+        console.log('First device values:', devices[0]?.values);
+        console.log('First device first value:', devices[0]?.values[0]);
+
+        const map = L.map('map').setView([52.2, 21.0], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+        // Legenda
+        const legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = `
+                <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-size: 13px; font-family: Arial, sans-serif; max-width: 280px;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">Legenda kolorów</h4>
+                    <div style="margin-bottom: 12px;">
+                        <strong style="font-size: 12px;">Zanieczyszczenie powietrza (PM):</strong>
+                        <div style="margin-top: 6px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div style="width: 16px; height: 16px; background: #2ecc71; border-radius: 3px; margin-right: 8px;"></div>
+                                <span>Dobry</span>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div style="width: 16px; height: 16px; background: #f39c12; border-radius: 3px; margin-right: 8px;"></div>
+                                <span>Umiarkowany</span>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div style="width: 16px; height: 16px; background: #e67e22; border-radius: 3px; margin-right: 8px;"></div>
+                                <span>Zły</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 16px; height: 16px; background: #c0392b; border-radius: 3px; margin-right: 8px;"></div>
+                                <span>Bardzo zły</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                        <strong style="font-size: 12px;">Temperatura:</strong>
+                        <div style="margin-top: 6px; font-size: 12px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                                <div style="width: 12px; height: 12px; background: #3498db; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>≤0°C - Mróz</span>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                                <div style="width: 12px; height: 12px; background: #16a085; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>1-18°C - Zimno</span>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                                <div style="width: 12px; height: 12px; background: #f39c12; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>19-24°C - Komfort</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 12px; height: 12px; background: #e67e22; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>>24°C - Ciepło</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                        <strong style="font-size: 12px;">Wilgotność/Ciśnienie:</strong>
+                        <div style="margin-top: 6px; font-size: 12px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                                <div style="width: 12px; height: 12px; background: #2ecc71; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>Normalna</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 12px; height: 12px; background: #f39c12; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>Zaburzona</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return div;
+        };
+        legend.addTo(map);
+
+        devices.forEach(device => {
+            const vals = device.values || [];
+            const chosen = selectedParam ? vals.find(v => String(v.parameter_id) === String(selectedParam)) : vals[0];
+            const markerColor = chosen?.color || '#808080';
+
+            const marker = L.circleMarker([Number(device.latitude), Number(device.longitude)], {
+                color: markerColor,
+                fillColor: markerColor,
+                radius: 8,
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.9
             }).addTo(map);
-        }
 
-        if (htmlElement.classList.contains('dark')) {
-            loadTileLayer(darkTileUrl);
-        } else {
-            loadTileLayer(lightTileUrl);
-        }
-
-        const observer = new MutationObserver((mutationsList, observer) => {
-            for (const mutation of mutationsList) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    if (htmlElement.classList.contains('dark')) {
-                        loadTileLayer(darkTileUrl);
-                    } else {
-                        loadTileLayer(lightTileUrl);
-                    }
-                }
-            }
+            let popup = `<div class="text-sm font-medium"><b>${device.name || 'Device'}</b><div class="mt-2">`;
+            vals.forEach(v => {
+                const vcolor = v.color || '#808080';
+                const isSel = selectedParam && String(v.parameter_id) === String(selectedParam);
+                popup += `<div style="background:${vcolor};padding:6px;border-radius:6px;${isSel ? 'border:2px solid #000;' : ''};color:#fff;margin-bottom:6px">
+                    ${v.parameter?.name || v.parameter_id}: ${v.value}${v.parameter?.unit ? ' ' + v.parameter.unit : ''} (${v.parameter?.tag || ''})
+                </div>`;
+            });
+            popup += `</div></div>`;
+            marker.bindPopup(popup);
         });
 
-        observer.observe(htmlElement, { attributes: true });
-
-        const devices = @json($devices ?? []);
-
-        console.log('Devices:', devices);
-
-    function createMarkers(selectedParameter) {
-       markers.forEach(marker => map.removeLayer(marker));
-            markers = [];
-
-            devices.forEach(device => {
-                if (device.latitude && device.longitude && device.values && device.values.length > 0) {
-                    const parameterValue = device.values.find(v => 
-                        v.parameter && v.parameter.name === selectedParameter
-                    );
-                    
-                    if (parameterValue && parameterValue.color) {
-                        const color = parameterValue.color;
-                        
-                        const marker = L.circleMarker([device.latitude, device.longitude], {
-                            radius: 12,
-                            fillColor: color,
-                            color: '#fff',
-                            weight: 2,
-                            opacity: 1,
-                            fillOpacity: 0.8
-                        }).addTo(map);
-
-                        let popupContent = `
-                            <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
-                                <b>${device.name}</b><br>
-                                <div class="mt-2 space-y-1">
-                        `;
-                        
-                        device.values.forEach(value => {
-                            if (value.parameter && value.color) {
-                                const bgColor = value.color;
-                                const isSelected = value.parameter.name === selectedParameter;
-                                popupContent += `
-                                    <div style="background-color: ${bgColor}; padding: 4px 8px; border-radius: 4px; ${isSelected ? 'border: 2px solid #000;' : ''}" class="text-white text-sm">
-                                        ${value.parameter.name}: ${value.value}${value.parameter.unit ? ' ' + value.parameter.unit : ''}
-                                    </div>
-                                `;
-                            }
-                        });
-                        
-                        popupContent += `
-                                </div>
-                            </div>
-                        `;
-                        
-                        marker.bindPopup(popupContent);
-                        markers.push(marker);
-                    }
-                }
-            });
-
-            if (markers.length > 0) {
-                const group = new L.featureGroup(markers);
-                map.fitBounds(group.getBounds().pad(0.1));
-            }
-        }
-
-        createMarkers('PM2.5');
-
-        document.getElementById('parameter-select').addEventListener('change', function(e) {
-            createMarkers(e.target.value);
+        document.getElementById('param').addEventListener('change', (e) => {
+            const id = e.target.value;
+            const url = new URL(window.location.href);
+            if (id) url.searchParams.set('parameter_id', id); else url.searchParams.delete('parameter_id');
+            window.location.href = url.toString();
         });
     </script>
 </x-app-layout>

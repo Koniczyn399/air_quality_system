@@ -15,6 +15,6 @@ class Parameter extends Model
 
     public function values(): HasMany
     {
-        return $this->hasMany(Value::class);
+        return $this->hasMany(Value::class, 'parameter_id', 'id');
     }
 }

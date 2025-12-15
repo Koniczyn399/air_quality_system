@@ -25,7 +25,7 @@ class Value extends Model
 
     public function parameter(): BelongsTo
     {
-        return $this->belongsTo(Parameter::class);
+        return $this->belongsTo(Parameter::class, 'parameter_id', 'id');
     }
 
     public function getFormattedValueAttribute(): string

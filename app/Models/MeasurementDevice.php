@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Collection;
 
 class MeasurementDevice extends Model
 {
@@ -55,9 +53,27 @@ class MeasurementDevice extends Model
         $ids = json_decode($this->parameter_ids, true) ?? [];
         return Parameter::whereIn('id', $ids)->get();
     }
+
     public function values(): HasMany
     {
-        return $this->hasMany(Value::class, 'measurement_id');
+        return $this->hasMany(\App\Models\Value::class, 'measurement_id');
     }
 
+    public function deviceParameters(): HasMany
+    {
+        return $this->hasMany(DeviceParameter::class, 'device_id', 'id');
+    }
+
+    // Отримати останні значення по параметрах цього девайсу
+    public function latestParameterValues()
+    {
+        return Value::query()
+            ->join('parameters as p', 'values.parameter_id', '=', 'p.id')
+            ->join('device_parameters as dp', function ($join) {
+                $join->on('dp.parameter_id', '=', 'values.parameter_id')
+                     ->on('dp.device_id', '=', \DB::raw($this->id)); // прив’язка до поточного пристрою
+            })
+            ->select('values.*', 'p.tag', 'p.name', 'p.unit')
+            ->orderByDesc('values.created_at');
+    }
 }
