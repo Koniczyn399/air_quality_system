@@ -24,12 +24,7 @@ Route::middleware([
 ])->group(function () {
 
     Route::get('/dashboard', function () {
-
-        $start_date = Carbon::now()->addDay()->format('Y-m-d');
-        $end_date = Carbon::now()->addMonths(1)->format('Y-m-d');
-
-        $data = MeasurementDevice::query()
-            ->whereBetween('next_calibration_date', [$start_date, $end_date])->get();
+        $data = MeasurementDevice::all(); 
 
         return view('dashboard', ['data' => $data]);
     })->name('dashboard');
