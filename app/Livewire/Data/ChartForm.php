@@ -26,8 +26,6 @@ class ChartForm extends Component
     public $labels=null;
 
 
-    public $readonly=null;
-
     public $parameters=null;
 
     public $device_id=null;
@@ -49,7 +47,20 @@ class ChartForm extends Component
         $this->start_date = '2023-01-01';
         $this->end_date = '2024-01-10';
 
-        ChartForm::update_chart();
+        $boo =Measurement::query()
+        ->select(
+            [
+                'measurements.id',
+            ]
+        )->where('device_id','=',$this->device_id)->get()->toArray();
+
+
+
+        if(!empty($boo)){
+
+        
+            ChartForm::update_chart();
+        }
    
 
 
@@ -64,12 +75,6 @@ class ChartForm extends Component
     public function update_chart()
     {
 
-     $data1=collect();
-     $data2=collect();
-     $data3=collect();
-     $data4=collect();
-     $data5=collect();
-     $data6=collect();
 
         // $param_array =array(&$data1,&$data2,&$data3,&$data4,&$data5,&$data6);
         $param_array =collect();
