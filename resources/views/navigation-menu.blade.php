@@ -11,10 +11,13 @@
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex sm:ml-10 space-x-8">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" class="theme-nav-link">
-                        {{ __('Dashboard') }}
+                        {{ __('Strona główna') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')" class="theme-nav-link">
                         Użytkownicy
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('measurements.index') }}" :active="request()->routeIs('measurements.index')" class="theme-nav-link">
+                        Pomiary
                     </x-nav-link>
                     <x-nav-link href="{{ route('measurement-devices.index') }}" :active="request()->routeIs('measurement-devices.index')" class="theme-nav-link">
                         Urządzenia

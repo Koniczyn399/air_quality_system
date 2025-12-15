@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Parameter;
 use WireUi\Traits\WireUiActions;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 class MeasurementDeviceForm extends Component
 {
@@ -48,9 +49,9 @@ use WireUiActions;
     public function mount(MeasurementDevice $measurementDevice, $headers = null){
 
        $selected_headers = json_decode($headers);
-       //dd($selected_headers);
+
     
-                // Pobierz tylko użytkowników z rolą serwisanta
+        // Pobierz tylko użytkowników z rolą serwisanta
         $maintainers = User::whereHas('roles', function($query) {
             $query->where('name', 'MAINTEINER');
         })
@@ -121,8 +122,19 @@ use WireUiActions;
         // } else {
         //     $this->authorize('create', MeasurementDevice::class);
         // }
+      
+
+
+        if (isset($this->measurementDevice->id)) {
+            Session::flash('message', 'Urządzenie zostało zmodyfikowane'); 
+            Session::flash('icon', 'success'); 
+        } else {
+            Session::flash('message', 'Urządzenie zostało dodane'); 
+            Session::flash('icon', 'success'); 
+        }
 
         $this->parameter_ids = json_encode($this->parameter_ids);
+        //dd($this->parameter_ids);
 
 
         $m =MeasurementDevice::updateOrCreate(
@@ -136,8 +148,7 @@ use WireUiActions;
         
 
 
-        return redirect()->route('measurement-devices.index')
-            ->with('success', 'Urządzenie zaktualizowane pomyślnie');
+        return redirect()->route('measurement-devices.index');
     }
 
     public function open_parameters()
@@ -185,6 +196,7 @@ use WireUiActions;
             ],
 
             'parameter_ids' => [
+                'required',
                 'json',
             ],
             'user_id' => [

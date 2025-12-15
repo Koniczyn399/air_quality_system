@@ -7,6 +7,7 @@ use App\Models\MeasurementDevice;
 use App\Models\Measurement;
 use App\Models\Value;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class AddMeasurementForm extends Component
 {
@@ -51,6 +52,9 @@ class AddMeasurementForm extends Component
                 ]);
             }
         }
+
+        Session::flash('message', 'Urządzenie zostało zmodyfikowane'); 
+        Session::flash('icon', 'success'); 
 
         $this->dispatch('close-modal', 'add-measurement-modal');
         $this->dispatch('refresh'); // odświeży tabelę

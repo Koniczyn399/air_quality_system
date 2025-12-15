@@ -1,58 +1,68 @@
-<div class="container mx-auto px-4 py-8">
+<div class="bg-gray-800 shadow sm:rounded-lg p-6">
     <form wire:submit.prevent="submit">
-
-        <div class="grid grid-cols-1 gap-6 mb-8">
-
-            <!-- Data pomiaru - stylowany input HTML5 -->
-            <div>
-                <label for="measurements_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Data pomiaru *
-                </label>
-                <input
-                    type="datetime-local"
-                    id="measurements_date"
-                    name="measurements_date"
-                    wire:model="measurements_date"
-                    class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 border"
-                    required
-                />
-                @error('measurements_date')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-            </div>
-
-            <!-- Parametry pomiaru -->
-            @if($parameters->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach($parameters as $param)
-                        <div class="col-span-1">
-                            <x-wireui-input
-                                label="{{ $param->name }} ({{ $param->unit ?? '' }})"
-                                name="values.{{ $param->id }}"
-                                type="number"
-                                step="any"
-                                wire:model.defer="values.{{ $param->id }}"
-                            />
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
-                    <p class="text-yellow-700 dark:text-yellow-300">Brak parametrów przypisanych do tego urządzenia.</p>
-                </div>
-            @endif
-
+        
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-400 mb-1">Data pomiaru</label>
+            <input 
+                type="datetime-local" 
+                wire:model="measurements_date"
+                required
+                class="w-full rounded-lg border-gray-600 bg-gray-900 text-gray-100 focus:ring focus:ring-blue-500 focus:border-blue-500"
+            />
+            @error('measurements_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
-        <div class="flex items-center justify-end gap-4">
-            <a href="{{ route('values.index', ['device_id' => $device_id]) }}" 
-                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+        @if(!$isEditing)
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-400 mb-1">Wybierz urządzenie</label>
+                <select 
+                    wire:model.live="device_id" 
+                    class="w-full rounded-lg border-gray-600 bg-gray-900 text-gray-100 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                >
+                    <option value="">-- Wybierz urządzenie --</option>
+                    @foreach($availableDevices as $device)
+                        <option value="{{ $device->id }}">{{ $device->name }}</option>
+                    @endforeach
+                </select>
+                @error('device_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+        @endif
+
+        @if($parameters->isNotEmpty())
+            <div class="grid md:grid-cols-2 gap-4 mt-4 p-4 border border-gray-700 rounded-lg">
+                <h3 class="col-span-full text-lg font-semibold text-gray-300 mb-2">Wartości pomiarowe</h3>
+                
+                @foreach($parameters as $param)
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">
+                            {{ $param->name }} ({{ $param->unit ?? '-' }})
+                        </label>
+                        <input 
+                            type="number" 
+                            step="any" 
+                            wire:model="values.{{ $param->id }}" 
+                            placeholder="Wpisz wartość"
+                            class="w-full rounded-lg border-gray-600 bg-gray-900 text-gray-100 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+                @endforeach
+            </div>
+        @elseif($device_id)
+             <div class="mt-4 p-4 bg-yellow-900/20 border border-yellow-700 rounded text-yellow-200">
+                Wybrane urządzenie nie posiada zdefiniowanych parametrów pomiarowych.
+            </div>
+        @endif
+
+        <div class="mt-8 flex justify-end gap-3">
+            <a href="{{ $device_id ? route('values.index', ['device_id' => $device_id]) : route('measurements.index') }}"
+               class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 Anuluj
             </a>
 
-            @if($isEditing)
-                <x-wireui-button type="submit" primary label="Zaktualizuj pomiar" />
-            @else
-                <x-wireui-button type="submit" primary label="Dodaj pomiar" />
-            @endif
+            <button type="submit"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                {{ $isEditing ? 'Zapisz zmiany' : 'Dodaj pomiar' }}
+            </button>
         </div>
     </form>
 </div>

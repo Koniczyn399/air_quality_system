@@ -156,3 +156,76 @@
     }
  
 }
+
+/* SweetAlert2 Dark Mode Overrides */
+.dark .swal2-popup {
+    background-color: #1f2937 !important;
+    color: #f3f4f6 !important;
+}
+
+.dark .swal2-title {
+    color: #f3f4f6 !important;
+}
+
+.dark .swal2-html-container {
+    color: #d1d5db !important;
+}
+
+.dark .swal2-validation-message {
+    background-color: #374151 !important;
+    color: #f3f4f6 !important;
+}
+
+.dark .swal2-icon.swal2-question {
+    border-color: #9ca3af !important;
+    color: #9ca3af !important;
+}
+
+.dark .swal2-icon.swal2-warning {
+    border-color: #fcd34d !important;
+    color: #fcd34d !important;
+}
+
+.dark .swal2-icon.swal2-info {
+    border-color: #60a5fa !important;
+    color: #60a5fa !important;
+}
+
+.dark .swal2-icon.swal2-error {
+    border-color: #f87171 !important;
+    color: #f87171 !important;
+}
+
+.dark .swal2-icon.swal2-success {
+    border-color: #34d399 !important;
+    color: #34d399 !important;
+}
+
+.dark .swal2-timer-progress-bar {
+    background-color: #60a5fa !important;
+}
+
+.dark .swal2-input,
+.dark .swal2-textarea,
+.dark .swal2-select,
+.dark .swal2-radio,
+.dark .swal2-checkbox {
+    background-color: #374151 !important;
+    color: #f3f4f6 !important;
+    border-color: #4b5563 !important;
+}
+
+.dark .swal2-input:focus,
+.dark .swal2-textarea:focus,
+.dark .swal2-select:focus {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 1px #60a5fa !important;
+}
+
+.dark .swal2-close {
+    color: #9ca3af !important;
+}
+
+.dark .swal2-close:hover {
+    color: #f3f4f6 !important;
+}
