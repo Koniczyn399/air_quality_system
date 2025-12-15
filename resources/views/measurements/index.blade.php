@@ -16,6 +16,9 @@
                 </div>
 
                 <livewire:measurements.measurement-table />
+
+                
+
             </div>
         </div>
     </div>

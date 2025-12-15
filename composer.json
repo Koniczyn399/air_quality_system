@@ -16,6 +16,7 @@
         "laravel/prompts": "^0.3.7",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "laraveldaily/laravel-charts": "^0.2.3",
         "laraveldaily/laravel-invoices": "^4.1",
         "livewire/livewire": "^3.0",
         "power-components/livewire-powergrid": "^6.3",

@@ -9,7 +9,8 @@ use App\Models\Parameter;
 use App\Models\User;
 use App\Models\Value;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Symfony\Component\VarExporter\Internal\Values;
+use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+
 
 class DataController extends Controller
 {
@@ -140,7 +141,7 @@ class DataController extends Controller
         ];
 
 
-        dd($start_date, $end_date, $device_ids, $measurements);
+
 
 
         $callback = function () use ($measurements) {
@@ -472,12 +473,6 @@ class DataController extends Controller
             $delta_array = array_merge($delta_array, array('delta_temperature'=> $delta_temperature, 'temperature_count'=>$temperature_count));
             $pointers['p6']=1;
         }
-     
-
-        //dd($delta_pm1, $delta_pm2_5, $delta_humidity, $delta_pressure, $delta_temperature);
-        //dd($delta_array, $min_max_array);
-
-        
 
         $pdf = Pdf::loadView('pdfs.values_pdf', [
             'pointers' => $pointers,
@@ -488,12 +483,6 @@ class DataController extends Controller
 
         return $pdf->download();
     }
-
-    //     @foreach ($p as $pp)
-    //         {{ $pp->name }}: {{ $pp->unit }}<br>
-            
-    //     @endforeach
-
 
 
 }
