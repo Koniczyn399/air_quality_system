@@ -28,14 +28,51 @@
         console.log('First device first value:', devices[0]?.values[0]);
 
         const map = L.map('map').setView([52.2, 21.0], 6);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        
+        // Tile layers для світлої та темної теми
+        const lightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            maxZoom: 19
+        });
+        
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            maxZoom: 19
+        });
+        
+        // Перевірити поточну тему сторінки
+        const isDarkMode = () => document.documentElement.classList.contains('dark');
+        
+        // Встановити початковий layer
+        let currentLayer = isDarkMode() ? darkLayer : lightLayer;
+        currentLayer.addTo(map);
+
+        // Функція для оновлення легенди
+        function updateLegendStyle() {
+            const legendDiv = document.querySelector('.legend > div');
+            if (legendDiv) {
+                if (isDarkMode()) {
+                    legendDiv.style.background = '#1f2937';
+                    legendDiv.style.color = '#f3f4f6';
+                    legendDiv.style.borderColor = '#374151';
+                } else {
+                    legendDiv.style.background = 'white';
+                    legendDiv.style.color = '#000';
+                    legendDiv.style.borderColor = '#ddd';
+                }
+            }
+        }
 
         // Legenda
         const legend = L.control({ position: 'bottomright' });
         legend.onAdd = function (map) {
             const div = L.DomUtil.create('div', 'legend');
+            const bgColor = isDarkMode() ? '#1f2937' : 'white';
+            const textColor = isDarkMode() ? '#f3f4f6' : '#000';
+            const borderColor = isDarkMode() ? '#374151' : '#ddd';
+            
             div.innerHTML = `
-                <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-size: 13px; font-family: Arial, sans-serif; max-width: 280px;">
+                <div style="background: ${bgColor}; color: ${textColor}; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-size: 13px; font-family: Arial, sans-serif; max-width: 280px;">
                     <h4 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">Legenda kolorów</h4>
                     <div style="margin-bottom: 12px;">
                         <strong style="font-size: 12px;">Zanieczyszczenie powietrza (PM):</strong>
@@ -79,7 +116,7 @@
                             </div>
                         </div>
                     </div>
-                    <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                    <div style="border-top: 1px solid ${borderColor}; padding-top: 10px; margin-top: 10px;">
                         <strong style="font-size: 12px;">Wilgotność/Ciśnienie:</strong>
                         <div style="margin-top: 6px; font-size: 12px;">
                             <div style="display: flex; align-items: center; margin-bottom: 3px;">
@@ -97,6 +134,9 @@
             return div;
         };
         legend.addTo(map);
+        
+        // Оновити стиль легенди при ініціалізації
+        updateLegendStyle();
 
         devices.forEach(device => {
             const vals = device.values || [];
@@ -129,6 +169,33 @@
             const url = new URL(window.location.href);
             if (id) url.searchParams.set('parameter_id', id); else url.searchParams.delete('parameter_id');
             window.location.href = url.toString();
+        });
+
+        // Спостерігач за змінами теми
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    const dark = isDarkMode();
+                    
+                    // Змінити tile layer
+                    if (dark && map.hasLayer(lightLayer)) {
+                        map.removeLayer(lightLayer);
+                        map.addLayer(darkLayer);
+                    } else if (!dark && map.hasLayer(darkLayer)) {
+                        map.removeLayer(darkLayer);
+                        map.addLayer(lightLayer);
+                    }
+                    
+                    // Оновити стиль легенди
+                    updateLegendStyle();
+                }
+            });
+        });
+        
+        // Почати спостереження за змінами class на html елементі
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
         });
     </script>
 </x-app-layout>
