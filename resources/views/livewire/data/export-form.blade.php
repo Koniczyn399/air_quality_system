@@ -1,9 +1,16 @@
 <form wire:submit.prevent="submit">
-    <h3 class="text-xl font-semibold leading-tight theme-text mb-2">
-        {{ __('data.labels.data_management') }}
-    </h3>
 
-    <hr class="my-2 border-gray-200 dark:border-gray-700">
+
+        <h3 class="text-xl font-semibold leading-tight theme-text mb-2">
+            {{ __('data.labels.data_management') }}
+        </h3>
+
+        <hr class="my-2 border-gray-200 dark:border-gray-700">
+
+
+
+
+     
 
     <div class="grid grid-cols-2 gap-2">
         <div>
@@ -63,6 +70,7 @@
 
     <hr class="my-2 border-gray-200 dark:border-gray-700">
 
+
     <div class="grid grid-cols-2 gap-2">
         <div>
             <label for="file" class="block text-sm font-medium theme-text-subtle">
@@ -85,7 +93,7 @@
 
             />
 
-                    <x-wireui-button 
+            <x-wireui-button 
             wire:click="values_report" 
             primary 
             label="{{ __('data.actions.generate_values') }}" 
@@ -111,4 +119,8 @@
             spinner
         />
     </div>
+
+       
 </form>
+
+

@@ -30,6 +30,8 @@
                     
                 @endif
                 <livewire:values-table :device_id="$device_id ?? null" />
+
+                <livewire:data.chart-form :device_id="$device_id ?? null">
             </div>
         </div>
     </div>

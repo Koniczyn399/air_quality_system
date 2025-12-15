@@ -2,8 +2,12 @@
 
 namespace App\Livewire\Data;
 
-use App\Models\Measurement;
+use App\Models\Value;
 use Livewire\Component;
+use App\Models\Parameter;
+use App\Models\Measurement;
+use App\Models\MeasurementDevice;
+use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 class ExportForm extends Component
 {
@@ -19,11 +23,20 @@ class ExportForm extends Component
 
     public $to;
 
+    public $labels=null;
+    public $data=null;
+
+
+
+
     public function mount()
     {
 
+
         $this->start_date = '';
         $this->end_date = '';
+
+
 
     }
 
@@ -45,20 +58,6 @@ class ExportForm extends Component
             $device_ids = [];
             array_push($device_ids, 0);
         }
-        //  dd($device_ids);
-
-        $measurements = Measurement::query()
-            ->join('measurement_devices', function ($m) {
-                $m->on('measurement_devices.id', '=', 'measurements.device_id');
-            })
-            ->select(
-                'measurements.id',
-                'measurements.device_id',
-                'measurements.measurements_date'
-            )
-            ->whereBetween('measurements_date', [$this->from, $this->to])
-            ->whereIn('measurements.device_id', $device_ids)
-            ->get();
 
         return $this->redirect(route('data.file', ['start_date' => $this->from, 'end_date' => $this->to, 'device_ids' => json_encode($device_ids)]));
     }

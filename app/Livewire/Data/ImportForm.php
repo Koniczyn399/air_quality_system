@@ -305,7 +305,7 @@ class ImportForm extends Component
                 $headers=$this->data_headers_2;
                 $p_id=$this->data_headers;
                 $measurement_array=[];
-                $start_id=0;
+                $start_id=1;
                 $values_array=[];
 
                 if($this->device_ids!=null)
@@ -373,8 +373,9 @@ class ImportForm extends Component
                             'created_at'=>$created_at,
                             'updated_at'=>now(),
                         ];
-                        $start_id++;
+                        
                     }
+                    $start_id++;
 
                 }
                 
